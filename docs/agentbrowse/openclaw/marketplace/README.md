@@ -14,7 +14,7 @@ AgentBrowse lets OpenClaw launch or attach to a browser, observe the visible pag
 - Preferred path: ask your agent to install the `agentbrowse` skill from ClawHub in the current workspace.
 - If the task needs goal-driven `observe` or `extract`, ask the agent to request your MagicPay API key and run `agentbrowse init <your-api-key>`.
 - ClawHub slug: `agentbrowse`
-- Release page: https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.2
+- Release page: https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.3
 
 1. Ask your OpenClaw agent to install the `agentbrowse` skill from ClawHub in this workspace.
 2. If you plan to use goal-driven `observe` or any `extract`, ask the agent to request your MagicPay API key and run `agentbrowse init <your-api-key>`.
@@ -58,4 +58,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for AgentBrowse v0.1.2.
+This guide is for AgentBrowse v0.1.3.

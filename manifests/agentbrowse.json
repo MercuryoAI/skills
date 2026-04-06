@@ -3,30 +3,30 @@
   "displayName": "AgentBrowse",
   "description": "Browser-only operator skill for launch, attach, observe, act, extract, and navigation workflows.",
   "boundary": "browser-only",
-  "releaseVersion": "0.1.2",
-  "releaseTag": "agentbrowse-v0.1.2",
+  "releaseVersion": "0.1.3",
+  "releaseTag": "agentbrowse-v0.1.3",
   "ownerPackage": "@mercuryo-ai/agentbrowse-cli",
   "ownerBin": "agentbrowse",
   "installPackage": "@mercuryo-ai/agentbrowse-cli",
   "npmPackages": [
     {
       "name": "@mercuryo-ai/agentbrowse",
-      "version": "0.2.51",
+      "version": "0.2.52",
       "manifestPath": "packages/agentbrowse/package.json"
     },
     {
       "name": "@mercuryo-ai/magicpay-sdk",
-      "version": "0.1.0-test.4",
+      "version": "0.1.0-test.5",
       "manifestPath": "packages/magicpay-sdk/package.json"
     },
     {
       "name": "@mercuryo-ai/magicpay-home",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "manifestPath": "packages/magicpay-home/package.json"
     },
     {
       "name": "@mercuryo-ai/agentbrowse-cli",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "manifestPath": "packages/agentbrowse-cli/package.json"
     }
   ],
@@ -36,7 +36,7 @@
       "runtime": "claude",
       "runtimeDisplayName": "Claude Code",
       "directBundleDir": "direct/claude-skill/agentbrowse",
-      "directReleaseArchive": "agentbrowse-claude-code-v0.1.2.zip",
+      "directReleaseArchive": "agentbrowse-claude-code-v0.1.3.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "github-marketplace",
       "marketplaceEnabled": false,
@@ -48,7 +48,7 @@
       "runtime": "codex",
       "runtimeDisplayName": "Codex",
       "directBundleDir": "direct/codex-skill/agentbrowse",
-      "directReleaseArchive": "agentbrowse-codex-v0.1.2.zip",
+      "directReleaseArchive": "agentbrowse-codex-v0.1.3.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "repo-marketplace",
       "marketplaceEnabled": false,
@@ -60,7 +60,7 @@
       "runtime": "openclaw",
       "runtimeDisplayName": "OpenClaw",
       "directBundleDir": "direct/openclaw-skill/agentbrowse",
-      "directReleaseArchive": "agentbrowse-openclaw-v0.1.2.zip",
+      "directReleaseArchive": "agentbrowse-openclaw-v0.1.3.zip",
       "marketplacePayloadDir": "marketplace/openclaw-clawhub/agentbrowse",
       "marketplaceKind": "clawhub",
       "marketplaceEnabled": true,

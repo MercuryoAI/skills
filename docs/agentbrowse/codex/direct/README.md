@@ -17,8 +17,8 @@ AgentBrowse lets Codex launch or attach to a browser, observe the visible page s
 
 ## Install
 
-- Release archive: `agentbrowse-codex-v0.1.2.zip`
-- Release page: https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.2
+- Release archive: `agentbrowse-codex-v0.1.3.zip`
+- Release page: https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.3
 
 1. Download the release archive listed above.
 2. Extract the archive. You should get a folder named `agentbrowse/`.
@@ -64,4 +64,4 @@ Once the skill is installed, ask Codex to use AgentBrowse for a browser-only tas
 
 ---
 
-This guide is for AgentBrowse v0.1.2.
+This guide is for AgentBrowse v0.1.3.
