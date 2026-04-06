@@ -8,6 +8,33 @@
   "ownerPackage": "@mercuryo-ai/magicpay-cli",
   "ownerBin": "magicpay",
   "installPackage": "@mercuryo-ai/magicpay-cli",
+  "npmPackages": [
+    {
+      "name": "@mercuryo-ai/agentbrowse",
+      "version": "0.2.50",
+      "manifestPath": "packages/agentbrowse/package.json"
+    },
+    {
+      "name": "@mercuryo-ai/captcha-solver",
+      "version": "0.1.1",
+      "manifestPath": "packages/captcha-solver/package.json"
+    },
+    {
+      "name": "@mercuryo-ai/magicpay-sdk",
+      "version": "0.1.0-test.3",
+      "manifestPath": "packages/magicpay-sdk/package.json"
+    },
+    {
+      "name": "@mercuryo-ai/magicpay-home",
+      "version": "0.1.4",
+      "manifestPath": "packages/magicpay-home/package.json"
+    },
+    {
+      "name": "@mercuryo-ai/magicpay-cli",
+      "version": "0.1.3",
+      "manifestPath": "packages/magicpay-cli/package.json"
+    }
+  ],
   "portableDir": "portable/magicpay",
   "runtimes": [
     {
@@ -39,12 +66,12 @@
       "runtimeDisplayName": "OpenClaw",
       "directBundleDir": "direct/openclaw-skill/magicpay",
       "directReleaseArchive": "magicpay-openclaw-v0.1.0.zip",
-      "marketplacePayloadDir": null,
+      "marketplacePayloadDir": "marketplace/openclaw-clawhub/magicpay",
       "marketplaceKind": "clawhub",
-      "marketplaceEnabled": false,
-      "marketplaceInstallDocGenerated": false,
+      "marketplaceEnabled": true,
+      "marketplaceInstallDocGenerated": true,
       "directDocPath": "docs/magicpay/openclaw/direct/README.md",
-      "marketplaceDocPath": null
+      "marketplaceDocPath": "docs/magicpay/openclaw/marketplace/README.md"
     }
   ]
 }

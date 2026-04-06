@@ -9,6 +9,15 @@ Installable skill bundles for Mercuryo browser and payment workflows in Codex, C
 
 ## How To Use This Repo
 
+### OpenClaw
+
+1. Open `docs/<skill>/openclaw/marketplace/README.md` for the skill you want.
+2. Ask your agent to install that skill from ClawHub in the current workspace.
+3. If the guide says the skill needs setup, ask the agent to request your API key and run `init`.
+4. Use the manual zip fallback from the same guide only if you want to manage the files yourself.
+
+### Codex And Claude Code
+
 1. Open the release for the skill you want to install.
 2. Download the runtime-specific `.zip` bundle from that release.
 3. Open the matching install guide under `docs/<skill>/<runtime>/direct/README.md`.

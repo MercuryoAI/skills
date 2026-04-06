@@ -17,7 +17,8 @@ AgentBrowse lets OpenClaw launch or attach to a browser, observe the visible pag
 
 ## Install
 
-- Release archive: `agentbrowse-openclaw-v0.1.0.zip`
+- Release archive: `agentbrowse-openclaw-v0.1.1.zip`
+- Release page: https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.1
 
 1. Download the release archive listed above.
 2. Extract the archive. You should get a folder named `agentbrowse/`.
@@ -63,4 +64,4 @@ Once the skill is installed, ask OpenClaw to use AgentBrowse for a browser-only 
 
 ---
 
-This guide is for AgentBrowse v0.1.0.
+This guide is for AgentBrowse v0.1.1.
