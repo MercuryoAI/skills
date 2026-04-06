@@ -1,0 +1,50 @@
+{
+  "skill": "agentbrowse",
+  "displayName": "AgentBrowse",
+  "description": "Browser-only operator skill for launch, attach, observe, act, extract, and navigation workflows.",
+  "boundary": "browser-only",
+  "releaseVersion": "0.1.0",
+  "releaseTag": "agentbrowse-v0.1.0",
+  "ownerPackage": "@mercuryo-ai/agentbrowse-cli",
+  "ownerBin": "agentbrowse",
+  "installPackage": "@mercuryo-ai/agentbrowse-cli",
+  "portableDir": "portable/agentbrowse",
+  "runtimes": [
+    {
+      "runtime": "claude",
+      "runtimeDisplayName": "Claude Code",
+      "directBundleDir": "direct/claude-skill/agentbrowse",
+      "directReleaseArchive": "agentbrowse-claude-code-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "github-marketplace",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/agentbrowse/claude/direct/README.md",
+      "marketplaceDocPath": null
+    },
+    {
+      "runtime": "codex",
+      "runtimeDisplayName": "Codex",
+      "directBundleDir": "direct/codex-skill/agentbrowse",
+      "directReleaseArchive": "agentbrowse-codex-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "repo-marketplace",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/agentbrowse/codex/direct/README.md",
+      "marketplaceDocPath": null
+    },
+    {
+      "runtime": "openclaw",
+      "runtimeDisplayName": "OpenClaw",
+      "directBundleDir": "direct/openclaw-skill/agentbrowse",
+      "directReleaseArchive": "agentbrowse-openclaw-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "clawhub",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/agentbrowse/openclaw/direct/README.md",
+      "marketplaceDocPath": null
+    }
+  ]
+}

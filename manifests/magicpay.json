@@ -1,0 +1,50 @@
+{
+  "skill": "magicpay",
+  "displayName": "MagicPay",
+  "description": "Payment, session, and protected-secret skill for already prepared browser contexts.",
+  "boundary": "payment-only",
+  "releaseVersion": "0.1.0",
+  "releaseTag": "magicpay-v0.1.0",
+  "ownerPackage": "@mercuryo-ai/magicpay-cli",
+  "ownerBin": "magicpay",
+  "installPackage": "@mercuryo-ai/magicpay-cli",
+  "portableDir": "portable/magicpay",
+  "runtimes": [
+    {
+      "runtime": "claude",
+      "runtimeDisplayName": "Claude Code",
+      "directBundleDir": "direct/claude-skill/magicpay",
+      "directReleaseArchive": "magicpay-claude-code-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "github-marketplace",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/magicpay/claude/direct/README.md",
+      "marketplaceDocPath": null
+    },
+    {
+      "runtime": "codex",
+      "runtimeDisplayName": "Codex",
+      "directBundleDir": "direct/codex-skill/magicpay",
+      "directReleaseArchive": "magicpay-codex-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "repo-marketplace",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/magicpay/codex/direct/README.md",
+      "marketplaceDocPath": null
+    },
+    {
+      "runtime": "openclaw",
+      "runtimeDisplayName": "OpenClaw",
+      "directBundleDir": "direct/openclaw-skill/magicpay",
+      "directReleaseArchive": "magicpay-openclaw-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "clawhub",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/magicpay/openclaw/direct/README.md",
+      "marketplaceDocPath": null
+    }
+  ]
+}

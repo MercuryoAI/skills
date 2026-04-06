@@ -1,0 +1,50 @@
+{
+  "skill": "magicpay-agent",
+  "displayName": "MagicPay Agent",
+  "description": "Combined browser and payment operator skill for end-to-end website workflows.",
+  "boundary": "combined",
+  "releaseVersion": "0.1.0",
+  "releaseTag": "magicpay-agent-v0.1.0",
+  "ownerPackage": "@mercuryo-ai/magicpay-agent-cli",
+  "ownerBin": "magicpay-agent",
+  "installPackage": "@mercuryo-ai/magicpay-agent-cli",
+  "portableDir": "portable/magicpay-agent",
+  "runtimes": [
+    {
+      "runtime": "claude",
+      "runtimeDisplayName": "Claude Code",
+      "directBundleDir": "direct/claude-skill/magicpay-agent",
+      "directReleaseArchive": "magicpay-agent-claude-code-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "github-marketplace",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/magicpay-agent/claude/direct/README.md",
+      "marketplaceDocPath": null
+    },
+    {
+      "runtime": "codex",
+      "runtimeDisplayName": "Codex",
+      "directBundleDir": "direct/codex-skill/magicpay-agent",
+      "directReleaseArchive": "magicpay-agent-codex-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "repo-marketplace",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/magicpay-agent/codex/direct/README.md",
+      "marketplaceDocPath": null
+    },
+    {
+      "runtime": "openclaw",
+      "runtimeDisplayName": "OpenClaw",
+      "directBundleDir": "direct/openclaw-skill/magicpay-agent",
+      "directReleaseArchive": "magicpay-agent-openclaw-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "clawhub",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/magicpay-agent/openclaw/direct/README.md",
+      "marketplaceDocPath": null
+    }
+  ]
+}
