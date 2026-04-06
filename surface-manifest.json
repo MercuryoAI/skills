@@ -76,42 +76,6 @@
       "releaseVersion": "0.1.0",
       "ownerPackage": "@mercuryo-ai/magicpay-cli",
       "ownerBin": "magicpay"
-    },
-    {
-      "runtime": "claude",
-      "skill": "magicpay-agent",
-      "archiveName": "magicpay-agent-claude-code-v0.1.0.zip",
-      "archivePath": "releases/magicpay-agent-claude-code-v0.1.0.zip",
-      "installRootInArchive": "magicpay-agent/",
-      "docsPath": "docs/magicpay-agent/claude/direct/README.md",
-      "releaseTag": "magicpay-agent-v0.1.0",
-      "releaseVersion": "0.1.0",
-      "ownerPackage": "@mercuryo-ai/magicpay-agent-cli",
-      "ownerBin": "magicpay-agent"
-    },
-    {
-      "runtime": "codex",
-      "skill": "magicpay-agent",
-      "archiveName": "magicpay-agent-codex-v0.1.0.zip",
-      "archivePath": "releases/magicpay-agent-codex-v0.1.0.zip",
-      "installRootInArchive": "magicpay-agent/",
-      "docsPath": "docs/magicpay-agent/codex/direct/README.md",
-      "releaseTag": "magicpay-agent-v0.1.0",
-      "releaseVersion": "0.1.0",
-      "ownerPackage": "@mercuryo-ai/magicpay-agent-cli",
-      "ownerBin": "magicpay-agent"
-    },
-    {
-      "runtime": "openclaw",
-      "skill": "magicpay-agent",
-      "archiveName": "magicpay-agent-openclaw-v0.1.0.zip",
-      "archivePath": "releases/magicpay-agent-openclaw-v0.1.0.zip",
-      "installRootInArchive": "magicpay-agent/",
-      "docsPath": "docs/magicpay-agent/openclaw/direct/README.md",
-      "releaseTag": "magicpay-agent-v0.1.0",
-      "releaseVersion": "0.1.0",
-      "ownerPackage": "@mercuryo-ai/magicpay-agent-cli",
-      "ownerBin": "magicpay-agent"
     }
   ]
 }

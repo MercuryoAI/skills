@@ -18,7 +18,6 @@ MagicPay lets Claude Code attach to an already prepared browser page, bind a wor
 ## Install
 
 - Release archive: `magicpay-claude-code-v0.1.0.zip`
-- Release page: https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.0
 
 1. Download the release archive listed above.
 2. Extract the archive. You should get a folder named `magicpay/`.

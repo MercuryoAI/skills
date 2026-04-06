@@ -4,9 +4,8 @@ Installable skill bundles for Mercuryo browser and payment workflows in Codex, C
 
 ## Available Skills
 
-- `agentbrowse` — browser-only skill for launch, attach, observe, act, extract, and navigation workflows.
-- `magicpay` — payment, session, and protected-secret skill for already prepared browser contexts.
-- `magicpay-agent` — combined browser and payment skill for end-to-end website workflows.
+- `agentbrowse` — Browser-only operator skill for launch, attach, observe, act, extract, and navigation workflows.
+- `magicpay` — Payment, session, and protected-secret skill for already prepared browser contexts.
 
 ## How To Use This Repo
 
@@ -17,7 +16,6 @@ Installable skill bundles for Mercuryo browser and payment workflows in Codex, C
 
 ## Layout
 
-- `releases/` contains versioned direct-install `.zip` archives for all first-wave skills.
 - `docs/` contains generated user-facing installation guides grouped by skill and runtime.
 - `manifests/` contains per-skill release metadata and owner/bin mappings.
 - `surface-manifest.json` describes the exported public-facing artifact set.
