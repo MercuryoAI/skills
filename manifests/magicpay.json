@@ -11,7 +11,7 @@
   "npmPackages": [
     {
       "name": "@mercuryo-ai/agentbrowse",
-      "version": "0.2.50",
+      "version": "0.2.51",
       "manifestPath": "packages/agentbrowse/package.json"
     },
     {
@@ -21,12 +21,12 @@
     },
     {
       "name": "@mercuryo-ai/magicpay-sdk",
-      "version": "0.1.0-test.3",
+      "version": "0.1.0-test.4",
       "manifestPath": "packages/magicpay-sdk/package.json"
     },
     {
       "name": "@mercuryo-ai/magicpay-home",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "manifestPath": "packages/magicpay-home/package.json"
     },
     {
