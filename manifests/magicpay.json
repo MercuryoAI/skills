@@ -3,35 +3,35 @@
   "displayName": "MagicPay",
   "description": "Protected-form workflow skill for prepared login, identity, and payment pages.",
   "boundary": "payment-only",
-  "releaseVersion": "0.1.3",
-  "releaseTag": "magicpay-v0.1.3",
+  "releaseVersion": "0.1.6",
+  "releaseTag": "magicpay-v0.1.6",
   "ownerPackage": "@mercuryo-ai/magicpay-cli",
   "ownerBin": "magicpay",
   "installPackage": "@mercuryo-ai/magicpay-cli",
   "npmPackages": [
     {
       "name": "@mercuryo-ai/agentbrowse",
-      "version": "0.2.53",
+      "version": "0.2.54",
       "manifestPath": "packages/agentbrowse/package.json"
     },
     {
       "name": "@mercuryo-ai/captcha-solver",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "manifestPath": "packages/captcha-solver/package.json"
     },
     {
       "name": "@mercuryo-ai/magicpay-sdk",
-      "version": "0.1.0-test.6",
+      "version": "0.1.0",
       "manifestPath": "packages/magicpay-sdk/package.json"
     },
     {
       "name": "@mercuryo-ai/magicpay-home",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "manifestPath": "packages/magicpay-home/package.json"
     },
     {
       "name": "@mercuryo-ai/magicpay-cli",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "manifestPath": "packages/magicpay-cli/package.json"
     }
   ],
@@ -41,7 +41,7 @@
       "runtime": "claude",
       "runtimeDisplayName": "Claude Code",
       "directBundleDir": "direct/claude-skill/magicpay",
-      "directReleaseArchive": "magicpay-claude-code-v0.1.3.zip",
+      "directReleaseArchive": "magicpay-claude-code-v0.1.6.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "github-marketplace",
       "marketplaceEnabled": false,
@@ -53,7 +53,7 @@
       "runtime": "codex",
       "runtimeDisplayName": "Codex",
       "directBundleDir": "direct/codex-skill/magicpay",
-      "directReleaseArchive": "magicpay-codex-v0.1.3.zip",
+      "directReleaseArchive": "magicpay-codex-v0.1.6.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "repo-marketplace",
       "marketplaceEnabled": false,
@@ -65,7 +65,7 @@
       "runtime": "openclaw",
       "runtimeDisplayName": "OpenClaw",
       "directBundleDir": "direct/openclaw-skill/magicpay",
-      "directReleaseArchive": "magicpay-openclaw-v0.1.3.zip",
+      "directReleaseArchive": "magicpay-openclaw-v0.1.6.zip",
       "marketplacePayloadDir": "marketplace/openclaw-clawhub/magicpay",
       "marketplaceKind": "clawhub",
       "marketplaceEnabled": true,
