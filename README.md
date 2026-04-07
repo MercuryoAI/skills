@@ -1,6 +1,6 @@
-# Mercuryo MagicPay Skills
+# Mercuryo Agent Skills
 
-Installable skill bundles for MagicPay browser and protected-form workflows in Claude Code, Codex, and OpenClaw.
+Installable skill bundles for AgentBrowse browser automation and MagicPay protected-form workflows in Claude Code, Codex, and OpenClaw.
 
 ## What is a skill?
 
@@ -10,8 +10,8 @@ A skill is an instruction bundle your AI runtime can load. The skill tells the a
 
 | If you need this | Choose this surface | Why |
 | --- | --- | --- |
-| Browser-only navigation, observation, and extraction | `agentbrowse` | Use this when the agent only needs browser control. Goal-driven `observe` and `extract` can use your MagicPay API key later, but simple browser tasks do not need it. |
-| A protected login, identity, or payment form is already open and ready | `magicpay` | Use this when another tool already prepared the page and you only need the protected-form flow. The normal path ends at `fill-secret`; `submit-form` is manual recovery only. |
+| Browser automation on a real web page | `agentbrowse` | Use this when the agent needs browser control. Add API setup later only if you want goal-based `observe` or `extract`. |
+| A prepared login, identity, or payment form needs approved stored values | `magicpay` | Use this when the browser is already at the protected step and the remaining work is discovery, approval, fill, and guarded submit. |
 
 ## How to use this catalog
 
@@ -24,7 +24,7 @@ A skill is an instruction bundle your AI runtime can load. The skill tells the a
 
 ### `agentbrowse`
 
-Browser-only operator skill for launch, attach, observe, act, extract, and navigation workflows.
+Browser automation skill for launch, attach, observe, act, extract, navigation, and screenshots.
 
 - Claude Code: [direct guide](docs/agentbrowse/claude/direct/README.md)
 - Codex: [direct guide](docs/agentbrowse/codex/direct/README.md)
@@ -32,7 +32,7 @@ Browser-only operator skill for launch, attach, observe, act, extract, and navig
 
 ### `magicpay`
 
-Payment, session, and protected-secret skill for already prepared browser contexts.
+Protected-form workflow skill for prepared login, identity, and payment pages.
 
 - Claude Code: [direct guide](docs/magicpay/claude/direct/README.md)
 - Codex: [direct guide](docs/magicpay/codex/direct/README.md)

@@ -1,7 +1,7 @@
 {
   "skill": "agentbrowse",
   "displayName": "AgentBrowse",
-  "description": "Browser-only operator skill for launch, attach, observe, act, extract, and navigation workflows.",
+  "description": "Browser automation skill for launch, attach, observe, act, extract, navigation, and screenshots.",
   "boundary": "browser-only",
   "releaseVersion": "0.1.6",
   "releaseTag": "agentbrowse-v0.1.6",

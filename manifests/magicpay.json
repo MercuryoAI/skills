@@ -1,7 +1,7 @@
 {
   "skill": "magicpay",
   "displayName": "MagicPay",
-  "description": "Payment, session, and protected-secret skill for already prepared browser contexts.",
+  "description": "Protected-form workflow skill for prepared login, identity, and payment pages.",
   "boundary": "payment-only",
   "releaseVersion": "0.1.2",
   "releaseTag": "magicpay-v0.1.2",
