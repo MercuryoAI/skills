@@ -14,7 +14,7 @@ AgentBrowse lets Claude Code launch or attach to a browser, observe the visible 
 Copy this request into your agent session:
 
 ```text
-Install the `agentbrowse` skill in Claude Code from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.5 using `agentbrowse-claude-code-v0.1.5.zip`. Place the extracted `agentbrowse/` folder directly inside `.claude/skills/` or `~/.claude/skills/`.
+Install the `agentbrowse` skill in Claude Code from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.6 using `agentbrowse-claude-code-v0.1.6.zip`. Place the extracted `agentbrowse/` folder directly inside `.claude/skills/` or `~/.claude/skills/`.
 If I ask for goal-driven `observe` or any `extract`, ask me for my MagicPay API key and run `agentbrowse init <your-api-key>`.
 If `agentbrowse` is missing, install or repair `@mercuryo-ai/agentbrowse-cli`.
 Verify the setup with `agentbrowse --version`; use `agentbrowse doctor` only if init or local config still fails.
@@ -22,7 +22,7 @@ Verify the setup with `agentbrowse --version`; use `agentbrowse doctor` only if 
 
 ## What your agent should do
 
-1. Download `agentbrowse-claude-code-v0.1.5.zip` from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.5.
+1. Download `agentbrowse-claude-code-v0.1.6.zip` from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.6.
 2. Extract the archive so the top-level folder is `agentbrowse/`.
 3. Place `agentbrowse/` directly inside `.claude/skills/` or `~/.claude/skills/`.
 4. If `agentbrowse` is missing, install or repair `@mercuryo-ai/agentbrowse-cli`.
@@ -50,9 +50,9 @@ Start with a browser-only task. Only add `agentbrowse init <your-api-key>` when 
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `agentbrowse/` folder yourself instead of asking Claude Code to install it from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.5 using `agentbrowse-claude-code-v0.1.5.zip`.
+Use this fallback only if you want to manage the `agentbrowse/` folder yourself instead of asking Claude Code to install it from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.6 using `agentbrowse-claude-code-v0.1.6.zip`.
 
-1. Download `agentbrowse-claude-code-v0.1.5.zip`.
+1. Download `agentbrowse-claude-code-v0.1.6.zip`.
 2. Extract the archive. You should get a folder named `agentbrowse/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart Claude Code if you already had a session open.
@@ -73,4 +73,4 @@ Use this fallback only if you want to manage the `agentbrowse/` folder yourself 
 
 ---
 
-This guide is for AgentBrowse v0.1.5.
+This guide is for AgentBrowse v0.1.6.
