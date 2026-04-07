@@ -14,7 +14,7 @@ MagicPay gives Claude Code a protected-form workflow for prepared browser pages:
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill in Claude Code from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.2 using `magicpay-claude-code-v0.1.2.zip`. Place the extracted `magicpay/` folder directly inside `.claude/skills/` or `~/.claude/skills/`.
+Install the `magicpay` skill in Claude Code from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.3 using `magicpay-claude-code-v0.1.3.zip`. Place the extracted `magicpay/` folder directly inside `.claude/skills/` or `~/.claude/skills/`.
 Treat MagicPay as the protected-form layer for a prepared login, identity, or payment page.
 Ask me for my API key and run `magicpay init <your-api-key>`.
 If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
@@ -24,7 +24,7 @@ For the normal protected-form flow, finish with `magicpay fill-secret <fillRef> 
 
 ## What your agent should do
 
-1. Download `magicpay-claude-code-v0.1.2.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.2.
+1. Download `magicpay-claude-code-v0.1.3.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.3.
 2. Extract the archive so the top-level folder is `magicpay/`.
 3. Place `magicpay/` directly inside `.claude/skills/` or `~/.claude/skills/`.
 4. If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
@@ -52,9 +52,9 @@ Use MagicPay when the browser is already on the relevant login, identity, or pay
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking Claude Code to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.2 using `magicpay-claude-code-v0.1.2.zip`.
+Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking Claude Code to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.3 using `magicpay-claude-code-v0.1.3.zip`.
 
-1. Download `magicpay-claude-code-v0.1.2.zip`.
+1. Download `magicpay-claude-code-v0.1.3.zip`.
 2. Extract the archive. You should get a folder named `magicpay/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart Claude Code if you already had a session open.
@@ -78,4 +78,4 @@ Use this fallback only if you want to manage the `magicpay/` folder yourself ins
 
 ---
 
-This guide is for MagicPay v0.1.2.
+This guide is for MagicPay v0.1.3.
