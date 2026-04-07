@@ -11,7 +11,7 @@
   "npmPackages": [
     {
       "name": "@mercuryo-ai/agentbrowse",
-      "version": "0.2.54",
+      "version": "0.2.55",
       "manifestPath": "packages/agentbrowse/package.json"
     },
     {

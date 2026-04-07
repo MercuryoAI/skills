@@ -74,4 +74,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for AgentBrowse v0.1.12.
+This guide is for AgentBrowse v0.1.13.
