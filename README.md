@@ -1,30 +1,45 @@
 # Mercuryo MagicPay Skills
 
-Installable skill bundles for Mercuryo browser and payment workflows in Codex, Claude Code, and OpenClaw.
+Installable skill bundles for MagicPay browser and protected-form workflows in Claude Code, Codex, and OpenClaw.
 
-## Available Skills
+## What is a skill?
 
-- `agentbrowse` — Browser-only operator skill for launch, attach, observe, act, extract, and navigation workflows.
-- `magicpay` — Payment, session, and protected-secret skill for already prepared browser contexts.
+A skill is an instruction bundle your AI runtime can load. The skill tells the agent when to use the CLI, what to ask you, and how to verify the result. The CLI does the actual browser or protected-form work.
 
-## How To Use This Repo
+## Choose a surface
 
-### OpenClaw
+| If you need this | Choose this surface | Why |
+| --- | --- | --- |
+| Browser-only navigation, observation, and extraction | `agentbrowse` | Use this when the agent only needs browser control. Goal-driven `observe` and `extract` can use your MagicPay API key later, but simple browser tasks do not need it. |
+| A protected login, identity, or payment form is already open and ready | `magicpay` | Use this when another tool already prepared the page and you only need the protected-form flow. The normal path ends at `fill-secret`; `submit-form` is manual recovery only. |
 
-1. Open `docs/<skill>/openclaw/marketplace/README.md` for the skill you want.
-2. Ask your agent to install that skill from ClawHub in the current workspace.
-3. If the guide says the skill needs setup, ask the agent to request your API key and run `init`.
-4. Use the manual zip fallback from the same guide only if you want to manage the files yourself.
+## How to use this catalog
 
-### Codex And Claude Code
+1. Pick the guide for your runtime below.
+2. Open that guide and copy the request from the `Ask your agent` section into your agent session.
+3. Let the agent install, initialize, and verify the skill.
+4. Use the manual zip or folder steps only if your agent cannot complete the install itself.
 
-1. Open the release for the skill you want to install.
-2. Download the runtime-specific `.zip` bundle from that release.
-3. Open the matching install guide under `docs/<skill>/<runtime>/direct/README.md`.
-4. Extract the `<skill>/` folder into your runtime skill directory and start a fresh session.
+## Start with the right guide
+
+### `agentbrowse`
+
+Browser-only operator skill for launch, attach, observe, act, extract, and navigation workflows.
+
+- Claude Code: [direct guide](docs/agentbrowse/claude/direct/README.md)
+- Codex: [direct guide](docs/agentbrowse/codex/direct/README.md)
+- OpenClaw: [ClawHub guide](docs/agentbrowse/openclaw/marketplace/README.md) or [direct fallback](docs/agentbrowse/openclaw/direct/README.md)
+
+### `magicpay`
+
+Payment, session, and protected-secret skill for already prepared browser contexts.
+
+- Claude Code: [direct guide](docs/magicpay/claude/direct/README.md)
+- Codex: [direct guide](docs/magicpay/codex/direct/README.md)
+- OpenClaw: [ClawHub guide](docs/magicpay/openclaw/marketplace/README.md) or [direct fallback](docs/magicpay/openclaw/direct/README.md)
 
 ## Layout
 
-- `docs/` contains generated user-facing installation guides grouped by skill and runtime.
+- `docs/` contains generated installation guides by skill and runtime.
 - `manifests/` contains per-skill release metadata and owner/bin mappings.
-- `surface-manifest.json` describes the exported public-facing artifact set.
+- `surface-manifest.json` describes the exported public artifact set.

@@ -2,66 +2,75 @@
 
 AgentBrowse lets OpenClaw launch or attach to a browser, observe the visible page state, act on interactive targets, use MagicPay-backed goal observe and extract, and close the browser through the browser-only agentbrowse CLI.
 
-## What you need before installing
+## Before you start
 
 - Node.js 18 or later is installed.
 - OpenClaw is installed and working.
-- Goal-driven `observe` and `extract` require a MagicPay account and API key. Sign up at https://magicpay.mercuryo.io if needed.
+- Goal-driven `observe` and `extract` require a MagicPay account and API key. Sign up at https://agents.mercuryo.io/signup if needed.
 - The environment allows browser launch or provides a CDP endpoint for attach.
 
-## CLI Surface
+## Ask your agent
 
-- CLI package: `@mercuryo-ai/agentbrowse-cli`
-- CLI binary: `agentbrowse`
-- Install command: `npm i -g @mercuryo-ai/agentbrowse-cli`
+Copy this request into your agent session:
 
-## Install
+```text
+Install the `agentbrowse` skill in OpenClaw from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.4 using `agentbrowse-openclaw-v0.1.4.zip`. Place the extracted `agentbrowse/` folder directly inside `skills/` or `~/.openclaw/skills/`.
+If I ask for goal-driven `observe` or any `extract`, ask me for my MagicPay API key and run `agentbrowse init <your-api-key>`.
+If `agentbrowse` is missing, install or repair `@mercuryo-ai/agentbrowse-cli`.
+Verify the setup with `agentbrowse --version`; use `agentbrowse doctor` only if init or local config still fails.
+```
 
-- Release archive: `agentbrowse-openclaw-v0.1.3.zip`
-- Release page: https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.3
+## What your agent should do
 
-1. Download the release archive listed above.
-2. Extract the archive. You should get a folder named `agentbrowse/`.
-3. Move that folder into one of the supported install locations below.
-4. Restart OpenClaw if you already had a session open.
+1. Download `agentbrowse-openclaw-v0.1.4.zip` from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.4.
+2. Extract the archive so the top-level folder is `agentbrowse/`.
+3. Place `agentbrowse/` directly inside `skills/` or `~/.openclaw/skills/`.
+4. If `agentbrowse` is missing, install or repair `@mercuryo-ai/agentbrowse-cli`.
+5. Only if the task needs goal-driven `observe` or any `extract`, request your MagicPay API key and run `agentbrowse init <your-api-key>`.
+6. Start a fresh OpenClaw session if the current session does not pick up the installed skill.
 
-Supported install locations:
+Supported skill locations:
 
 - `skills/`
 - `~/.openclaw/skills/`
 
-## Verify the install
+## Verify the result
 
-1. Open a new OpenClaw session in your workspace.
-2. Ask OpenClaw to use AgentBrowse for a simple browser-only task.
-3. Confirm the agent starts by checking `agentbrowse --version`.
-4. If the task needs goal-driven `observe` or `extract`, run `agentbrowse init <your-api-key>` before retrying the task.
-5. If OpenClaw does not use AgentBrowse, make sure `agentbrowse/` sits directly inside a supported install location.
+1. Ask OpenClaw to run `agentbrowse --version` and confirm the skill is available.
+2. Ask OpenClaw to use AgentBrowse for a small browser-only task.
+3. If you need goal-driven `observe` or any `extract`, ask OpenClaw to run `agentbrowse init <your-api-key>`; use `agentbrowse doctor` only if init or local config still fails.
 
-## Try it out
+## Try a first task
 
-Once the skill is installed, ask OpenClaw to use AgentBrowse for a browser-only task.
+Start with a browser-only task. Only add `agentbrowse init <your-api-key>` when you need goal-driven `observe` or any `extract`.
 
 - Use AgentBrowse to launch the browser, open this page, and summarize the visible pricing table.
 - Use AgentBrowse to attach to the already running browser and click through the search form.
-- Use AgentBrowse to extract the visible shipment options from the current page after running `agentbrowse init <your-api-key>`.
+- Use AgentBrowse to extract the visible shipment options after running `agentbrowse init <your-api-key>` for goal-driven extract.
+
+## Manual zip fallback
+
+Use this fallback only if you want to manage the `agentbrowse/` folder yourself instead of asking OpenClaw to install it from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.4 using `agentbrowse-openclaw-v0.1.4.zip`.
+
+1. Download `agentbrowse-openclaw-v0.1.4.zip`.
+2. Extract the archive. You should get a folder named `agentbrowse/`.
+3. Move that folder into one of the supported install locations below.
+4. Restart OpenClaw if you already had a session open.
 
 ## Update or reinstall
 
-1. Download the newer release archive for your version.
-2. Remove the old `agentbrowse/` folder from your install location.
-3. Extract the new archive and place the new `agentbrowse/` folder in the same location.
-4. Start a new OpenClaw session.
+1. Ask your agent to download the newer archive for this OpenClaw runtime and replace the existing skill folder with the new `agentbrowse/` folder.
+2. Keep the folder name exactly `agentbrowse` inside the same skills directory.
+3. If you rely on goal-driven `observe` or `extract` and the local config was reset, rerun `agentbrowse init <your-api-key>`.
+4. Start a fresh OpenClaw session after the replacement.
 
 ## Troubleshooting
 
-- **Skill not recognized by OpenClaw**: Make sure the folder is named `agentbrowse` and sits directly inside `skills/` or `~/.openclaw/skills/`.
-- **`agentbrowse` command not found**: The agent will try to install it automatically. If that fails, run `npm i -g @mercuryo-ai/agentbrowse-cli` and try again.
-- **Goal observe or extract needs backend access**: Run `agentbrowse init <your-api-key>` or provide `MAGICPAY_API_KEY` before using semantic observe or extract.
-- **Goal observe or extract still fail after init**: Run `agentbrowse doctor` to inspect the local `~/.magicpay/config.json` file. Use `doctor` only when the setup is supposed to come from local config.
-- **Browser does not open**: Make sure the environment allows browser startup, or provide a CDP endpoint for attach.
-- **Task needs protected secrets**: Hand off to MagicPay or MagicPay Agent instead of entering sensitive values manually.
+- **Skill not recognized by OpenClaw**: Make sure the folder sits directly inside `skills/` or `~/.openclaw/skills/`.
+- **`agentbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/agentbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/agentbrowse-cli`.
+- **Goal-driven observe or extract still fails**: Ask the agent to run `agentbrowse init <your-api-key>` and use `agentbrowse doctor` only for local config diagnostics.
+- **Browser launch or attach is unavailable**: Provide a live CDP endpoint or use an environment that allows browser startup.
 
 ---
 
-This guide is for AgentBrowse v0.1.3.
+This guide is for AgentBrowse v0.1.4.

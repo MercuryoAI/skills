@@ -1,38 +1,51 @@
 # Install MagicPay from ClawHub
 
-MagicPay lets OpenClaw attach to an already prepared browser page, bind a workflow session, discover a supported protected form, request approval for stored secrets, fill approved values, and submit the form safely.
+MagicPay lets OpenClaw attach to an already prepared browser page, bind a workflow session, discover a supported protected form, request approval for stored secrets, and finish with `magicpay fill-secret <fillRef> <requestId>` on the normal path.
 
-## What you need before installing
+## Before you start
 
 - Node.js 18 or later is installed.
 - OpenClaw is installed and working.
-- You have a MagicPay account and API key. Sign up at https://magicpay.mercuryo.io if needed.
+- You have a MagicPay account and API key. Sign up at https://agents.mercuryo.io/signup if needed.
 - Another tool or agent can prepare the browser and provide a CDP endpoint for the target page.
 
-## Install
+## Ask your agent
+
+Copy this request into your agent session:
+
+```text
+Install the `magicpay` skill from ClawHub in this workspace.
+Ask me for my MagicPay API key and run `magicpay init <your-api-key>`.
+If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
+Verify the setup with `magicpay --version` and `magicpay status`; use `magicpay doctor` only if status still fails after init.
+For the normal protected-form flow, finish with `magicpay fill-secret <fillRef> <requestId>`; use `magicpay submit-form <fillRef>` only for manual recovery.
+```
+
+## Install source
 
 - Preferred path: ask your agent to install the `magicpay` skill from ClawHub in the current workspace.
 - After install, ask the agent to request your MagicPay API key and run `magicpay init <your-api-key>`.
 - ClawHub slug: `magicpay`
-- Release page: https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.0
 
-1. Ask your OpenClaw agent to install the `magicpay` skill from ClawHub in this workspace.
-2. Ask the agent to request your MagicPay API key and run `magicpay init <your-api-key>`.
-3. Ask the agent to confirm the install by running `magicpay --version` and `magicpay status`.
-4. If the current OpenClaw session still does not see the skill after install or init, start a fresh OpenClaw session.
+## What your agent should do
 
-## Verify the install
+1. Install the `magicpay` skill from ClawHub in the current workspace.
+2. Request your MagicPay API key and run `magicpay init <your-api-key>`.
+3. Confirm the install by running `magicpay --version` and `magicpay status`.
+4. Start a fresh OpenClaw session if the current session does not see the installed skill.
 
-1. Ask OpenClaw to confirm the skill is installed and run `magicpay --version` and `magicpay status`.
-2. Ask OpenClaw to use MagicPay on a prepared login, identity, or payment form.
-3. Confirm the agent already completed `magicpay init <your-api-key>` before the first protected-form task.
+## Verify the result
 
-## Try it out
+1. Ask OpenClaw to run `magicpay --version` and `magicpay status`.
+2. If `magicpay status` still fails after init, run `magicpay doctor` to inspect the local config.
+3. Ask OpenClaw to attach to a prepared protected form, run `magicpay find-form`, request approval for a stored secret, and finish with `magicpay fill-secret <fillRef> <requestId>`.
 
-Let the agent handle the ClawHub install first, request your API key, and run init before you ask OpenClaw to use MagicPay on a prepared protected-form task.
+## Try a first task
 
-- Use MagicPay to attach to the already open checkout page, run `magicpay find-form`, request approval for my stored card, fill it, and finish with `magicpay submit-form <fillRef>`.
-- Use MagicPay to continue the prepared login page with stored credentials.
+Use MagicPay when the page and protected form are already open. The normal path ends with `magicpay fill-secret <fillRef> <requestId>`; `magicpay submit-form <fillRef>` is only for manual recovery.
+
+- Use MagicPay to attach to the already open checkout page, run `magicpay find-form`, request approval for my stored card, and finish with `magicpay fill-secret <fillRef> <requestId>`.
+- Use MagicPay to continue the prepared login page with stored credentials and finish with `magicpay fill-secret <fillRef> <requestId>`.
 - Use MagicPay on the already prepared identity-verification form and stop if the form is ambiguous.
 
 ## Manual zip fallback
@@ -47,16 +60,18 @@ Use the manual path only if you want to manage the skill files yourself instead 
 ## Update or reinstall
 
 1. Ask your agent to update the `magicpay` skill from ClawHub.
-2. If required, provide your API key again and ask the agent to rerun `magicpay init <your-api-key>`.
-3. If the current session still does not see the updated skill, start a fresh OpenClaw session.
+2. If prompted, provide your API key again and rerun `magicpay init <your-api-key>`.
+3. Start a fresh OpenClaw session if the current session still does not see the updated skill.
 
 ## Troubleshooting
 
-- **Skill not available after install**: Ask the agent to verify that `magicpay` is installed, then start a fresh OpenClaw session if the current one still does not see it.
-- **`magicpay` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicpay-cli`. If you want to do it yourself, run `npm i -g @mercuryo-ai/magicpay-cli`.
-- **Missing API key**: Ask the agent to request your API key and run `magicpay init <your-api-key>` before retrying.
-- **Need a manual fallback instead of ClawHub**: Use the direct-install guide from the public skills repo release and place `magicpay/` under an OpenClaw skills directory yourself.
+- **Skill not recognized by OpenClaw**: Start a fresh OpenClaw session so the runtime can rescan installed skills.
+- **`magicpay` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicpay-cli`.
+- **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicpay init <your-api-key>`.
+- **`magicpay status` still fails after init**: Run `magicpay doctor` to inspect the local config. Use `doctor` for diagnostics only, not as a required first step.
+- **Need to force a submit after fill**: Use `magicpay submit-form <fillRef>` only if `magicpay fill-secret <fillRef> <requestId>` reported that automatic submit was skipped or if you intentionally paused before submit on a fresh form snapshot.
+- **No prepared browser context**: Open the target page in a browser first and provide a live CDP endpoint before invoking magicpay.
 
 ---
 
-This guide is for MagicPay v0.1.0.
+This guide is for MagicPay v0.1.1.
