@@ -14,7 +14,7 @@ MagicPay gives OpenClaw a protected-form workflow for prepared browser pages: at
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill in OpenClaw from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.6 using `magicpay-openclaw-v0.1.6.zip`. Place the extracted `magicpay/` folder directly inside `skills/` or `~/.openclaw/skills/`.
+Install the `magicpay` skill in OpenClaw from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.7 using `magicpay-openclaw-v0.1.7.zip`. Place the extracted `magicpay/` folder directly inside `skills/` or `~/.openclaw/skills/`.
 Treat MagicPay as the protected-form layer for a prepared login, identity, or payment page.
 Ask me for my API key and run `magicpay init <your-api-key>`.
 If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
@@ -24,7 +24,7 @@ For the normal protected-form flow, finish with `magicpay fill-secret <fillRef> 
 
 ## What your agent should do
 
-1. Download `magicpay-openclaw-v0.1.6.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.6.
+1. Download `magicpay-openclaw-v0.1.7.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.7.
 2. Extract the archive so the top-level folder is `magicpay/`.
 3. Place `magicpay/` directly inside `skills/` or `~/.openclaw/skills/`.
 4. If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
@@ -52,9 +52,9 @@ Use MagicPay when the browser is already on the relevant login, identity, or pay
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking OpenClaw to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.6 using `magicpay-openclaw-v0.1.6.zip`.
+Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking OpenClaw to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.7 using `magicpay-openclaw-v0.1.7.zip`.
 
-1. Download `magicpay-openclaw-v0.1.6.zip`.
+1. Download `magicpay-openclaw-v0.1.7.zip`.
 2. Extract the archive. You should get a folder named `magicpay/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart OpenClaw if you already had a session open.
@@ -78,4 +78,4 @@ Use this fallback only if you want to manage the `magicpay/` folder yourself ins
 
 ---
 
-This guide is for MagicPay v0.1.6.
+This guide is for MagicPay v0.1.7.
