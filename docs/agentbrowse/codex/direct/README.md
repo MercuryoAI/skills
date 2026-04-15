@@ -7,27 +7,27 @@ AgentBrowse gives Codex a browser automation layer for launching or attaching to
 - Node.js 18 or later is installed.
 - Codex is installed and working.
 - The environment can launch a browser or provides a reachable CDP endpoint for attach.
-- If you plan to use goal-based `observe` or `extract`, have your API key ready. Sign up at https://agents.mercuryo.io/signup if needed.
+- If you plan to use AI-assisted `observe` (with a natural-language goal) or any `extract`, have your API key ready. Sign up at https://agents.mercuryo.io/signup if needed.
 
 ## Ask your agent
 
 Copy this request into your agent session:
 
 ```text
-Install the `agentbrowse` skill in Codex from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.17 using `agentbrowse-codex-v0.1.17.zip`. Place the extracted `agentbrowse/` folder directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
+Install the `agentbrowse` skill in Codex from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.18 using `agentbrowse-codex-v0.1.18.zip`. Place the extracted `agentbrowse/` folder directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
 Treat AgentBrowse as the browser layer for launch, attach, page observation, actions, navigation, extract, and screenshots.
-If I ask for goal-based `observe` or any `extract`, ask me for my API key and run `agentbrowse init <your-api-key>`.
+If I ask for AI-assisted `observe` (with a natural-language goal) or any `extract`, ask me for my API key and run `agentbrowse init <your-api-key>`.
 If `agentbrowse` is missing, install or repair `@mercuryo-ai/agentbrowse-cli`.
-Verify the setup by using AgentBrowse on a small browser task. Use `agentbrowse doctor` only if semantic commands still fail after init.
+Verify the setup by using AgentBrowse on a small browser task. If AI-assisted `observe` or `extract` still fails after init, run `agentbrowse doctor`.
 ```
 
 ## What your agent should do
 
-1. Download `agentbrowse-codex-v0.1.17.zip` from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.17.
+1. Download `agentbrowse-codex-v0.1.18.zip` from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.18.
 2. Extract the archive so the top-level folder is `agentbrowse/`.
 3. Place `agentbrowse/` directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
 4. If `agentbrowse` is missing, install or repair `@mercuryo-ai/agentbrowse-cli`.
-5. Only if the task needs goal-based `observe` or any `extract`, request your API key and run `agentbrowse init <your-api-key>`.
+5. Only if the task needs AI-assisted `observe` or any `extract`, request your API key and run `agentbrowse init <your-api-key>`.
 6. Start a fresh Codex session if the current session does not pick up the installed skill.
 
 Supported skill locations:
@@ -38,22 +38,22 @@ Supported skill locations:
 ## Verify the result
 
 1. Ask Codex to use AgentBrowse for a small browser task such as launch, attach, or observe.
-2. If you need goal-based `observe` or any `extract`, ask Codex to run `agentbrowse init <your-api-key>` and then retry a small semantic task.
-3. If semantic commands still fail after init, use `agentbrowse doctor` to inspect the local config.
+2. If you need AI-assisted `observe` (natural-language goal) or any `extract`, ask Codex to run `agentbrowse init <your-api-key>` and then retry.
+3. If AI-assisted `observe` or `extract` still fails after init, use `agentbrowse doctor` to inspect the local config.
 
 ## Try a first task
 
-Start with a real browser task: open or attach to a page, inspect the visible state, and act from there. Add `agentbrowse init <your-api-key>` only when you want goal-based `observe` or structured `extract`.
+Start with a real browser task: open or attach to a page, inspect the visible state, and act from there. Add `agentbrowse init <your-api-key>` only when you want AI-assisted `observe` (natural-language goal) or structured `extract`.
 
 - Use AgentBrowse to launch the browser, open this page, and summarize the visible pricing table.
 - Use AgentBrowse to attach to the already running browser and continue the search flow from the current page.
-- Use AgentBrowse to extract the visible shipment options after running `agentbrowse init <your-api-key>` for semantic extract.
+- Use AgentBrowse to extract the visible shipment options after running `agentbrowse init <your-api-key>`.
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `agentbrowse/` folder yourself instead of asking Codex to install it from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.17 using `agentbrowse-codex-v0.1.17.zip`.
+Use this fallback only if you want to manage the `agentbrowse/` folder yourself instead of asking Codex to install it from https://github.com/MercuryoAI/skills/releases/tag/agentbrowse-v0.1.18 using `agentbrowse-codex-v0.1.18.zip`.
 
-1. Download `agentbrowse-codex-v0.1.17.zip`.
+1. Download `agentbrowse-codex-v0.1.18.zip`.
 2. Extract the archive. You should get a folder named `agentbrowse/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart Codex if you already had a session open.
@@ -62,18 +62,18 @@ Use this fallback only if you want to manage the `agentbrowse/` folder yourself 
 
 1. Ask your agent to download the newer archive for this Codex runtime and replace the existing skill folder with the new `agentbrowse/` folder.
 2. Keep the folder name exactly `agentbrowse` inside the same skills directory.
-3. If you rely on goal-based `observe` or `extract` and the local config was reset, rerun `agentbrowse init <your-api-key>`.
+3. If you use AI-assisted `observe` or `extract` and the local config was reset, rerun `agentbrowse init <your-api-key>`.
 4. Start a fresh Codex session after the replacement.
 
 ## Troubleshooting
 
 - **Skill not recognized by Codex**: Make sure the folder sits directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
-- **`agentbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/agentbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/agentbrowse-cli`.
-- **Semantic observe or extract needs API access**: Ask the agent to run `agentbrowse init <your-api-key>` or provide `MAGICPAY_API_KEY` before retrying.
-- **Semantic commands still fail after init**: Ask the agent to run `agentbrowse doctor` and inspect the local config.
+- **`agentbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/agentbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/agentbrowse-cli@latest`, then verify with `agentbrowse --version`.
+- **AI-assisted `observe` or `extract` needs API access**: Ask the agent to run `agentbrowse init <your-api-key>`, or set `MAGICPAY_API_KEY` in the environment before retrying.
+- **AI-assisted `observe` or `extract` still fails after init**: Ask the agent to run `agentbrowse doctor` and inspect the local config.
 - **Browser launch or attach is unavailable**: Provide a live CDP endpoint or use an environment that allows browser startup.
 - **The task reaches a protected login or payment step**: Keep AgentBrowse for browser control and switch the protected step to MagicPay or MagicPay Agent.
 
 ---
 
-This guide is for AgentBrowse v0.1.17.
+This guide is for AgentBrowse v0.1.18.

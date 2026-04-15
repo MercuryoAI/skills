@@ -9,7 +9,7 @@
 
 ## What Changes The Flow
 
-- If the next step needs approved stored credentials, protected personal data,
+- If the next step needs approved protected values, protected personal data,
   or payment-card entry, switch to the protected-flow tool that owns that
   step.
 - Keep AgentBrowse focused on page control and observation around that
@@ -25,8 +25,8 @@
 ## Diagnostics
 
 - Use `browser-status` and `screenshot` to inspect the current state.
-- Use `doctor` only after `init` when the semantic runtime still looks
-  misconfigured.
+- Use `doctor` after `init` when AI-assisted `observe` or `extract` still
+  fails.
 - Use `close` for teardown or recovery, not as a success signal.
 
 ## Ask The User When

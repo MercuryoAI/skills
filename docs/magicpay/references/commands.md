@@ -41,25 +41,22 @@ Complete the active workflow session without closing the browser.
 Discover the supported protected form on the current page and return the
 current protected-form contract.
 
-### `magicpay get-secrets-catalog [url]`
+### `magicpay resolve-form <fillRef> [--item-ref <vaultItemId>] [--no-submit]`
 
-Refresh stored-secret metadata for the current host or an explicit URL.
+Resolve one protected form target through MagicPay. The CLI creates the
+request, waits for the result, fills the target, and auto-submits when a safe
+form-bound submit control is still live. Use `--item-ref` to pin one vault
+item instead of letting MagicPay choose from the available candidates. Use
+`--no-submit` when you want the filled result without the guarded auto-submit.
 
-### `magicpay request-secret <fillRef> <storedSecretRef> --merchant-name <name>`
+### `magicpay run-action <capability> [--item-ref <vaultItemId>] --params-json <json>`
 
-Create an approval request for one protected field on the current page.
-
-### `magicpay poll-secret <requestId>`
-
-Check whether a request is still pending, fulfilled, or terminal.
-
-### `magicpay fill-secret <fillRef> <requestId>`
-
-Claim the approved secret, fill the protected field, refresh the page state,
-and auto-submit when a live form-bound submit control is available.
+Run a protected capability through the same MagicPay request model. This is
+the canonical path for capabilities such as confirmation, provider-backed
+authorization, or other protected actions that are not direct form fills.
 
 ### `magicpay submit-form <fillRef>`
 
-Manually submit the current protected form when `fill-secret` explicitly
+Manually submit the current protected form when `resolve-form` explicitly
 leaves submission unfinished or when you intentionally retry on a fresh
 protected-form snapshot.

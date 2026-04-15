@@ -10,7 +10,7 @@ A skill is an instruction bundle your AI runtime can load. The skill tells the a
 
 | If you need this | Choose this surface | Why |
 | --- | --- | --- |
-| Browser automation on a real web page | `agentbrowse` | Use this when the agent needs browser control. Add API setup later only if you want goal-based `observe` or `extract`. |
+| Browser automation on a real web page | `agentbrowse` | Use this when the agent needs browser control. Add API setup later only if you want AI-assisted `observe` (natural-language goal) or any `extract`. |
 | A prepared login, identity, or payment form needs approved stored values | `magicpay` | Use this when the browser is already at the protected step and the remaining work is discovery, approval, fill, and guarded submit. |
 
 ## How to use this catalog

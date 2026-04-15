@@ -43,18 +43,23 @@ Inspect whether the current browser session is still reachable.
 
 Close the browser and clear the stored browser session.
 
-## Semantic Runtime Setup
+## AI-Assisted Setup
 
 ### `agentbrowse init <apiKey> [--api-url <url>]`
 
-Store the API key used by goal-based `observe` and `extract` in local
-semantic-runtime config. Core browser commands do not need this setup.
+Store the API key used by AI-assisted `observe` (with a natural-language
+goal) and any `extract` in the local config file. Core browser commands do
+not need this setup.
 
 ### `agentbrowse doctor`
 
-Inspect that local semantic-runtime config when semantic commands still fail
-after `init`.
+Inspect the local config when AI-assisted `observe` or `extract` still
+fails after `init`.
 
 ### `agentbrowse --version`
 
 Print the installed CLI version.
+
+If the command is missing or outdated, run
+`npm i -g @mercuryo-ai/agentbrowse-cli@latest`, then rerun
+`agentbrowse --version`.

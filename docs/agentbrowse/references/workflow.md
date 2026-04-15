@@ -12,13 +12,15 @@ most during a live browser task.
 - Use plain `observe` for general page inventory. Add a goal only when you
   want the result focused around a specific question.
 
-## Semantic Features
+## AI-Assisted Features
 
-- Core browser commands do not need credentials.
-- Goal-based `observe` and `extract` use the semantic runtime.
-- Configure that runtime only when needed with `agentbrowse init <apiKey>`.
-- If semantic commands still fail after `init`, `agentbrowse doctor` can
-  inspect the local semantic-runtime config.
+- Core browser commands (`launch`, `attach`, `navigate`, `act`,
+  `browser-status`, `screenshot`, `close`) need no API key.
+- `observe` with a natural-language goal, and any `extract`, call an LLM
+  through the gateway. Configure API access with `agentbrowse init <apiKey>`
+  before using them.
+- If AI-assisted `observe` or `extract` still fails after `init`, run
+  `agentbrowse doctor` to inspect the local config.
 
 ## Recovery
 
@@ -34,6 +36,7 @@ most during a live browser task.
 ## Protected Steps
 
 - AgentBrowse can take you up to a protected login, identity, or payment step.
-- When the next step needs approved stored values or a dedicated secret flow,
+- When the next step needs approved protected values or a dedicated protected
+  step flow,
   switch to the companion protected-flow tool instead of improvising it in
   browser commands.
