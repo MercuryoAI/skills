@@ -3,15 +3,15 @@
   "displayName": "AgentBrowse",
   "description": "Browser automation skill for launch, attach, observe, act, extract, navigation, and screenshots.",
   "boundary": "browser-only",
-  "releaseVersion": "0.1.19",
-  "releaseTag": "agentbrowse-v0.1.19",
+  "releaseVersion": "0.1.20",
+  "releaseTag": "agentbrowse-v0.1.20",
   "ownerPackage": "@mercuryo-ai/agentbrowse-cli",
   "ownerBin": "agentbrowse",
   "installPackage": "@mercuryo-ai/agentbrowse-cli",
   "npmPackages": [
     {
       "name": "@mercuryo-ai/agentbrowse",
-      "version": "0.2.60",
+      "version": "0.2.61",
       "manifestPath": "packages/agentbrowse/package.json"
     },
     {
@@ -26,7 +26,7 @@
     },
     {
       "name": "@mercuryo-ai/agentbrowse-cli",
-      "version": "0.1.14",
+      "version": "0.1.17",
       "manifestPath": "packages/agentbrowse-cli/package.json"
     }
   ],
@@ -36,7 +36,7 @@
       "runtime": "claude",
       "runtimeDisplayName": "Claude Code",
       "directBundleDir": "direct/claude-skill/agentbrowse",
-      "directReleaseArchive": "agentbrowse-claude-code-v0.1.19.zip",
+      "directReleaseArchive": "agentbrowse-claude-code-v0.1.20.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "github-marketplace",
       "marketplaceEnabled": false,
@@ -48,7 +48,7 @@
       "runtime": "codex",
       "runtimeDisplayName": "Codex",
       "directBundleDir": "direct/codex-skill/agentbrowse",
-      "directReleaseArchive": "agentbrowse-codex-v0.1.19.zip",
+      "directReleaseArchive": "agentbrowse-codex-v0.1.20.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "repo-marketplace",
       "marketplaceEnabled": false,
@@ -60,7 +60,7 @@
       "runtime": "openclaw",
       "runtimeDisplayName": "OpenClaw",
       "directBundleDir": "direct/openclaw-skill/agentbrowse",
-      "directReleaseArchive": "agentbrowse-openclaw-v0.1.19.zip",
+      "directReleaseArchive": "agentbrowse-openclaw-v0.1.20.zip",
       "marketplacePayloadDir": "marketplace/openclaw-clawhub/agentbrowse",
       "marketplaceKind": "clawhub",
       "marketplaceEnabled": true,

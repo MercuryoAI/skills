@@ -3,15 +3,15 @@
   "displayName": "MagicPay",
   "description": "Protected-form workflow skill for prepared login, identity, and payment pages.",
   "boundary": "payment-only",
-  "releaseVersion": "0.1.9",
-  "releaseTag": "magicpay-v0.1.9",
+  "releaseVersion": "0.1.10",
+  "releaseTag": "magicpay-v0.1.10",
   "ownerPackage": "@mercuryo-ai/magicpay-cli",
   "ownerBin": "magicpay",
   "installPackage": "@mercuryo-ai/magicpay-cli",
   "npmPackages": [
     {
       "name": "@mercuryo-ai/agentbrowse",
-      "version": "0.2.60",
+      "version": "0.2.61",
       "manifestPath": "packages/agentbrowse/package.json"
     },
     {
@@ -31,7 +31,7 @@
     },
     {
       "name": "@mercuryo-ai/magicpay-cli",
-      "version": "0.1.8",
+      "version": "0.1.9",
       "manifestPath": "packages/magicpay-cli/package.json"
     }
   ],
@@ -41,7 +41,7 @@
       "runtime": "claude",
       "runtimeDisplayName": "Claude Code",
       "directBundleDir": "direct/claude-skill/magicpay",
-      "directReleaseArchive": "magicpay-claude-code-v0.1.9.zip",
+      "directReleaseArchive": "magicpay-claude-code-v0.1.10.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "github-marketplace",
       "marketplaceEnabled": false,
@@ -53,7 +53,7 @@
       "runtime": "codex",
       "runtimeDisplayName": "Codex",
       "directBundleDir": "direct/codex-skill/magicpay",
-      "directReleaseArchive": "magicpay-codex-v0.1.9.zip",
+      "directReleaseArchive": "magicpay-codex-v0.1.10.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "repo-marketplace",
       "marketplaceEnabled": false,
@@ -65,7 +65,7 @@
       "runtime": "openclaw",
       "runtimeDisplayName": "OpenClaw",
       "directBundleDir": "direct/openclaw-skill/magicpay",
-      "directReleaseArchive": "magicpay-openclaw-v0.1.9.zip",
+      "directReleaseArchive": "magicpay-openclaw-v0.1.10.zip",
       "marketplacePayloadDir": "marketplace/openclaw-clawhub/magicpay",
       "marketplaceKind": "clawhub",
       "marketplaceEnabled": true,
