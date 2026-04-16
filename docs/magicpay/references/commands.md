@@ -49,6 +49,17 @@ form-bound submit control is still live. Use `--item-ref` to pin one vault
 item instead of letting MagicPay choose from the available candidates. Use
 `--no-submit` when you want the filled result without the guarded auto-submit.
 
+### `magicpay resolve-fields <targetRef...> [--refresh-snapshot]`
+
+Match one or more observed non-secret target refs against the session-local
+open-data snapshot (name, email, phone, locale, date of birth, address, and
+similar reusable public facts). Returns `matched`, `ambiguous`, or `no_match`
+per target. Targets already owned by the protected lane stay excluded. The
+target refs come from the companion browser tool's latest observation. In
+orchestration, auto-fill only `matched` results — never invent values for
+`ambiguous` or `no_match`. Pass `--refresh-snapshot` to force a re-fetch of
+the snapshot from the MagicPay service.
+
 ### `magicpay run-action <capability> [--item-ref <vaultItemId>] --params-json <json>`
 
 Run a protected capability through the same MagicPay request model. This is
