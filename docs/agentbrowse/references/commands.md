@@ -19,7 +19,24 @@ Go directly to a known URL inside the current session.
 ### `agentbrowse observe ["<goal>"]`
 
 Read the current page and return targets, scopes, signals, and supported
-forms. Add a goal when you want the result focused around a question.
+forms. Use plain `observe` for general inventory. Add a goal when you
+want the result focused on one control.
+
+Writing a goal:
+
+- Name one control to find: `"find the email field"`,
+  `"find the date picker trigger"`, `"find the primary continue button"`.
+- Add a surface anchor when the page has several similar elements:
+  `"find the departure date button in the top search form"`,
+  `"find May 5, 2026 in the open calendar"`.
+- Keep the goal at the level of the next single step. When the plan has
+  several steps, run one `observe` per step and let `act` advance the
+  state between them.
+
+The goal acts as a query: `observe` ranks page candidates against the
+words in the goal and returns the best fit. A goal that names one
+target on one surface produces one clear answer, which is what makes
+the returned ref reliable for the next `act`.
 
 ### `agentbrowse act <targetRef> <action> [value]`
 
