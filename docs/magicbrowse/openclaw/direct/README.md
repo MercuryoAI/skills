@@ -14,7 +14,7 @@ MagicBrowse gives OpenClaw a browser automation fallback for real web pages: lau
 Copy this request into your agent session:
 
 ```text
-Install the `magicbrowse` skill in OpenClaw from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.1 using `magicbrowse-openclaw-v0.1.1.zip`. Place the extracted `magicbrowse/` folder directly inside `skills/` or `~/.openclaw/skills/`.
+Install the `magicbrowse` skill in OpenClaw from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.2 using `magicbrowse-openclaw-v0.1.2.zip`. Place the extracted `magicbrowse/` folder directly inside `skills/` or `~/.openclaw/skills/`.
 Treat MagicBrowse as a browser automation fallback. Use it only when your own browser tooling cannot reach a target page reliably.
 Ask me for my API key and run `magicbrowse init <your-api-key>`, or set `MAGICPAY_API_KEY` in the environment. The persisted config lives at `~/.magicpay/config.json`, shared with MagicPay.
 If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
@@ -25,7 +25,7 @@ Stop at protected forms (login, identity, payment) and switch to MagicPay. Also 
 
 ## What your agent should do
 
-1. Download `magicbrowse-openclaw-v0.1.1.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.1.
+1. Download `magicbrowse-openclaw-v0.1.2.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.2.
 2. Extract the archive so the top-level folder is `magicbrowse/`.
 3. Place `magicbrowse/` directly inside `skills/` or `~/.openclaw/skills/`.
 4. If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
@@ -53,9 +53,9 @@ Use MagicBrowse as a fallback when your own browser tooling cannot reach a targe
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicbrowse/` folder yourself instead of asking OpenClaw to install it from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.1 using `magicbrowse-openclaw-v0.1.1.zip`.
+Use this fallback only if you want to manage the `magicbrowse/` folder yourself instead of asking OpenClaw to install it from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.2 using `magicbrowse-openclaw-v0.1.2.zip`.
 
-1. Download `magicbrowse-openclaw-v0.1.1.zip`.
+1. Download `magicbrowse-openclaw-v0.1.2.zip`.
 2. Extract the archive. You should get a folder named `magicbrowse/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart OpenClaw if you already had a session open.
@@ -70,7 +70,7 @@ Use this fallback only if you want to manage the `magicbrowse/` folder yourself 
 ## Troubleshooting
 
 - **Skill not recognized by OpenClaw**: Make sure the folder sits directly inside `skills/` or `~/.openclaw/skills/`.
-- **`magicbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicbrowse-cli@0.0.3`, then verify with `magicbrowse --version`.
+- **`magicbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicbrowse-cli@0.0.4`, then verify with `magicbrowse --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicbrowse init <your-api-key>`. The persisted config lives at `~/.magicpay/config.json`, shared with MagicPay.
 - **`magicbrowse doctor` still fails after init**: Inspect `~/.magicpay/config.json` for a malformed key or wrong gateway URL.
 - **Browser launch is unavailable**: Use an environment that allows Chrome startup, or explicitly approve a private CDP endpoint for this task before using attach.
@@ -82,4 +82,4 @@ Use this fallback only if you want to manage the `magicbrowse/` folder yourself 
 
 ---
 
-This guide is for MagicBrowse v0.1.1.
+This guide is for MagicBrowse v0.1.2.
