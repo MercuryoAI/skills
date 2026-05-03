@@ -1,6 +1,6 @@
 # Mercuryo Agent Skills
 
-Installable skill bundles for AgentBrowse browser automation and MagicPay protected-form workflows in Claude Code, Codex, and OpenClaw.
+Installable skill bundles for MagicBrowse LLM-first browser autonomy fallback and MagicPay protected-form workflows in Claude Code, Codex, and OpenClaw.
 
 ## What is a skill?
 
@@ -10,7 +10,7 @@ A skill is an instruction bundle your AI runtime can load. The skill tells the a
 
 | If you need this | Choose this surface | Why |
 | --- | --- | --- |
-| Browser automation on a real web page | `agentbrowse` | Use this when the agent needs browser control. Add API setup later only if you want AI-assisted `observe` (natural-language goal) or any `extract`. |
+| Reach a target web page when your own browser tooling cannot do it reliably | `magicbrowse` | LLM-first browser autonomy fallback. Drive a Chrome session by natural-language goals through `magicbrowse act`; use deterministic `observe` plus primitives only when autonomy needs single-element precision. Stops at the boundary of any protected form. |
 | A prepared login, identity, or payment form needs approved stored values | `magicpay` | Use this when the browser is already at the protected step and the remaining work is discovery, approval, fill, and guarded submit. |
 
 ## How to use this catalog
@@ -22,13 +22,13 @@ A skill is an instruction bundle your AI runtime can load. The skill tells the a
 
 ## Start with the right guide
 
-### `agentbrowse`
+### `magicbrowse`
 
-Browser automation skill for launch, attach, observe, act, extract, navigation, and screenshots.
+LLM-first browser autonomy fallback — drive a Chrome session by natural-language goals via launch, attach, observe, and act, with deterministic click/type/select/press/fill primitives.
 
-- Claude Code: [direct guide](docs/agentbrowse/claude/direct/README.md)
-- Codex: [direct guide](docs/agentbrowse/codex/direct/README.md)
-- OpenClaw: [ClawHub guide](docs/agentbrowse/openclaw/marketplace/README.md) or [direct fallback](docs/agentbrowse/openclaw/direct/README.md)
+- Claude Code: [direct guide](docs/magicbrowse/claude/direct/README.md)
+- Codex: [direct guide](docs/magicbrowse/codex/direct/README.md)
+- OpenClaw: [ClawHub guide](docs/magicbrowse/openclaw/marketplace/README.md) or [direct fallback](docs/magicbrowse/openclaw/direct/README.md)
 
 ### `magicpay`
 

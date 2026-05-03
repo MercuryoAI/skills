@@ -1,0 +1,72 @@
+{
+  "skill": "magicbrowse",
+  "displayName": "MagicBrowse",
+  "description": "LLM-first browser autonomy fallback — drive a Chrome session by natural-language goals via launch, attach, observe, and act, with deterministic click/type/select/press/fill primitives.",
+  "boundary": "browser-only",
+  "releaseVersion": "0.1.0",
+  "releaseTag": "magicbrowse-v0.1.0",
+  "ownerPackage": "@mercuryo-ai/magicbrowse-cli",
+  "ownerBin": "magicbrowse",
+  "installPackage": "@mercuryo-ai/magicbrowse-cli",
+  "npmPackages": [
+    {
+      "name": "@mercuryo-ai/magicbrowse",
+      "version": "0.0.2",
+      "manifestPath": "packages/magicbrowse/package.json"
+    },
+    {
+      "name": "@mercuryo-ai/magicpay-sdk",
+      "version": "0.1.4",
+      "manifestPath": "packages/magicpay-sdk/package.json"
+    },
+    {
+      "name": "@mercuryo-ai/magicpay-home",
+      "version": "0.1.12",
+      "manifestPath": "packages/magicpay-home/package.json"
+    },
+    {
+      "name": "@mercuryo-ai/magicbrowse-cli",
+      "version": "0.0.3",
+      "manifestPath": "packages/magicbrowse-cli/package.json"
+    }
+  ],
+  "portableDir": "portable/magicbrowse",
+  "runtimes": [
+    {
+      "runtime": "claude",
+      "runtimeDisplayName": "Claude Code",
+      "directBundleDir": "direct/claude-skill/magicbrowse",
+      "directReleaseArchive": "magicbrowse-claude-code-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "github-marketplace",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/magicbrowse/claude/direct/README.md",
+      "marketplaceDocPath": null
+    },
+    {
+      "runtime": "codex",
+      "runtimeDisplayName": "Codex",
+      "directBundleDir": "direct/codex-skill/magicbrowse",
+      "directReleaseArchive": "magicbrowse-codex-v0.1.0.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "repo-marketplace",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/magicbrowse/codex/direct/README.md",
+      "marketplaceDocPath": null
+    },
+    {
+      "runtime": "openclaw",
+      "runtimeDisplayName": "OpenClaw",
+      "directBundleDir": "direct/openclaw-skill/magicbrowse",
+      "directReleaseArchive": "magicbrowse-openclaw-v0.1.0.zip",
+      "marketplacePayloadDir": "marketplace/openclaw-clawhub/magicbrowse",
+      "marketplaceKind": "clawhub",
+      "marketplaceEnabled": true,
+      "marketplaceInstallDocGenerated": true,
+      "directDocPath": "docs/magicbrowse/openclaw/direct/README.md",
+      "marketplaceDocPath": "docs/magicbrowse/openclaw/marketplace/README.md"
+    }
+  ]
+}
