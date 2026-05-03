@@ -24,7 +24,7 @@ A skill is an instruction bundle your AI runtime can load. The skill tells the a
 
 ### `magicbrowse`
 
-LLM-first browser autonomy fallback — drive a Chrome session by natural-language goals via launch, attach, observe, and act, with deterministic click/type/select/press/fill primitives.
+Browser automation fallback — drive an approved Chrome session by natural-language steps via launch, attach, observe, and act, with deterministic click/type/select/press/fill primitives.
 
 - Claude Code: [direct guide](docs/magicbrowse/claude/direct/README.md)
 - Codex: [direct guide](docs/magicbrowse/codex/direct/README.md)
@@ -32,7 +32,7 @@ LLM-first browser autonomy fallback — drive a Chrome session by natural-langua
 
 ### `magicpay`
 
-Protected-form workflow skill for prepared login, identity, and payment pages.
+Protected-form workflow skill for approved prepared login, identity, and payment pages with fill-for-review before submit.
 
 - Claude Code: [direct guide](docs/magicpay/claude/direct/README.md)
 - Codex: [direct guide](docs/magicpay/codex/direct/README.md)

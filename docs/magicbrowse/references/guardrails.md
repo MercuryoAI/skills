@@ -1,6 +1,27 @@
 # MagicBrowse Guardrails
 
-The three Hard Rules from SKILL.md, expanded to long form.
+The Hard Rules from SKILL.md, expanded to long form.
+
+## Consequential Actions
+
+`magicbrowse` can navigate, inspect, draft, and prepare. It must not
+silently commit an account-affecting or irreversible action.
+
+Stop and ask the user before:
+
+- submitting a form;
+- posting or sending content;
+- accepting terms or confirming consent;
+- changing account data, account settings, permissions, or privacy
+  controls;
+- booking, buying, ordering, subscribing, or paying;
+- deleting, overwriting, publishing, or otherwise modifying remote
+  data.
+
+After approval, re-run `observe` so the target-id and visible state are
+fresh, then execute only the exact final action the user approved. If
+the page changed meaningfully, ask again rather than widening the
+approval.
 
 ## MagicPay Boundary
 
@@ -56,6 +77,30 @@ This is not a security boundary — it is a correctness boundary.
 Sharing `MAGICBROWSE_HOME` between concurrent workflows produces
 silent cross-talk, not visible errors.
 
+## Browser Authority
+
+Use a fresh owned browser session by default. Existing CDP endpoints,
+named profiles, and explicit `--user-data-dir` paths may already be
+logged in to real accounts. Acting through them inherits that browser's
+authority even though `magicbrowse` never receives the password.
+
+Only use `magicbrowse attach`, `--profile`, or `--user-data-dir` when
+the user explicitly approves that browser/session for the current
+task. Keep CDP endpoints private and do not paste them into shared
+logs. Close or detach when the workflow is done, and start a fresh
+session for unrelated work.
+
+## Page Context And Screenshots
+
+LLM-backed `act` sends page state to the shared MagicPay gateway.
+`act --use-vision` can include screenshots. Treat both as external
+processing of the current page context.
+
+Avoid private, sensitive, or unrelated pages unless the user approves
+that workflow. Do not use vision mode on sensitive pages unless it is
+explicitly required and approved. At protected forms, stop and switch
+to `magicpay`.
+
 ## Captcha And Auth Walls
 
 Both the planner and navigator are instructed to refuse to attempt
@@ -88,7 +133,13 @@ persist.
 
 - `doctor` fails and there is no `MAGICPAY_API_KEY` available;
 - the environment cannot launch or attach to a Chrome session;
+- the task requires `attach`, `--profile`, or `--user-data-dir`;
+- `--use-vision` would expose screenshots of a private or sensitive
+  page;
 - `act` returns a `finalMessage` describing an auth wall, captcha, or
   any other state that requires the user's input;
+- the next action would submit, post, send, save, delete, accept,
+  book, buy, order, pay, publish, or otherwise commit a consequential
+  change;
 - the task crosses into a protected form — switch skill rather than
   improvising in `magicbrowse`.

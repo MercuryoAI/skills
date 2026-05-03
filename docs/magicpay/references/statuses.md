@@ -38,11 +38,13 @@ continue.
 
 - `filled`
   Protected values were filled, but no safe automatic submit was completed.
-  Inspect the refreshed page state before deciding the next manual step.
+  Inspect the refreshed page state, then ask for explicit approval before any
+  submit or protected action.
 - `submitted`
   Form submission produced an observable progress signal. This can come from
-  the guarded auto-submit inside `resolve-form` or from an explicit
-  `submit-form` retry.
+  a pre-approved guarded submit inside `resolve-form` or from an explicit
+  `submit-form` retry after the user approved the current site/merchant,
+  action, and visible amount or data.
 - `validation_blocked`
   The form stayed blocked by client-side validation.
 - `submit_binding_stale`
@@ -54,4 +56,5 @@ continue.
 
 - `artifact`
   `run-action` completed and returned the request artifact for the protected
-  capability.
+  capability. Start `run-action` only after the user approves the capability,
+  params, site/merchant, and visible amount or data for the current task.

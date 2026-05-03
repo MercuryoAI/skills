@@ -1,13 +1,13 @@
 # Install MagicPay from ClawHub
 
-MagicPay gives OpenClaw a protected-step workflow for prepared browser pages: attach to the current browser, bind a workflow session, discover the supported login, identity, or payment form, and fill it with values the user has approved through MagicPay — using `magicpay find-form` and `magicpay resolve-form <fillRef>` as the main form flow.
+MagicPay gives OpenClaw a protected-step workflow for approved prepared browser pages: attach to the approved browser session, bind a workflow session, discover the supported login, identity, or payment form, and fill it for review with values the user has approved through MagicPay. The main flow is `magicpay find-form` -> `magicpay resolve-form <fillRef> --no-submit` -> explicit user approval -> `magicpay submit-form <fillRef>`; protected actions use `magicpay run-action` only after the user approves the capability and params.
 
 ## Before you start
 
 - Node.js 18 or later is installed.
 - OpenClaw is installed and working.
 - You have a MagicPay account and API key. Sign up at https://agents.mercuryo.io/signup if needed.
-- The relevant login, identity, or payment page is already open, or another tool can provide a CDP endpoint for it.
+- The relevant login, identity, or payment page is already open in an approved browser session, or another tool can provide an approved private CDP endpoint for it.
 
 ## Ask your agent
 
@@ -19,7 +19,8 @@ Treat MagicPay as the protected-form layer for a prepared login, identity, or pa
 Ask me for my API key and run `magicpay init <your-api-key>`.
 If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
 Verify the setup with `magicpay status`. If it still fails after init, run `magicpay doctor`.
-The main form flow is `magicpay find-form` -> `magicpay resolve-form <fillRef>`. Use `magicpay run-action <capability> --params-json <json>` for protected actions that are not form-fills. `magicpay submit-form <fillRef>` is a manual recovery step — only use it when `resolve-form` explicitly left the form unsubmitted.
+Use only the prepared browser/session I approve for this task. Keep my API key, local config, CDP endpoint, and vault item ids private.
+The main form flow is `magicpay find-form` -> `magicpay resolve-form <fillRef> --no-submit` -> ask me to approve the exact site/merchant, action, and visible amount or data -> `magicpay submit-form <fillRef>` only if I approve. Use `magicpay run-action <capability> --params-json <json>` only after I approve the capability and params.
 ```
 
 ## Install source
@@ -39,15 +40,15 @@ The main form flow is `magicpay find-form` -> `magicpay resolve-form <fillRef>`.
 
 1. Ask OpenClaw to run `magicpay status`.
 2. If `magicpay status` still fails after init, run `magicpay doctor` to inspect the local config.
-3. Ask OpenClaw to attach to a prepared protected form, run `magicpay find-form`, and complete the main form flow with `magicpay resolve-form <fillRef>`.
+3. Ask OpenClaw to attach to an approved prepared protected form, run `magicpay find-form`, and fill for review with `magicpay resolve-form <fillRef> --no-submit`.
 
 ## Try a first task
 
-Use MagicPay when the browser is already on the relevant login, identity, or payment form. The main form flow is `magicpay find-form` -> `magicpay resolve-form <fillRef>`. Use `magicpay run-action <capability> --params-json <json>` for protected actions that are not form-fills.
+Use MagicPay when the browser is already on the relevant login, identity, or payment form and the user approved that browser/session for this task. The main form flow is `magicpay find-form` -> `magicpay resolve-form <fillRef> --no-submit` -> explicit user approval -> `magicpay submit-form <fillRef>`. Use `magicpay run-action <capability> --params-json <json>` only after the user approves the capability and params.
 
-- Use MagicPay to attach to the already open checkout page, run `magicpay find-form`, and finish with `magicpay resolve-form <fillRef>` for the checkout form.
-- Use MagicPay to continue the prepared login page; let MagicPay choose the request path and stop if `magicpay find-form` cannot confidently identify the form.
-- Use MagicPay on the already prepared identity-verification form and ask me before picking between multiple supported forms.
+- Use MagicPay to attach to the approved checkout page, run `magicpay find-form`, and fill for review with `magicpay resolve-form <fillRef> --no-submit`; ask before submit.
+- Use MagicPay to continue the prepared login page; use `magicpay resolve-form <fillRef> --no-submit` and ask before final login submit.
+- Use MagicPay on the already prepared identity-verification form and ask me before picking between multiple supported forms or submitting identity data.
 
 ## Manual zip fallback
 
@@ -67,13 +68,13 @@ Use the manual path only if you want to manage the skill files yourself instead 
 ## Troubleshooting
 
 - **Skill not recognized by OpenClaw**: Start a fresh OpenClaw session so the runtime can rescan installed skills.
-- **`magicpay` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicpay-cli@latest`, then verify with `magicpay --version`.
+- **`magicpay` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicpay-cli@0.1.10`, then verify with `magicpay --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicpay init <your-api-key>`.
 - **`magicpay status` still fails after init**: Run `magicpay doctor` to inspect the local config.
 - **`magicpay find-form` cannot confidently identify the form**: Confirm the browser is still on the intended page, then rerun `magicpay find-form`.
-- **Need to force a submit after resolution**: Use `magicpay submit-form <fillRef>` only if `magicpay resolve-form <fillRef>` reported that automatic submit was skipped, or if you intentionally paused before submit on a fresh form snapshot.
-- **No prepared browser context**: Open the target page in a browser first and provide a live CDP endpoint before invoking magicpay.
+- **Need to submit after resolution**: Use `magicpay submit-form <fillRef>` only after the user approves the current site/merchant, action, and visible amount or data on a fresh form snapshot.
+- **No prepared browser context**: Open the target page in an approved browser session first and provide a private CDP endpoint before invoking magicpay.
 
 ---
 
-This guide is for MagicPay v0.1.12.
+This guide is for MagicPay v0.1.13.

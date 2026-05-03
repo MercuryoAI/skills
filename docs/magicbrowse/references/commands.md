@@ -5,6 +5,11 @@ Full reference for the `magicbrowse` CLI. The skill workflow uses
 `close`. Setup uses `init` and `doctor`. Everything else is for
 diagnostics or one-shot developer use.
 
+The hard rules from `SKILL.md` apply to every command: use a fresh
+browser by default, get explicit approval before using an existing
+profile/CDP session, stop before consequential actions, and switch to
+`magicpay` at protected forms.
+
 ## Setup And Readiness
 
 ### `magicbrowse init <apiKey> [--api-url <url>]`
@@ -39,6 +44,10 @@ The URL is **positional and optional**. Headless is the default;
 `--chrome-path`, `--user-agent`) accept overrides for non-default
 Chrome layouts.
 
+Prefer a fresh owned profile. Use `--profile` or `--user-data-dir`
+only after the user explicitly approves that browser state for the
+current task.
+
 Exit code: `0`.
 
 ### `magicbrowse attach <cdp-url-or-ws-endpoint>`
@@ -46,25 +55,37 @@ Exit code: `0`.
 Attach to an existing CDP browser as the current session. The
 endpoint is **positional**, not a `--cdp-url` flag.
 
+Only attach to a private endpoint that the user provided or explicitly
+approved for the current task. Treat CDP endpoints as sensitive because
+they inherit the authority of that browser session.
+
 Exit codes: `0` on success, `1` if the endpoint is missing.
 
 ### `magicbrowse close`
 
 Close or detach the current session. Always returns `0`.
 
-## Autonomy
+## Natural-Language Browser Step
 
 ### `magicbrowse act "<prompt>" [--max-steps <n>] [--use-vision] [--format <fmt>]`
 
-Run prompt-driven autonomy on the current session. The prompt is
+Run one natural-language browser step on the current session. The prompt is
 **positional** (use double quotes for any prompt with spaces). `act`
 does **not** take `--url`.
+
+Use `act` for navigation, inspection, drafting, and preparation. If
+the next step would submit a form, post or send content, accept terms,
+change account data/settings, book, buy, order, delete, save, or
+otherwise commit an irreversible/account-affecting action, stop and
+ask for explicit approval. After approval, re-run `observe` and do
+only the approved final action.
 
 Options:
 
 - `--max-steps <n>` — override the navigator step ceiling (default 100).
 - `--use-vision` — include screenshots in the navigator's view. Use as
-  a retry mode for the same goal.
+  a retry mode for the same goal only when the user is comfortable
+  sending screenshots/page context for this workflow.
 - `--format <human|text|json>` — output format. `json` emits JSON
   Lines suitable for an orchestrator. Default is `human`.
 
@@ -119,6 +140,10 @@ All primitives:
 
 - Return `0` on success and `1` on missing arguments.
 - Emit a JSON action result on stdout (blocked or executed).
+- Inherit the same approval boundary as `act`; do not click/press the
+  final submit, save, delete, buy, book, accept, or send control unless
+  the user explicitly approved that exact action and you re-observed
+  the page first.
 
 ## Developer / One-Shot Compatibility
 
@@ -144,5 +169,5 @@ Exit codes follow `act`.
 ## Updating The CLI
 
 If `magicbrowse --version` is missing or outdated, run
-`npm i -g @mercuryo-ai/magicbrowse-cli@latest`, then verify with
+`npm i -g @mercuryo-ai/magicbrowse-cli@0.0.3`, then verify with
 `magicbrowse --version`.
