@@ -68,7 +68,7 @@ Use the manual path only if you want to manage the skill files yourself instead 
 ## Troubleshooting
 
 - **Skill not recognized by OpenClaw**: Start a fresh OpenClaw session so the runtime can rescan installed skills.
-- **`magicbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicbrowse-cli@0.0.4`, then verify with `magicbrowse --version`.
+- **`magicbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicbrowse-cli@0.0.5`, then verify with `magicbrowse --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicbrowse init <your-api-key>`. The persisted config lives at `~/.magicpay/config.json`, shared with MagicPay.
 - **`magicbrowse doctor` still fails after init**: Inspect `~/.magicpay/config.json` for a malformed key or wrong gateway URL.
 - **Browser launch is unavailable**: Use an environment that allows Chrome startup, or explicitly approve a private CDP endpoint for this task before using attach.
@@ -80,4 +80,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for MagicBrowse v0.1.2.
+This guide is for MagicBrowse v0.1.3.
