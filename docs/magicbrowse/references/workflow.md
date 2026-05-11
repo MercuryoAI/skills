@@ -64,7 +64,7 @@ to the goal; it would break almost every real booking flow.
 ```text
 $ magicbrowse act "Fill the passenger first/last name and contact email with placeholder values, then proceed until the page shows the payment form. Do not enter any payment details yourself."
 ... ...
-{ "status": "completed", "finalMessage": "Payment page displayed with card number / expiry / CVV fields.", ... }
+{ "status": "needs_handoff", "finalMessage": "Payment page displayed with card number / expiry / CVV fields. Hand off payment entry to MagicPay.", ... }
 ```
 
 The goal explicitly reminds the planner not to enter payment details.
@@ -103,12 +103,25 @@ closed current magicbrowse session ...
 
 - **Auth wall on the partner site.** If the partner OTA gates the
   passenger form behind a sign-in, `act` returns
-  `status: completed` with `finalMessage` asking the user to log in.
+  `status: needs_handoff` with `finalMessage` asking the user to log in.
   The orchestrator surfaces that to the user; it does not retry into
   the auth wall.
-- **Captcha.** Same shape: `status: completed`, `finalMessage`
-  describing the captcha. Surface to the user; do not script around
-  it.
+- **Captcha.** Same status: `needs_handoff`, with `finalMessage`
+  describing the challenge. Do not solve it through MagicBrowse. On
+  the current prepared browser session, run a captcha solver
+  (`magicpay solve-captcha [--timeout <s>]` or another solver the user
+  approved). On solver success, call
+  `magicbrowse mark-captcha-resolved`, then continue with
+  `magicbrowse act "continue..."`. If that `act` returns
+  `needs_handoff` again, the wall is not actually cleared — surface to
+  the user; do not re-mark. On solver failure, timeout, or no solver
+  available, surface to the user without calling
+  `mark-captcha-resolved`.
+- **Missing ordinary input.** `status: blocked` means MagicBrowse needs
+  non-protected input or a different strategy before it can continue.
+- **Final booking/payment action.** `status: needs_approval` means the
+  page is ready for a consequential action and the user must approve
+  the exact visible action before it is executed.
 - **`status: max_steps`.** The granule was too large or too vague.
   Split it on a page-change boundary or tighten the goal's terminal
   state, then retry.

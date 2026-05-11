@@ -40,6 +40,17 @@ Use only a private CDP endpoint for the prepared browser/session the user
 approved for this task. Treat the endpoint as sensitive because it inherits
 the browser's logged-in state.
 
+### `magicpay solve-captcha [--timeout <s>]`
+
+Solve a confirmed CAPTCHA on the current attached browser page.
+
+Only call this when a real CAPTCHA is confirmed present. The command uses the
+current MagicPay-attached browser session, does not require `start-session`,
+and does not close or recreate the browser. After a successful solve, continue
+the ordinary browser or protected-form flow from the current page. If the next
+step is through MagicBrowse, call `magicbrowse mark-captcha-resolved`, then
+continue with `magicbrowse act "continue..."`.
+
 ### `magicpay start-session [name] [--merchant-name <name>]`
 
 Bind the attached browser to a MagicPay workflow session.

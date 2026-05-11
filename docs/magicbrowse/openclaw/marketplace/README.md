@@ -68,11 +68,12 @@ Use the manual path only if you want to manage the skill files yourself instead 
 ## Troubleshooting
 
 - **Skill not recognized by OpenClaw**: Start a fresh OpenClaw session so the runtime can rescan installed skills.
-- **`magicbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicbrowse-cli@0.0.5`, then verify with `magicbrowse --version`.
+- **`magicbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicbrowse-cli@0.0.6`, then verify with `magicbrowse --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicbrowse init <your-api-key>`. The persisted config lives at `~/.magicpay/config.json`, shared with MagicPay.
 - **`magicbrowse doctor` still fails after init**: Inspect `~/.magicpay/config.json` for a malformed key or wrong gateway URL.
 - **Browser launch is unavailable**: Use an environment that allows Chrome startup, or explicitly approve a private CDP endpoint for this task before using attach.
-- **`magicbrowse act` returns `status: completed` but with a `finalMessage` asking for login or captcha**: That is expected. Surface the message; do not retry or script around it.
+- **`magicbrowse act` returns `status: needs_handoff`**: Surface the message to the user or switch to MagicPay. For a confirmed real CAPTCHA on the current prepared browser session, use `magicpay solve-captcha [--timeout <s>]`; do not retry the same MagicBrowse step.
+- **`magicbrowse act` returns `status: blocked` or `status: needs_approval`**: Ask for the missing input or exact approval instead of treating it as a runtime failure.
 - **`magicbrowse act` returns `status: max_steps`**: The granule was too large or vague. Split the task on a page-change boundary or tighten the goal's expected terminal state.
 - **The task reaches a protected login, identity, or payment form**: Stop using MagicBrowse on the form and switch to MagicPay for the protected step.
 - **The next step would submit, post, send, save, delete, book, buy, order, pay, or accept terms**: Stop and ask for explicit approval before executing that final action.
@@ -80,4 +81,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for MagicBrowse v0.1.3.
+This guide is for MagicBrowse v0.1.5.

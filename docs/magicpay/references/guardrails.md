@@ -13,6 +13,9 @@
   for the capability and params.
 - Retry submit only when the guarded fill path explicitly leaves work undone
   and the user approves that retry.
+- Recover from a confirmed real CAPTCHA on the current attached browser page
+  with `solve-captcha`, then call `magicbrowse mark-captcha-resolved` before
+  continuing through MagicBrowse.
 
 ## Consequential Action Approval
 
@@ -47,6 +50,19 @@ stop and ask the user to revoke or rotate the key.
 Use `magicpay attach` only for the prepared browser/session the user approved
 for this task. A CDP endpoint inherits the authority of any logged-in browser
 state. Keep endpoints private and do not paste them into shared logs.
+
+## CAPTCHA Recovery
+
+Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is
+confirmed present on the current attached page. Do not use it as page waiting,
+challenge detection, or a generic retry.
+
+When the next step is owned by MagicBrowse and the solve succeeded, call
+`magicbrowse mark-captcha-resolved`, then continue with
+`magicbrowse act "continue..."`. The marker only tells MagicBrowse that an
+external participant resolved CAPTCHA for this page; MagicBrowse still checks
+the actual page state and must stop again if CAPTCHA or human verification is
+still visible.
 
 ## Protected-Form Rules
 

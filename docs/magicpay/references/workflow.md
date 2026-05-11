@@ -30,6 +30,16 @@ and handle the output:
 - Do not carry one workflow session across different browser instances.
   Keep CDP endpoints private.
 
+## CAPTCHA Recovery
+
+- Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is
+  confirmed present on the current page.
+- `solve-captcha` uses the current MagicPay-attached browser session; it does
+  not require `start-session`, close the browser, or create a new one.
+- After the solver returns, continue the normal browser or protected-form
+  flow from the current page. If the page changed meaningfully, refresh the
+  browser observation or rerun `find-form` before using stale refs.
+
 ## Protected-Form Recovery
 
 - If `find-form` returns `protected_form_not_found`, confirm that the browser

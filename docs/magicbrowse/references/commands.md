@@ -1,9 +1,9 @@
 # MagicBrowse Command Guide
 
 Full reference for the `magicbrowse` CLI. The skill workflow uses
-`launch`, `act`, `observe`, `click`/`type`/`fill`/`select`/`press`, and
-`close`. Setup uses `init` and `doctor`. Everything else is for
-diagnostics or one-shot developer use.
+`launch`, `act`, `observe`, `click`/`type`/`fill`/`select`/`press`,
+`mark-captcha-resolved`, and `close`. Setup uses `init` and `doctor`.
+Everything else is for diagnostics or one-shot developer use.
 
 The hard rules from `SKILL.md` apply to every command: use a fresh
 browser by default, get explicit approval before using an existing
@@ -91,11 +91,45 @@ Options:
 
 Exit codes (mapped from the act `status` field):
 
-- `0` — `completed` (parse `finalMessage` to confirm task success;
-  auth walls and captcha also return `completed`).
+- `0` — `completed`, `blocked`, `needs_handoff`, or
+  `needs_approval`.
 - `1` — `failed` or missing prompt or missing gateway config.
 - `2` — `max_steps` (planner did not converge before the step ceiling).
 - `130` — `cancelled` (e.g. SIGINT).
+
+`blocked`, `needs_handoff`, and `needs_approval` are controlled
+browser-task stops, not runtime failures. Branch on `status`; use
+`finalMessage` only as the explanation to show the user or upstream
+orchestrator.
+
+### `magicbrowse mark-captcha-resolved [--ttl <s>]`
+
+Record that a real CAPTCHA on the current active page was solved by an
+external participant. This command does not solve CAPTCHA, click a CAPTCHA
+widget, or prove success. It writes a one-shot trusted marker into the
+current session, bound to the active page identity. The next `act`
+consumes the marker, passes it to the planner/navigator as evidence that
+a previously visible CAPTCHA was solved out-of-band, then clears it.
+
+Only call after a real CAPTCHA on the current page has been solved
+externally — for example by `magicpay solve-captcha` or another solver
+the user approved against the same prepared browser session. The marker
+does not bypass page state: if the next `act` still sees a CAPTCHA, the
+planner returns `needs_handoff` again, meaning the solver did not
+actually clear the wall. Do not re-mark in that case; surface to the
+user.
+
+The marker auto-clears without error in three cases:
+
+- consumed by the next `act` (normal one-shot path);
+- TTL elapsed before the next `act` ran (default 300 seconds; override
+  with `--ttl <s>`, positive integer);
+- the active page identity at `act` time does not match the page
+  identity recorded when the marker was written (the page changed in
+  the meantime).
+
+Exit codes: `0` on success, `1` on missing/invalid `--ttl`, an
+unexpected positional argument, no current session, or runtime error.
 
 ## Deterministic Primitives (Layer 4)
 

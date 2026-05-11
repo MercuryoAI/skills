@@ -1,87 +1,109 @@
-# MagicBrowse Statuses And `finalMessage` Parsing
+# MagicBrowse Statuses
 
 ## `act` Result Shape
 
 `magicbrowse act` returns:
 
-- `status: completed | failed | max_steps | cancelled`
-- `finalMessage: string` — the navigator's last summary
+- `status: completed | blocked | needs_handoff | needs_approval |
+  failed | max_steps | cancelled`
+- `finalMessage: string` — concise terminal report or stop explanation
 - `steps: number` — navigator step count
 - `finalUrl: string | undefined` — last URL the navigator observed
 
-CLI exit codes (from `statusToExitCode`):
+Branch on `status`. Do not parse `finalMessage` to distinguish task
+success, missing input, handoff, approval, runtime failure, max steps,
+or cancellation. Use `finalMessage` as text to show the user or pass to
+the upstream orchestrator.
 
-| `status`    | exit code |
-|-------------|-----------|
-| `completed` | `0`       |
-| `failed`    | `1`       |
-| `max_steps` | `2`       |
-| `cancelled` | `130`     |
+CLI exit codes:
 
-A non-zero exit code is always a failure. A zero exit code is **not**
-always a task success — `completed` is also returned when the planner
-self-judges the task done, including at hard boundaries (auth walls,
-captcha) where the human must take over.
+| `status` | exit code |
+| --- | ---: |
+| `completed` | `0` |
+| `blocked` | `0` |
+| `needs_handoff` | `0` |
+| `needs_approval` | `0` |
+| `failed` | `1` |
+| `max_steps` | `2` |
+| `cancelled` | `130` |
 
-## Parsing `finalMessage`
+A non-zero exit code means runtime failure, budget exhaustion, or
+cancellation. `blocked`, `needs_handoff`, and `needs_approval` are
+controlled browser-task stops and still exit `0`.
 
-The `finalMessage` carries the navigator's prose summary. There is no
-structured terminal-observation flag today — host orchestrators read
-`finalMessage` for the actual outcome.
+## Status Meanings
 
-Common patterns to look for:
+- `completed` — the delegated browser task reached the requested
+  terminal state. Confirm with the visible evidence in `finalMessage`
+  when the host needs an extra business-rule check.
+- `blocked` — MagicBrowse cannot continue because ordinary
+  non-protected input is missing, the requested item is unavailable,
+  the delegated task is ambiguous, or the page state has no reasonable
+  browser path left inside the task.
+- `needs_handoff` — the task reached protected data or human
+  verification: login, password, OTP, identity/KYC data, payment or
+  banking fields, API keys/tokens/secrets, CAPTCHA, or a similar human
+  check. Surface the message and hand off to the user or the right
+  skill; do not retry through the barrier.
+- `needs_approval` — the next useful action would commit an external
+  side effect such as buy, book, pay, send, post, publish, accept
+  terms, delete, or save account settings. Ask for approval before the
+  exact final action.
+- `failed` — runtime, model, browser, or tool failure. Inspect
+  `finalUrl` and the event stream before retrying.
+- `max_steps` — the planner did not converge inside the step ceiling.
+- `cancelled` — the act was cancelled mid-run, usually by SIGINT or a
+  caller abort.
 
-- **Auth wall.** Phrases such as "log in", "sign in", "authenticate",
-  "session expired", or a finalMessage that ends with a request for
-  user credentials. Treat as terminal: surface to the user, do not
-  retry.
-- **Captcha.** Phrases such as "captcha", "verify you are human",
-  "challenge". Treat as terminal: surface to the user, do not script
-  around.
-- **Generic refusal.** The planner refused the task on safety
-  grounds (entering credentials, payment fields, etc.). Treat as a
-  contract violation by the orchestrator — switch skill (`magicpay`)
-  or rephrase the goal to stop *at* the boundary.
-- **Successful completion.** Concrete description of the terminal
-  page that matches the goal's expected terminal state. The closer
-  the original goal got to a checkable criterion (e.g. "ends on a
-  page showing passenger fields"), the easier the host can confirm
-  success automatically.
-- **Plain failure.** `status: failed` with a reason describing the
-  blocker (navigation error, page never loaded, element never
-  appeared). Inspect `finalUrl` and re-`launch` if useful.
+## When `status: blocked`
+
+Treat this as a controlled stop. Ask for the missing ordinary input,
+choose another strategy outside MagicBrowse, or restart from a better
+entry point. Do not blindly rerun the same `act` goal.
+
+## When `status: needs_handoff`
+
+Branch on what `finalMessage` describes; do not retry the same `act`
+against the same wall.
+
+- **CAPTCHA on the current page.** Run a captcha solver against the
+  same prepared browser session — `magicpay solve-captcha [--timeout
+  <s>]` or another solver the user approved.
+  - On solver success: call `magicbrowse mark-captcha-resolved`, then
+    `magicbrowse act "continue..."`. If that `act` returns
+    `needs_handoff` again, the wall is not actually cleared — surface
+    to the user; do not re-mark.
+  - On solver failure, timeout, or no solver available: surface to
+    the user without calling `mark-captcha-resolved`.
+- **Login, OTP, identity, or payment entry.** Switch to the `magicpay`
+  skill after the user approves the browser/session handoff.
+- **Other human verification or an unclassified wall.** Surface
+  `finalMessage` to the user.
+
+## When `status: needs_approval`
+
+Ask the user to approve the exact visible action and page state. After
+approval, re-run `observe` so target ids and page facts are fresh, then
+execute only the approved action. If the page changed meaningfully,
+ask again.
 
 ## When `status: max_steps`
 
-The planner did not converge inside the step ceiling
-(default 100, override with `--max-steps <n>`). Causes:
-
-- Granule too large or vague — split on a page-change boundary or
-  tighten the goal.
-- Site requires repeated state-clearing (e.g. cookie banners that
-  re-appear).
-- Planner stuck in a loop the navigator cannot break.
-
-Do not raise `--max-steps` as a default workaround; that hides
-granularity bugs. Raise it only when you have a specific reason to
-believe the task needs the headroom.
-
-## When `status: cancelled`
-
-The act was cancelled mid-run (typically SIGINT or programmatic
-cancel). Session state on disk reflects the partial progress; the
-next `act` continues from there.
+The granule was likely too large or vague. Split it on a page-change
+boundary or tighten the expected terminal state before retrying. Raise
+`--max-steps` only when you have a specific reason to believe the task
+needs the headroom.
 
 ## Layer-4 Primitive Results
 
-`click`, `type`, `fill`, `select`, `press` emit a JSON action result
-on stdout. Common blocked reasons:
+`click`, `type`, `fill`, `select`, and `press` emit a JSON action
+result on stdout. Common blocked reasons:
 
 - `target_not_found` — the `<target-id>` does not match anything in
   the most recent observe snapshot. Re-`observe` and retry.
 - `unsupported_target` — the target is not the right kind for the
-  action (e.g. `type` on a button). Re-read the observe snapshot
-  for the correct kind.
+  action, such as `type` on a button. Re-read the observe snapshot for
+  the correct kind.
 - `click_failed` / `input_failed` / `select_failed` / `press_failed`
   — the action reached the page but the page rejected it. Re-`observe`
   to see the new state.
@@ -96,4 +118,4 @@ on stdout. Common blocked reasons:
   retry.
 - `browser-status` reports the session unreachable mid-task —
   reconnect with `launch` or `attach`, then re-`observe`. Treat all
-  pre-disconnect target-ids as stale.
+  pre-disconnect target ids as stale.

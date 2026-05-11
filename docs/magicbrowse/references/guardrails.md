@@ -23,6 +23,10 @@ fresh, then execute only the exact final action the user approved. If
 the page changed meaningfully, ask again rather than widening the
 approval.
 
+When LLM-backed `act` reaches this boundary, it returns
+`status: needs_approval`. Treat that as a controlled stop, not a
+browser failure.
+
 ## MagicPay Boundary
 
 The `magicbrowse` skill ends at the boundary of any protected form.
@@ -105,19 +109,37 @@ to `magicpay`.
 
 Both the planner and navigator are instructed to refuse to attempt
 credential entry or solve captchas. When `act` runs into either, it
-returns `status: completed` with a `finalMessage` describing the
+returns `status: needs_handoff` with a `finalMessage` describing the
 required human action — *not* `status: failed`.
 
-- **Do not** retry the same `act` after a captcha or auth-wall
-  completion. The same prompt will hit the same wall.
-- **Do not** script around captcha. There is no API for it in this
-  skill, by design.
-- **Do** surface the `finalMessage` to the user and let them decide
-  whether to log in / solve the captcha and resume.
+- **Do not** retry the same `act` after a captcha or auth-wall handoff.
+  The same prompt will hit the same wall.
+- **Do not** solve CAPTCHA through MagicBrowse. There is no API for it in
+  this skill, by design.
+- **Do not** call `mark-captcha-resolved` speculatively, as a generic
+  "wake up" signal, or before a solver actually succeeded. The marker is
+  one-shot evidence for the next `act` and is consumed even if the page
+  no longer needs it.
+- **Do** call `magicbrowse mark-captcha-resolved` after a real CAPTCHA
+  was solved externally on the current page. The canonical sequence
+  when MagicPay is the solver is
+  `magicpay solve-captcha [--timeout <s>]` →
+  `magicbrowse mark-captcha-resolved` →
+  `magicbrowse act "continue..."`. The same shape applies for any other
+  solver the user approved against the same prepared browser session.
+- **Do** treat a second `needs_handoff` after `mark-captcha-resolved` as
+  a real "still blocked" signal: the planner re-checks the page and
+  returns `needs_handoff` only when the CAPTCHA is still visible.
+  Surface `finalMessage` to the user; do not re-mark.
+- **Do** skip `mark-captcha-resolved` entirely when the solver failed,
+  timed out, or no solver is available, and surface the original
+  handoff to the user.
+- **Do** surface the `finalMessage` to the user when the handoff is an
+  auth wall, ordinary human verification, or an unclassified challenge
+  rather than a CAPTCHA.
 
-Once the user has cleared the wall, the orchestrator can issue the
-next `act` on the same session — page state and planner memory
-persist.
+Once the wall is genuinely cleared, the orchestrator can issue the next
+`act` on the same session — page state and planner memory persist.
 
 ## Diagnostics
 
@@ -126,8 +148,8 @@ persist.
 - `magicbrowse doctor` inspects the shared MagicPay gateway config.
   Use after `init` if `act` reports a missing-key error.
 - `magicbrowse close` is teardown or recovery, never a success
-  signal. Task success comes from the `act` `status` and
-  `finalMessage`, not from the close.
+  signal. Task success or stop reason comes from the `act` `status`;
+  `finalMessage` explains that outcome.
 
 ## Ask The User When
 
@@ -136,8 +158,10 @@ persist.
 - the task requires `attach`, `--profile`, or `--user-data-dir`;
 - `--use-vision` would expose screenshots of a private or sensitive
   page;
-- `act` returns a `finalMessage` describing an auth wall, captcha, or
-  any other state that requires the user's input;
+- `act` returns `status: needs_handoff`;
+- `act` returns `status: blocked` because ordinary input or a
+  different strategy is needed;
+- `act` returns `status: needs_approval`;
 - the next action would submit, post, send, save, delete, accept,
   book, buy, order, pay, publish, or otherwise commit a consequential
   change;
