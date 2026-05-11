@@ -6,7 +6,7 @@ MagicBrowse gives Codex a browser automation fallback for real web pages: launch
 
 - Node.js 18 or later is installed.
 - Codex is installed and working.
-- You have a MagicPay account and API key. Sign up at https://agents.mercuryo.io/signup if needed.
+- You have an API key for the magicbrowse gateway. Sign up at https://agents.mercuryo.io/signup if needed.
 - The environment can launch a Chrome session. Use `magicbrowse attach` only for a private CDP endpoint explicitly approved for the current task.
 
 ## Ask your agent

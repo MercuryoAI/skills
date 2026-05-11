@@ -43,8 +43,9 @@ controlled browser-task stops and still exit `0`.
 - `needs_handoff` — the task reached protected data or human
   verification: login, password, OTP, identity/KYC data, payment or
   banking fields, API keys/tokens/secrets, CAPTCHA, or a similar human
-  check. Surface the message and hand off to the user or the right
-  skill; do not retry through the barrier.
+  check. Surface `finalMessage` to the user and stop; do not retry
+  through the barrier and do not invent or placeholder protected
+  values.
 - `needs_approval` — the next useful action would commit an external
   side effect such as buy, book, pay, send, post, publish, accept
   terms, delete, or save account settings. Ask for approval before the
@@ -63,22 +64,13 @@ entry point. Do not blindly rerun the same `act` goal.
 
 ## When `status: needs_handoff`
 
-Branch on what `finalMessage` describes; do not retry the same `act`
-against the same wall.
-
-- **CAPTCHA on the current page.** Run a captcha solver against the
-  same prepared browser session — `magicpay solve-captcha [--timeout
-  <s>]` or another solver the user approved.
-  - On solver success: call `magicbrowse mark-captcha-resolved`, then
-    `magicbrowse act "continue..."`. If that `act` returns
-    `needs_handoff` again, the wall is not actually cleared — surface
-    to the user; do not re-mark.
-  - On solver failure, timeout, or no solver available: surface to
-    the user without calling `mark-captcha-resolved`.
-- **Login, OTP, identity, or payment entry.** Switch to the `magicpay`
-  skill after the user approves the browser/session handoff.
-- **Other human verification or an unclassified wall.** Surface
-  `finalMessage` to the user.
+Surface `finalMessage` to the user and stop. The wall is real — auth,
+CAPTCHA, identity entry, payment entry, or some other human check —
+and `magicbrowse` will not pass it. Do not retry the same `act`
+against the same wall. Do not invent credentials, identity values,
+payment values, or CAPTCHA answers, and do not placeholder protected
+fields to slip past. Be honest about the boundary; the user decides
+what happens next.
 
 ## When `status: needs_approval`
 

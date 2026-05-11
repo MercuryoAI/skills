@@ -27,7 +27,7 @@ When LLM-backed `act` reaches this boundary, it returns
 `status: needs_approval`. Treat that as a controlled stop, not a
 browser failure.
 
-## MagicPay Boundary
+## Protected-Form Boundary
 
 The `magicbrowse` skill ends at the boundary of any protected form.
 It gets the host *to* the form; it never *into* it.
@@ -50,12 +50,15 @@ It gets the host *to* the form; it never *into* it.
 - **Vault- or secret-store-sourced values.** Any value whose origin is
   the user's vault, password manager, or other secret store, even if
   the field type itself looks generic.
+- **Any value you do not legitimately have.** If you do not know it,
+  do not guess and do not fabricate.
 
 The planner and navigator already refuse credential entry at the LLM
 layer. This guardrail raises that refusal from a probabilistic LLM
 behaviour to a host-facing contract: even if the planner *would*
-refuse, the host must not attempt it. Switch to the `magicpay` skill
-at the form boundary.
+refuse, the host must not attempt it. Stop at the form boundary,
+surface the situation to the user, and never invent or placeholder
+protected values. Be honest about what `magicbrowse` cannot do.
 
 The narrow exception is **placeholder values to traverse a
 non-protected screen** (e.g. typing dummy passenger names to reach
@@ -96,57 +99,39 @@ session for unrelated work.
 
 ## Page Context And Screenshots
 
-LLM-backed `act` sends page state to the shared MagicPay gateway.
-`act --use-vision` can include screenshots. Treat both as external
-processing of the current page context.
+LLM-backed `act` sends page state to the gateway. `act --use-vision`
+can include screenshots. Treat both as external processing of the
+current page context.
 
 Avoid private, sensitive, or unrelated pages unless the user approves
 that workflow. Do not use vision mode on sensitive pages unless it is
-explicitly required and approved. At protected forms, stop and switch
-to `magicpay`.
+explicitly required and approved. At protected forms, stop and surface
+to the user.
 
-## Captcha And Auth Walls
+## CAPTCHA And Auth Walls
 
 Both the planner and navigator are instructed to refuse to attempt
-credential entry or solve captchas. When `act` runs into either, it
+credential entry or solve CAPTCHAs. When `act` runs into either, it
 returns `status: needs_handoff` with a `finalMessage` describing the
-required human action — *not* `status: failed`.
+wall — *not* `status: failed`.
 
-- **Do not** retry the same `act` after a captcha or auth-wall handoff.
+- **Do not** retry the same `act` after a CAPTCHA or auth-wall handoff.
   The same prompt will hit the same wall.
-- **Do not** solve CAPTCHA through MagicBrowse. There is no API for it in
-  this skill, by design.
-- **Do not** call `mark-captcha-resolved` speculatively, as a generic
-  "wake up" signal, or before a solver actually succeeded. The marker is
-  one-shot evidence for the next `act` and is consumed even if the page
-  no longer needs it.
-- **Do** call `magicbrowse mark-captcha-resolved` after a real CAPTCHA
-  was solved externally on the current page. The canonical sequence
-  when MagicPay is the solver is
-  `magicpay solve-captcha [--timeout <s>]` →
-  `magicbrowse mark-captcha-resolved` →
-  `magicbrowse act "continue..."`. The same shape applies for any other
-  solver the user approved against the same prepared browser session.
-- **Do** treat a second `needs_handoff` after `mark-captcha-resolved` as
-  a real "still blocked" signal: the planner re-checks the page and
-  returns `needs_handoff` only when the CAPTCHA is still visible.
-  Surface `finalMessage` to the user; do not re-mark.
-- **Do** skip `mark-captcha-resolved` entirely when the solver failed,
-  timed out, or no solver is available, and surface the original
-  handoff to the user.
-- **Do** surface the `finalMessage` to the user when the handoff is an
-  auth wall, ordinary human verification, or an unclassified challenge
-  rather than a CAPTCHA.
-
-Once the wall is genuinely cleared, the orchestrator can issue the next
-`act` on the same session — page state and planner memory persist.
+- **Do not** try to solve CAPTCHA through `magicbrowse`. There is no
+  API for it in this skill, by design.
+- **Do not** invent credentials, identity values, payment values, or
+  CAPTCHA answers to get past the wall. Do not placeholder protected
+  data either.
+- **Do** surface `finalMessage` to the user and stop. Be honest about
+  what the wall is and that `magicbrowse` cannot pass it; the user
+  decides what happens next.
 
 ## Diagnostics
 
 - `magicbrowse browser-status` inspects the live browser/page/runtime
   state. Use for debugging, not as a control-flow signal.
-- `magicbrowse doctor` inspects the shared MagicPay gateway config.
-  Use after `init` if `act` reports a missing-key error.
+- `magicbrowse doctor` inspects the gateway config. Use after `init`
+  if `act` reports a missing-key error.
 - `magicbrowse close` is teardown or recovery, never a success
   signal. Task success or stop reason comes from the `act` `status`;
   `finalMessage` explains that outcome.
@@ -165,5 +150,5 @@ Once the wall is genuinely cleared, the orchestrator can issue the next
 - the next action would submit, post, send, save, delete, accept,
   book, buy, order, pay, publish, or otherwise commit a consequential
   change;
-- the task crosses into a protected form — switch skill rather than
-  improvising in `magicbrowse`.
+- the task crosses into a protected form — stop and surface, do not
+  improvise, guess, or placeholder protected values.

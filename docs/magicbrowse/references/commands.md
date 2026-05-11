@@ -7,24 +7,23 @@ Everything else is for diagnostics or one-shot developer use.
 
 The hard rules from `SKILL.md` apply to every command: use a fresh
 browser by default, get explicit approval before using an existing
-profile/CDP session, stop before consequential actions, and switch to
-`magicpay` at protected forms.
+profile/CDP session, stop before consequential actions, and stop at
+protected forms — never invent or placeholder protected data.
 
 ## Setup And Readiness
 
 ### `magicbrowse init <apiKey> [--api-url <url>]`
 
-Save the API key to `~/.magicpay/config.json` (the same file the
-`magicpay` skill uses). When `--api-url` is provided, also stores the
-gateway base URL there. Required for any LLM-backed `act` unless
-`MAGICPAY_API_KEY` is set in the environment.
+Save the API key to `~/.magicpay/config.json`. When `--api-url` is
+provided, also stores the gateway base URL there. Required for any
+LLM-backed `act` unless `MAGICPAY_API_KEY` is set in the environment.
 
 Exit codes: `0` on success, `1` if `<apiKey>` is missing.
 
 ### `magicbrowse doctor`
 
-Verify the shared MagicPay gateway config and reachability. Use this
-as the preflight before `launch` and `act`.
+Verify the gateway config and reachability. Use this as the preflight
+before `launch` and `act`.
 
 Exit codes: `0` if config is healthy, `1` if not.
 
@@ -111,9 +110,12 @@ current session, bound to the active page identity. The next `act`
 consumes the marker, passes it to the planner/navigator as evidence that
 a previously visible CAPTCHA was solved out-of-band, then clears it.
 
-Only call after a real CAPTCHA on the current page has been solved
-externally — for example by `magicpay solve-captcha` or another solver
-the user approved against the same prepared browser session. The marker
+**Not part of the skill workflow.** The default `magicbrowse` contract
+on a CAPTCHA is *stop and surface to the user* (`status:
+needs_handoff`). This command is a low-level CLI primitive for hosts
+that have their own out-of-band solver approved by the user and want
+to record that fact for the next `act`. Only call after a real CAPTCHA
+on the current page has actually been solved externally. The marker
 does not bypass page state: if the next `act` still sees a CAPTCHA, the
 planner returns `needs_handoff` again, meaning the solver did not
 actually clear the wall. Do not re-mark in that case; surface to the
@@ -193,8 +195,8 @@ Exit codes follow `act`.
 
 ## Environment Variables
 
-- `MAGICPAY_API_KEY` — API key for the shared MagicPay gateway,
-  alternative to `magicbrowse init`.
+- `MAGICPAY_API_KEY` — API key for the gateway, alternative to
+  `magicbrowse init`.
 - `MAGICPAY_API_URL` — override the gateway base URL.
 - `MAGICBROWSE_HOME` — root for per-run records and the singleton
   `current-session.json` (default `~/.magicbrowse`). Set distinct

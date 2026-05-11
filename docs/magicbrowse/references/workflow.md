@@ -1,9 +1,9 @@
 # MagicBrowse Worked Example
 
 This walkthrough shows the primary workflow end-to-end: reach the
-checkout page of an airline meta-search, then hand off to `magicpay`
-for the protected step. The scenario assumes your own browser tooling
-cannot drive the meta-search reliably.
+checkout page of an airline meta-search, then stop at the payment
+boundary and surface to the user. The scenario assumes your own
+browser tooling cannot drive the meta-search reliably.
 
 ## Scenario
 
@@ -24,8 +24,7 @@ Healthy. Proceed.
 If `doctor` had failed, the orchestrator would ask the user for an
 API key (sign-up at `https://agents.mercuryo.io/signup`) and run
 `magicbrowse init <apiKey>` once, then re-run `doctor`. The persisted
-config at `~/.magicpay/config.json` is shared with the `magicpay`
-skill — one key, two skills.
+config lives at `~/.magicpay/config.json`.
 
 ## Granule 1 — Search
 
@@ -64,7 +63,7 @@ to the goal; it would break almost every real booking flow.
 ```text
 $ magicbrowse act "Fill the passenger first/last name and contact email with placeholder values, then proceed until the page shows the payment form. Do not enter any payment details yourself."
 ... ...
-{ "status": "needs_handoff", "finalMessage": "Payment page displayed with card number / expiry / CVV fields. Hand off payment entry to MagicPay.", ... }
+{ "status": "needs_handoff", "finalMessage": "Payment page displayed with card number / expiry / CVV fields. Payment entry is protected — surface to the user.", ... }
 ```
 
 The goal explicitly reminds the planner not to enter payment details.
@@ -73,31 +72,26 @@ fields by default; the explicit instruction is a belt-and-braces note
 for the host's own log.
 
 > **Stop here.** The next step — typing into the payment fields — is
-> the MagicPay boundary. Switching to the `magicpay` skill is the
-> correct continuation.
+> the protected boundary. `magicbrowse` does not enter credentials,
+> identity data, or payment data. Surface `finalMessage` to the user
+> and let them decide what happens next; do not invent or placeholder
+> protected values to push through.
 
-## Hand off to `magicpay`
+## Surface and cleanup
 
-```text
-$ magicpay attach <cdp-url-from-magicbrowse>
-$ magicpay start-session checkout
-$ magicpay find-form --purpose payment_card
-$ magicpay resolve-form <fillRef>
-```
-
-`magicbrowse` does not call `close` here — the live CDP session is
-handed to `magicpay`. Closing would tear down the browser and force
-`magicpay` to re-attach to a fresh session.
-
-## Cleanup
-
-When the protected step completes (or the host abandons the task),
-release the session:
+The orchestrator passes `finalMessage` to the user along with the
+current `finalUrl`. If the user closes the task here, release the
+session:
 
 ```text
 $ magicbrowse close
 closed current magicbrowse session ...
 ```
+
+If the user instead takes over the browser themselves (or hands the
+live CDP session to another tool they approved), the orchestrator
+leaves the session open and lets `magicbrowse close` be called later
+as teardown.
 
 ## Failure Modes Encountered In This Scenario
 
@@ -106,17 +100,10 @@ closed current magicbrowse session ...
   `status: needs_handoff` with `finalMessage` asking the user to log in.
   The orchestrator surfaces that to the user; it does not retry into
   the auth wall.
-- **Captcha.** Same status: `needs_handoff`, with `finalMessage`
-  describing the challenge. Do not solve it through MagicBrowse. On
-  the current prepared browser session, run a captcha solver
-  (`magicpay solve-captcha [--timeout <s>]` or another solver the user
-  approved). On solver success, call
-  `magicbrowse mark-captcha-resolved`, then continue with
-  `magicbrowse act "continue..."`. If that `act` returns
-  `needs_handoff` again, the wall is not actually cleared — surface to
-  the user; do not re-mark. On solver failure, timeout, or no solver
-  available, surface to the user without calling
-  `mark-captcha-resolved`.
+- **CAPTCHA.** Same status: `needs_handoff`, with `finalMessage`
+  describing the challenge. `magicbrowse` does not solve CAPTCHA —
+  surface to the user and stop. Do not invent an answer, do not
+  retry the same `act` against the wall.
 - **Missing ordinary input.** `status: blocked` means MagicBrowse needs
   non-protected input or a different strategy before it can continue.
 - **Final booking/payment action.** `status: needs_approval` means the
@@ -133,12 +120,13 @@ closed current magicbrowse session ...
 
 - ✗ A single `act "book the cheapest non-stop London → Lisbon and pay
   with my card"` — combines four strategic decisions into one task and
-  crosses the MagicPay boundary.
+  crosses the protected-form boundary.
 - ✗ `magicbrowse run --url ... --goal ...` — the bundled `close`
-  destroys the session that `magicpay` is about to attach to.
+  destroys session continuity; a multi-step workflow must use
+  `launch → act … act → close`.
 - ✗ Re-narrating prior context: `act "as we already searched, now
   pick result 2"` — sequential `act` calls preserve page state and
   planner memory; re-narration is a granularity smell.
-- ✗ Driving payment fields with `type` or `fill` — even if the
-  planner would refuse, the host must not attempt it; that is what
-  `magicpay` is for.
+- ✗ Driving payment fields with `type` or `fill`, or placeholdering
+  real card/identity data to push past the form. Stop at the boundary
+  and surface to the user — never fabricate protected values.
