@@ -16,7 +16,7 @@
     },
     {
       "name": "@mercuryo-ai/magicpay-sdk",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "manifestPath": "packages/magicpay-sdk/package.json"
     },
     {

@@ -69,7 +69,7 @@ Use the manual path only if you want to manage the skill files yourself instead 
 ## Troubleshooting
 
 - **Skill not recognized by OpenClaw**: Start a fresh OpenClaw session so the runtime can rescan installed skills.
-- **`magicpay` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicpay-cli@0.1.11`, then verify with `magicpay --version`.
+- **`magicpay` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicpay-cli@0.1.12`, then verify with `magicpay --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicpay init <your-api-key>`.
 - **`magicpay status` still fails after init**: Run `magicpay doctor` to inspect the local config.
 - **`magicpay find-form` cannot confidently identify the form**: Confirm the browser is still on the intended page, then rerun `magicpay find-form`.
@@ -79,4 +79,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for MagicPay v0.1.16.
+This guide is for MagicPay v0.1.17.
