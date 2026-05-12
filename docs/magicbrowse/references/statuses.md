@@ -103,8 +103,9 @@ result on stdout. Common blocked reasons:
 ## Browser Session Errors
 
 - `magicbrowse launch` failure — the runtime could not start Chrome.
-  Check permissions, retry headless if `--headful` failed, or switch
-  to `attach` if a host browser is available.
+  Check permissions, keep the default headless mode unless a visible
+  debug browser was explicitly requested, or switch to `attach` if a
+  host browser is available.
 - `magicbrowse attach <endpoint>` failure — the CDP endpoint is
   unreachable or rejected the connection. Verify the endpoint and
   retry.

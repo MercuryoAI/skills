@@ -45,9 +45,11 @@ Exit code: `0`.
 
 Start an owned Chrome session and persist it as the current session.
 The URL is **positional and optional**. Headless is the default;
-`--headful` opts out. Advanced flags (`--user-data-dir`,
-`--chrome-path`, `--user-agent`) accept overrides for non-default
-Chrome layouts.
+`--headful` is a debug/visible-browser override. Use it only when the
+user explicitly asks for a visible browser or a live debugging protocol
+requires it; do not add it to normal agent workflows or examples.
+Advanced flags (`--user-data-dir`, `--chrome-path`, `--user-agent`)
+accept overrides for non-default Chrome layouts.
 
 Prefer a fresh owned profile. Use `--profile` or `--user-data-dir`
 only after the user explicitly approves that browser state for the
