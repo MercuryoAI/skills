@@ -14,7 +14,7 @@ MagicPay helps OpenClaw handle approved login, identity, checkout, donation, sub
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill in OpenClaw from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.17 using `magicpay-openclaw-v0.1.17.zip`. Place the extracted `magicpay/` folder directly inside `skills/` or `~/.openclaw/skills/`.
+Install the `magicpay` skill in OpenClaw from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.18 using `magicpay-openclaw-v0.1.18.zip`. Place the extracted `magicpay/` folder directly inside `skills/` or `~/.openclaw/skills/`.
 Treat MagicPay as the helper for prepared login, identity, checkout, donation, subscription, and payment pages.
 Ask me for my API key and run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
@@ -26,7 +26,7 @@ Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confir
 
 ## What your agent should do
 
-1. Download `magicpay-openclaw-v0.1.17.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.17.
+1. Download `magicpay-openclaw-v0.1.18.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.18.
 2. Extract the archive so the top-level folder is `magicpay/`.
 3. Place `magicpay/` directly inside `skills/` or `~/.openclaw/skills/`.
 4. If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
@@ -55,9 +55,9 @@ Use MagicPay when the browser is already on the relevant login, identity, checko
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking OpenClaw to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.17 using `magicpay-openclaw-v0.1.17.zip`.
+Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking OpenClaw to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.18 using `magicpay-openclaw-v0.1.18.zip`.
 
-1. Download `magicpay-openclaw-v0.1.17.zip`.
+1. Download `magicpay-openclaw-v0.1.18.zip`.
 2. Extract the archive. You should get a folder named `magicpay/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart OpenClaw if you already had a session open.
@@ -82,4 +82,4 @@ Use this fallback only if you want to manage the `magicpay/` folder yourself ins
 
 ---
 
-This guide is for MagicPay v0.1.17.
+This guide is for MagicPay v0.1.18.
