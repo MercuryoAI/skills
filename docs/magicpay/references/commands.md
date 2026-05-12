@@ -95,19 +95,19 @@ visible amount or data. Use plain `resolve-form <fillRef>` without
 `--no-submit` only when that immediate guarded submit was already approved
 for the current form.
 
-### `magicpay resolve-fields <targetRef...> [--refresh-snapshot]`
+### `magicpay resolve-fields <target-id...> [--refresh-snapshot]`
 
-Match one or more observed non-secret target refs against the session-local
+Match one or more observed non-secret target ids against the session-local
 open-data snapshot (name, email, phone, locale, date of birth, address, and
 similar reusable public facts). Returns `matched`, `ambiguous`, or `no_match`
 per target. Targets already owned by the protected lane stay excluded. The
-target refs come from the companion browser tool's latest observation. In
+target ids come from the companion browser tool's latest observation. In
 orchestration, auto-fill only `matched` results — never invent values for
 `ambiguous` or `no_match`. Pass `--refresh-snapshot` to force a re-fetch of
 the snapshot from the MagicPay service.
 
 On sensitive identity or payment pages, review matched profile autofills
-before applying them. Use only target refs from the latest observation, and
+before applying them. Use only target ids from the latest observation, and
 refresh the snapshot when accuracy matters.
 
 ### `magicpay run-action <capability> [--item-ref <vaultItemId>] --params-json <json>`

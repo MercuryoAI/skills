@@ -103,7 +103,7 @@ still visible.
 ## Profile Match Rules
 
 - `resolve-fields` uses a session-local snapshot of reusable open-data facts.
-- Use target refs from the latest observation only.
+- Use target ids from the latest observation only.
 - On sensitive identity or payment pages, refresh the snapshot and review
   `matched` autofills before applying them.
 - Leave `ambiguous` and `no_match` unresolved; do not invent replacements.
