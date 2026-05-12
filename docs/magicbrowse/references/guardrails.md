@@ -30,7 +30,9 @@ browser failure.
 ## Protected-Form Boundary
 
 The `magicbrowse` skill ends at the boundary of any protected form.
-It gets the host *to* the form; it never *into* it.
+It gets the host *to* the form; it never *into* it. Reach the page,
+stop before entering protected values, and switch to MagicPay for the
+sensitive step.
 
 **Forbidden field categories.** Do not use `act`, `type`, `fill`, or
 `select` on:
@@ -56,9 +58,10 @@ It gets the host *to* the form; it never *into* it.
 The planner and navigator already refuse credential entry at the LLM
 layer. This guardrail raises that refusal from a probabilistic LLM
 behaviour to a host-facing contract: even if the planner *would*
-refuse, the host must not attempt it. Stop at the form boundary,
-surface the situation to the user, and never invent or placeholder
-protected values. Be honest about what `magicbrowse` cannot do.
+refuse, the host must not attempt it. Stop before entering protected
+values, surface the situation to the user or MagicPay, and never invent
+or placeholder protected values. Be honest about what `magicbrowse`
+cannot do.
 
 The narrow exception is **placeholder values to traverse a
 non-protected screen** (e.g. typing dummy passenger names to reach
@@ -69,19 +72,20 @@ field starts asking for something protected, stop.
 ## Singleton Session
 
 `$MAGICBROWSE_HOME/current-session.json` (default
-`~/.magicbrowse/current-session.json`) is a singleton pointer. All
-`magicbrowse` commands read and write it. Concurrent workflows on
-the same home file silently overwrite each other's session state —
-the second `launch` becomes the current session, the first one is
-orphaned mid-task.
+`~/.magicbrowse/current-session.json`) is a singleton pointer. MagicPay
+workflow state under `~/.magicpay/` is also singleton state. Concurrent
+workflows on the same homes silently overwrite each other's session state —
+the second `launch` becomes the current session, the first one is orphaned
+mid-task.
 
-For multi-tenant or parallel use, set a distinct `MAGICBROWSE_HOME`
-per workflow. Per-user tools that may run more than one `magicbrowse`
-flow simultaneously must scope `MAGICBROWSE_HOME` per request, not
-share the default.
+For multi-tenant or parallel use, set a distinct `MAGICBROWSE_HOME` per
+workflow and run MagicPay under a separate `HOME` or isolated runtime
+environment, or do not run the tasks in parallel. Per-user tools that may run
+more than one `magicbrowse` + MagicPay flow simultaneously must scope both
+homes per request, not share the defaults.
 
 This is not a security boundary — it is a correctness boundary.
-Sharing `MAGICBROWSE_HOME` between concurrent workflows produces
+Sharing default homes between concurrent workflows produces
 silent cross-talk, not visible errors.
 
 ## Browser Authority
@@ -117,24 +121,30 @@ wall — *not* `status: failed`.
 
 - **Do not** retry the same `act` after a CAPTCHA or auth-wall handoff.
   The same prompt will hit the same wall.
-- **Do not** try to solve CAPTCHA through `magicbrowse`. There is no
-  API for it in this skill, by design.
+- **Do not** try to solve CAPTCHA through `magicbrowse`. MagicBrowse does not
+  solve CAPTCHA.
 - **Do not** invent credentials, identity values, payment values, or
   CAPTCHA answers to get past the wall. Do not placeholder protected
   data either.
-- **Do** surface `finalMessage` to the user and stop. Be honest about
-  what the wall is and that `magicbrowse` cannot pass it; the user
-  decides what happens next.
+- **Do** surface `finalMessage` to the user or switch to MagicPay. For a
+  confirmed real CAPTCHA on the current approved browser session, run
+  `magicpay solve-captcha [--timeout <s>]`; after a successful solve, run
+  `magicbrowse mark-captcha-resolved` before the next `act`. If the next
+  `act` still returns `needs_handoff`, the wall was not cleared; do not
+  re-mark.
 
 ## Diagnostics
 
 - `magicbrowse browser-status` inspects the live browser/page/runtime
   state. Use for debugging, not as a control-flow signal.
-- `magicbrowse doctor` inspects the gateway config. Use after `init`
-  if `act` reports a missing-key error.
+- `magicbrowse doctor` inspects the shared gateway config. Use after
+  `magicpay init` if `act` reports a missing-key error.
 - `magicbrowse close` is teardown or recovery, never a success
   signal. Task success or stop reason comes from the `act` `status`;
   `finalMessage` explains that outcome.
+- `magicbrowse act` can exit `0` for controlled stops such as `blocked`,
+  `needs_handoff`, and `needs_approval`. Branch on `status`, not on the shell
+  exit code.
 
 ## Ask The User When
 

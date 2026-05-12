@@ -11,7 +11,9 @@ login, identity submission, account change, or other consequential action.
 ### `magicpay init <apiKey> [--api-url <url>]`
 
 Save the API key to `~/.magicpay/config.json`. When `--api-url` is provided,
-`init` also stores the gateway base URL there.
+`init` also stores the gateway base URL there. Omit `--api-url` for normal
+setup; the CLI uses its bundled default MagicPay gateway URL. Pass
+`--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 
 Do not print, log, or share the API key or the persisted config. If this
 machine or workspace is shared or compromised, ask the user to rotate or
@@ -38,7 +40,9 @@ Connect MagicPay to an already running browser through CDP.
 
 Use only a private CDP endpoint for the prepared browser/session the user
 approved for this task. Treat the endpoint as sensitive because it inherits
-the browser's logged-in state.
+the browser's logged-in state. Run `attach` when MagicPay is not yet bound to
+the approved prepared browser/CDP session, or when the CDP endpoint changed.
+Re-attaching the same endpoint is allowed but is not required as a ritual.
 
 ### `magicpay solve-captcha [--timeout <s>]`
 
@@ -54,6 +58,10 @@ continue with `magicbrowse act "continue..."`.
 ### `magicpay start-session [name] [--merchant-name <name>]`
 
 Bind the attached browser to a MagicPay workflow session.
+`start-session` attempts to cancel/clear a stale previous workflow binding
+before it creates the new session. If that recovery is still blocked, start
+manual recovery with `magicpay status`, then either `magicpay end-session` or
+a fresh `attach` / `start-session` on the approved browser.
 
 ### `magicpay end-session`
 
@@ -103,8 +111,9 @@ the canonical path for capabilities such as confirmation, provider-backed
 authorization, or other protected actions that are not direct form fills.
 
 Run only after the user approves the capability, params, site/merchant, and
-visible amount or data for this task. Do not smuggle protected values through
-free-form strings.
+visible amount or data for this task. The capability must come from the
+current form, vault, or action context; do not invent a free-form capability
+name or smuggle protected values through free-form strings.
 
 ### `magicpay submit-form <fillRef>`
 

@@ -2,8 +2,9 @@
 
 Full reference for the `magicbrowse` CLI. The skill workflow uses
 `launch`, `act`, `observe`, `click`/`type`/`fill`/`select`/`press`,
-`mark-captcha-resolved`, and `close`. Setup uses `init` and `doctor`.
-Everything else is for diagnostics or one-shot developer use.
+`mark-captcha-resolved`, and `close`. Agent setup uses `magicpay init`
+to write the shared `~/.magicpay/config.json`, then `doctor`.
+Everything else is for diagnostics, compatibility, or one-shot developer use.
 
 The hard rules from `SKILL.md` apply to every command: use a fresh
 browser by default, get explicit approval before using an existing
@@ -14,9 +15,14 @@ protected forms — never invent or placeholder protected data.
 
 ### `magicbrowse init <apiKey> [--api-url <url>]`
 
-Save the API key to `~/.magicpay/config.json`. When `--api-url` is
-provided, also stores the gateway base URL there. Required for any
-LLM-backed `act` unless `MAGICPAY_API_KEY` is set in the environment.
+Compatibility command that writes the same `~/.magicpay/config.json` read by
+MagicPay. Do not use it in the normal agent setup path; initialize the shared
+gateway config with `magicpay init <apiKey>` so the MagicBrowse + MagicPay
+stack has one owner for setup. When `--api-url` is provided, it also stores
+the gateway base URL there. Omit `--api-url` for normal setup; pass
+`--api-url <url>` only for a non-default staging, self-hosted, or test
+gateway. LLM-backed `act` requires the shared config unless
+`MAGICPAY_API_KEY` is set in the environment.
 
 Exit codes: `0` on success, `1` if `<apiKey>` is missing.
 
@@ -196,8 +202,8 @@ Exit codes follow `act`.
 ## Environment Variables
 
 - `MAGICPAY_API_KEY` — API key for the gateway, alternative to
-  `magicbrowse init`.
-- `MAGICPAY_API_URL` — override the gateway base URL.
+  `magicpay init`.
+- `MAGICPAY_API_URL` — override the bundled default gateway base URL.
 - `MAGICBROWSE_HOME` — root for per-run records and the singleton
   `current-session.json` (default `~/.magicbrowse`). Set distinct
   values per workflow for multi-tenant or parallel use.
@@ -205,5 +211,5 @@ Exit codes follow `act`.
 ## Updating The CLI
 
 If `magicbrowse --version` is missing or outdated, run
-`npm i -g @mercuryo-ai/magicbrowse-cli@0.0.3`, then verify with
+`npm i -g @mercuryo-ai/magicbrowse-cli@latest`, then verify with
 `magicbrowse --version`.

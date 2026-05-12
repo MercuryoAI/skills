@@ -38,7 +38,7 @@ approval.
 - Use `magicpay status` before a new protected-form task.
 - If `status` reports a missing or invalid API key, run `magicpay init`.
 - If `status` reports `cliUpdate`, use only
-  `npm i -g @mercuryo-ai/magicpay-cli@0.1.10`, then rerun `status`.
+  `npm i -g @mercuryo-ai/magicpay-cli@latest`, then rerun `status`.
 - Use `doctor` only when local config still looks broken after `init`.
 
 Do not print, log, or share `MAGICPAY_API_KEY`, `~/.magicpay/config.json`, CDP
@@ -50,6 +50,9 @@ stop and ask the user to revoke or rotate the key.
 Use `magicpay attach` only for the prepared browser/session the user approved
 for this task. A CDP endpoint inherits the authority of any logged-in browser
 state. Keep endpoints private and do not paste them into shared logs.
+Run `attach` when MagicPay is not yet bound to the approved prepared
+browser/CDP session, or when the CDP endpoint changed. Re-attaching the same
+endpoint is allowed but is not required as a ritual.
 
 ## CAPTCHA Recovery
 
@@ -81,6 +84,8 @@ still visible.
 - Start `run-action` only when an active workflow session exists.
 - Start `run-action` only after the user approves the capability and params
   for the current site/merchant and visible amount or data.
+- Use only a capability discovered from the current form, vault, or action
+  context. Do not invent a free-form capability name.
 - Provide structured JSON params to `run-action`; do not smuggle protected
   values through ad-hoc strings or prompts.
 - Use `run-action` for protected capabilities instead of inventing a manual

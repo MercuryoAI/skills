@@ -1,17 +1,17 @@
 # Mercuryo Agent Skills
 
-Installable skill bundles for MagicBrowse LLM-first browser autonomy fallback and MagicPay protected-form workflows in Claude Code, Codex, and OpenClaw.
+Installable skill bundles for MagicBrowse browser automation fallback and MagicPay approved login, identity, checkout, donation, subscription, and payment pages in Claude Code, Codex, and OpenClaw.
 
 ## What is a skill?
 
-A skill is an instruction bundle your AI runtime can load. The skill tells the agent when to use the CLI, what to ask you, and how to verify the result. The CLI does the actual browser or protected-form work.
+A skill is an instruction bundle your AI runtime can load. The skill tells the agent when to use the CLI, what to ask you, and how to verify the result. The CLI does the actual browser or MagicPay work.
 
 ## Choose a surface
 
 | If you need this | Choose this surface | Why |
 | --- | --- | --- |
-| Reach a target web page when your own browser tooling cannot do it reliably | `magicbrowse` | LLM-first browser autonomy fallback. Drive a Chrome session by natural-language goals through `magicbrowse act`; use deterministic `observe` plus primitives only when autonomy needs single-element precision. Stops at the boundary of any protected form. |
-| A prepared login, identity, or payment form needs approved stored values | `magicpay` | Use this when the browser is already at the protected step and the remaining work is discovery, approval, fill, and guarded submit. |
+| Reach a target web page when your own browser tooling cannot do it reliably | `magicbrowse` | LLM-first browser autonomy fallback. Drive a Chrome session by natural-language goals through `magicbrowse act`; use deterministic `observe` plus primitives only when autonomy needs single-element precision. Stops at login, identity, checkout, donation, subscription, payment, and human-verification pages. |
+| A prepared login, identity, checkout, donation, subscription, or payment page needs approved stored values | `magicpay` | Use this when the browser is already on the sensitive page and the remaining work is discovery, approval, fill for review, and explicit submit. |
 
 ## How to use this catalog
 
@@ -32,7 +32,7 @@ Browser automation fallback — drive an approved Chrome session by natural-lang
 
 ### `magicpay`
 
-Protected-form workflow skill for approved prepared login, identity, and payment pages with fill-for-review before submit.
+MagicPay helper for approved login, identity, checkout, donation, subscription, and payment pages, with user review before submit.
 
 - Claude Code: [direct guide](docs/magicpay/claude/direct/README.md)
 - Codex: [direct guide](docs/magicpay/codex/direct/README.md)

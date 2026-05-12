@@ -23,8 +23,8 @@ Healthy. Proceed.
 
 If `doctor` had failed, the orchestrator would ask the user for an
 API key (sign-up at `https://agents.mercuryo.io/signup`) and run
-`magicbrowse init <apiKey>` once, then re-run `doctor`. The persisted
-config lives at `~/.magicpay/config.json`.
+`magicpay init <apiKey>` once, then re-run `doctor`. The persisted config
+lives at `~/.magicpay/config.json` and is shared by MagicBrowse and MagicPay.
 
 ## Granule 1 — Search
 
@@ -101,9 +101,11 @@ as teardown.
   The orchestrator surfaces that to the user; it does not retry into
   the auth wall.
 - **CAPTCHA.** Same status: `needs_handoff`, with `finalMessage`
-  describing the challenge. `magicbrowse` does not solve CAPTCHA —
-  surface to the user and stop. Do not invent an answer, do not
-  retry the same `act` against the wall.
+  describing the challenge. `magicbrowse` does not solve CAPTCHA. For a
+  confirmed real CAPTCHA on the current approved browser session, use
+  `magicpay solve-captcha [--timeout <s>]`; after a successful solve, run
+  `magicbrowse mark-captcha-resolved` before the next `act`. Do not invent
+  an answer or retry the same `act` against the wall.
 - **Missing ordinary input.** `status: blocked` means MagicBrowse needs
   non-protected input or a different strategy before it can continue.
 - **Final booking/payment action.** `status: needs_approval` means the
