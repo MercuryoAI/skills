@@ -88,6 +88,12 @@ $ magicbrowse close
 closed current magicbrowse session ...
 ```
 
+If the next step is a MagicPay protected workflow on the current page, do not
+close the browser before that handoff completes. Keep the browser available
+for MagicPay. After MagicPay finishes with `magicpay end-session`, close only
+if MagicBrowse launched an owned disposable browser for this task and the user
+does not need to inspect or take over the page.
+
 If the user instead takes over the browser themselves (or hands the
 live CDP session to another tool they approved), the orchestrator
 leaves the session open and lets `magicbrowse close` be called later

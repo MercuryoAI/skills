@@ -70,6 +70,11 @@ Exit codes: `0` on success, `1` if the endpoint is missing.
 
 Close or detach the current session. Always returns `0`.
 
+Use this only when the overall browser workflow is done or recovery requires
+teardown. If the current page was handed to MagicPay, wait for MagicPay to
+finish its workflow before closing a MagicBrowse-owned disposable browser.
+Do not close an external/user-owned attach without explicit teardown approval.
+
 ## Natural-Language Browser Step
 
 ### `magicbrowse act "<prompt>" [--max-steps <n>] [--use-vision] [--format <fmt>]`

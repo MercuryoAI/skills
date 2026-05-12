@@ -67,6 +67,12 @@ a fresh `attach` / `start-session` on the approved browser.
 
 Complete the active workflow session without closing the browser.
 
+This is workflow completion only. After it succeeds, return control to the
+caller-owned browser lifecycle. A browser tool or orchestrator that launched
+an owned disposable browser may clean up its own session when the overall task
+is done; an external/user-owned browser stays open unless the user explicitly
+approves teardown.
+
 ## Protected-Form Flow
 
 ### `magicpay find-form [--purpose <auto|login|identity|payment_card>]`

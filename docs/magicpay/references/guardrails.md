@@ -13,6 +13,9 @@
   for the capability and params.
 - Retry submit only when the guarded fill path explicitly leaves work undone
   and the user approves that retry.
+- Complete the MagicPay workflow with `magicpay end-session`, then return
+  browser lifecycle decisions to the caller-owned browser tool or
+  orchestrator. MagicPay does not close the browser.
 - Recover from a confirmed real CAPTCHA on the current attached browser page
   with `solve-captcha`, then call `magicbrowse mark-captcha-resolved` before
   continuing through MagicBrowse.
@@ -53,6 +56,12 @@ state. Keep endpoints private and do not paste them into shared logs.
 Run `attach` when MagicPay is not yet bound to the approved prepared
 browser/CDP session, or when the CDP endpoint changed. Re-attaching the same
 endpoint is allowed but is not required as a ritual.
+
+Browser teardown remains outside MagicPay's authority. If the browser was
+launched as an owned disposable session by another tool, that tool can clean
+up after the overall task is done. If the browser was external, user-owned,
+or handed to the user for inspection, leave it open unless the user explicitly
+approves teardown.
 
 ## CAPTCHA Recovery
 

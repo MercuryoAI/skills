@@ -1,6 +1,6 @@
 # Install MagicPay from ClawHub
 
-MagicPay helps OpenClaw handle approved login, identity, checkout, donation, subscription, and payment pages: attach to the approved browser session, bind a workflow session, discover the supported form, and fill it for review with values the user has approved through MagicPay. The main path is `magicpay find-form` -> `magicpay resolve-form <fillRef> --no-submit` -> explicit user approval -> `magicpay submit-form <fillRef>`; sensitive actions use `magicpay run-action` only after the user approves the capability and params.
+MagicPay helps OpenClaw handle approved login, identity, checkout, donation, subscription, and payment pages: attach to the approved browser session, bind a workflow session, discover the supported form, and fill it for review with values the user has approved through MagicPay. The main path is `magicpay find-form` -> `magicpay resolve-form <fillRef> --no-submit` -> explicit user approval -> `magicpay submit-form <fillRef>`; sensitive actions use `magicpay run-action` only after the user approves the capability and params. MagicPay completes its workflow with `magicpay end-session`, but browser cleanup remains owned by the browser tool or orchestrator that prepared the page.
 
 ## Before you start
 
@@ -21,6 +21,7 @@ If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
 Verify the setup with `magicpay status`. If it still fails after init, run `magicpay doctor`.
 Use only the prepared browser/session I approve for this task. Keep my API key, local config, CDP endpoint, and vault item ids private.
 The main form flow is `magicpay find-form` -> `magicpay resolve-form <fillRef> --no-submit` -> ask me to approve the exact site/merchant, action, and visible amount or data -> `magicpay submit-form <fillRef>` only if I approve. Use `magicpay run-action <capability> --params-json <json>` only after I approve the capability and params.
+`magicpay end-session` completes only the MagicPay workflow. Browser lifecycle remains owned by the browser tool or orchestrator that prepared the page: clean up an owned disposable browser only after the overall task is done and never close an external or user-owned browser without my explicit teardown approval.
 Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confirmed present on the current MagicPay-attached browser session.
 ```
 
@@ -45,7 +46,7 @@ Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confir
 
 ## Try a first task
 
-Use MagicPay when the browser is already on the relevant login, identity, checkout, donation, subscription, or payment page and the user approved that browser/session for this task. The main form path is `magicpay find-form` -> `magicpay resolve-form <fillRef> --no-submit` -> explicit user approval -> `magicpay submit-form <fillRef>`. Use `magicpay run-action <capability> --params-json <json>` only after the user approves the capability and params.
+Use MagicPay when the browser is already on the relevant login, identity, checkout, donation, subscription, or payment page and the user approved that browser/session for this task. The main form path is `magicpay find-form` -> `magicpay resolve-form <fillRef> --no-submit` -> explicit user approval -> `magicpay submit-form <fillRef>`. Use `magicpay run-action <capability> --params-json <json>` only after the user approves the capability and params. `magicpay end-session` ends the MagicPay workflow, then the browser owner decides whether to keep or clean up the browser.
 
 - Use MagicPay to attach to the approved checkout page, run `magicpay find-form`, and fill for review with `magicpay resolve-form <fillRef> --no-submit`; ask before submit.
 - Use MagicPay to continue the prepared login page; use `magicpay resolve-form <fillRef> --no-submit` and ask before final login submit.

@@ -24,7 +24,7 @@ A skill is an instruction bundle your AI runtime can load. The skill tells the a
 
 ### `magicbrowse`
 
-Browser automation fallback — drive an approved Chrome session by natural-language steps via launch, attach, observe, and act, with deterministic click/type/select/press/fill primitives.
+Browser automation fallback — drive an approved Chrome session with goal-driven act as the default MagicBrowse primitive; use observe plus deterministic click/type/select/press/fill only for recovery or single-element precision.
 
 - Claude Code: [direct guide](docs/magicbrowse/claude/direct/README.md)
 - Codex: [direct guide](docs/magicbrowse/codex/direct/README.md)

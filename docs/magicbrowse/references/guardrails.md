@@ -69,6 +69,22 @@ the payment page in a flight booking flow). Do not type real
 identity data; use semantically obvious placeholders. The moment a
 field starts asking for something protected, stop.
 
+## Act Before Snapshot Primitives
+
+Within MagicBrowse, `act` is the default primitive. Do not begin a task
+with `observe` plus `click`/`type`/`select`/`press`/`fill` unless `act`
+has already failed to make progress on the same goal, or unless the
+operation is deliberately a single-element recovery step.
+
+The navigator has the current page context, the natural-language goal,
+and its completion check in one planner loop. A host that starts from
+snapshot ids has to preserve that intent externally while remembering
+that every id expires after each click, navigation, popup, or lazy-load.
+That is a recovery path, not the happy path.
+
+When primitives are necessary, re-run `observe` after every page
+mutation and use the fresh target id only for the next primitive.
+
 ## Singleton Session
 
 `$MAGICBROWSE_HOME/current-session.json` (default
@@ -98,8 +114,11 @@ authority even though `magicbrowse` never receives the password.
 Only use `magicbrowse attach`, `--profile`, or `--user-data-dir` when
 the user explicitly approves that browser/session for the current
 task. Keep CDP endpoints private and do not paste them into shared
-logs. Close or detach when the workflow is done, and start a fresh
-session for unrelated work.
+logs. Close or detach when the overall browser workflow is done, and start a
+fresh session for unrelated work. If MagicBrowse handed the current page to
+MagicPay, wait until MagicPay finishes its workflow before closing a
+MagicBrowse-owned disposable browser. Do not close an external/user-owned
+browser or approved attach without explicit teardown approval.
 
 ## Page Context And Screenshots
 
@@ -141,7 +160,8 @@ wall — *not* `status: failed`.
   `magicpay init` if `act` reports a missing-key error.
 - `magicbrowse close` is teardown or recovery, never a success
   signal. Task success or stop reason comes from the `act` `status`;
-  `finalMessage` explains that outcome.
+  `finalMessage` explains that outcome. Use it after handoff work is done,
+  not as part of MagicPay workflow completion itself.
 - `magicbrowse act` can exit `0` for controlled stops such as `blocked`,
   `needs_handoff`, and `needs_approval`. Branch on `status`, not on the shell
   exit code.

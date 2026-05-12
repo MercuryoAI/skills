@@ -31,6 +31,9 @@ and handle the output:
   `attach` is allowed but not required as a setup ritual.
 - Do not carry one workflow session across different browser instances.
   Keep CDP endpoints private.
+- MagicPay does not own browser teardown. `magicpay end-session` completes
+  only the MagicPay workflow and leaves browser cleanup to the tool or
+  orchestrator that prepared the page.
 
 ## CAPTCHA Recovery
 
@@ -95,6 +98,22 @@ When one form needs several protected fields:
    site/merchant, action, and visible amount or data.
 4. Use `submit-form` only as the explicit approved final step or manual
    recovery on a fresh form snapshot.
+
+## After `end-session`
+
+`magicpay end-session` marks the MagicPay workflow complete and keeps the
+browser available. After it returns, hand control back to the caller-owned
+browser lifecycle:
+
+- if another tool launched an owned disposable browser only for this task,
+  that tool may close its own session after the user no longer needs the page;
+- if the browser was an existing/user-owned session, an approved CDP attach,
+  a named profile, or a page the user wants to inspect, leave it open unless
+  the user explicitly approves teardown.
+
+Do not encode a MagicBrowse dependency into MagicPay orchestration. The same
+rule applies to any browser owner: MagicPay ends the protected workflow; the
+browser owner decides cleanup.
 
 ## When To Stop
 
