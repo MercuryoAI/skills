@@ -34,23 +34,18 @@ Do not retry the same request inside the same session. End the session
 with `magicpay end-session`, then start a new one if the user wants to
 continue.
 
-## Fill And Submit Results
+## Fill Results
 
 - `filled`
-  Protected values were filled, but no safe automatic submit was completed.
-  Inspect the refreshed page state, then ask for explicit approval before any
-  submit or protected action.
-- `submitted`
-  Form submission produced an observable progress signal. This can come from
-  a pre-approved guarded submit inside `resolve-form` or from an explicit
-  `submit-form` retry after the user approved the current site/merchant,
-  action, and visible amount or data.
-- `validation_blocked`
-  The form stayed blocked by client-side validation.
-- `submit_binding_stale`
-  The saved submit binding is no longer live on the page.
-- `no_observable_progress`
-  The submit attempt produced no defensible progress signal.
+  Protected values were filled. Continue with the browser owner. If the next
+  browser action is consequential, stop for explicit user approval.
+- `form_changed`
+  The protected form changed after approval, so the filled request could not
+  be applied to the original form contract. Rerun `find-form` on the current
+  page before requesting new protected values.
+- `secret_validation_failed`
+  Client-side validation rejected the protected values. Surface the blocker
+  without exposing protected values and wait for user direction.
 
 ## Protected Actions
 

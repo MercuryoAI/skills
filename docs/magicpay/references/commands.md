@@ -2,7 +2,7 @@
 
 The hard rules from `SKILL.md` apply to every command: protect the
 MagicPay API key and CDP endpoint, use only the browser/session approved
-for this task, default protected form resolution to fill-and-review, and
+for this task, keep protected form resolution to fill-only, and
 ask for explicit approval before any submit, protected action, purchase,
 login, identity submission, account change, or other consequential action.
 
@@ -80,35 +80,31 @@ approves teardown.
 Discover the supported protected form on the current page and return the
 current protected-form contract.
 
-### `magicpay resolve-form <fillRef> [--item-ref <vaultItemId>] [--no-submit]`
+### `magicpay resolve-form <fillRef> [--item-ref <vaultItemId>] [--refresh-fields <field1,field2>]`
 
 Resolve one protected form target through MagicPay. The CLI creates the
-request, waits for the result, and fills the target. Plain `resolve-form`
-can also perform a guarded submit when that was explicitly approved and a safe
-form-bound submit control is still live. Use `--item-ref` to pin one vault
-item instead of letting MagicPay choose from the available candidates. Use
-`--no-submit` when you want the filled result without guarded submit.
+request, waits for the result, and fills the target. It does not submit the
+form. Use `--item-ref` to pin one vault item instead of letting MagicPay choose
+from the available candidates. Use `--refresh-fields` to ask MagicPay to
+refresh selected stored fields while resolving the current form.
 
-In orchestrated skill workflows, use `--no-submit` by default. Submit only
-after the user explicitly confirms the current site/merchant, action, and
-visible amount or data. Use plain `resolve-form <fillRef>` without
-`--no-submit` only when that immediate guarded submit was already approved
-for the current form.
+After a successful fill, continue the browser task through the browser owner.
+If MagicBrowse produced a protected-form handoff, call `magicbrowse act` with
+the returned `handoff.resumeObjective`.
 
-### `magicpay resolve-fields <target-id...> [--refresh-snapshot]`
+### `magicpay resolve-fields <target-id...>`
 
-Match one or more observed non-secret target ids against the session-local
-open-data snapshot (name, email, phone, locale, date of birth, address, and
-similar reusable public facts). Returns `matched`, `ambiguous`, or `no_match`
-per target. Targets already owned by the protected lane stay excluded. The
-target ids come from the companion browser tool's latest observation. In
-orchestration, auto-fill only `matched` results — never invent values for
-`ambiguous` or `no_match`. Pass `--refresh-snapshot` to force a re-fetch of
-the snapshot from the MagicPay service.
+Refresh the session-local open-data snapshot, then match one or more observed
+non-secret target ids against that fresh snapshot (name, email, phone, locale,
+date of birth, address, and similar reusable public facts). Returns `matched`,
+`ambiguous`, or `no_match` per target. Targets already owned by the protected
+lane stay excluded. The target ids come from the companion browser tool's
+latest observation. In orchestration, auto-fill only `matched` results — never
+invent values for `ambiguous` or `no_match`. If MagicPay cannot refresh open
+data, the command fails closed instead of using stale profile facts.
 
 On sensitive identity or payment pages, review matched profile autofills
-before applying them. Use only target ids from the latest observation, and
-refresh the snapshot when accuracy matters.
+before applying them. Use only target ids from the latest observation.
 
 ### `magicpay run-action <capability> [--item-ref <vaultItemId>] --params-json <json>`
 
@@ -120,12 +116,3 @@ Run only after the user approves the capability, params, site/merchant, and
 visible amount or data for this task. The capability must come from the
 current form, vault, or action context; do not invent a free-form capability
 name or smuggle protected values through free-form strings.
-
-### `magicpay submit-form <fillRef>`
-
-Manually submit the current protected form when `resolve-form` explicitly
-leaves submission unfinished or when you intentionally retry on a fresh
-protected-form snapshot.
-
-Use only after explicit user approval for the current site/merchant, action,
-and visible amount or data, and only after a fresh `find-form`/page check.

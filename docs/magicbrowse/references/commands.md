@@ -2,9 +2,9 @@
 
 Full reference for the `magicbrowse` CLI. The skill workflow uses
 `launch`, `act`, `observe`, `click`/`type`/`fill`/`select`/`press`,
-`mark-captcha-resolved`, and `close`. Agent setup uses `magicpay init`
-to write the shared `~/.magicpay/config.json`, then `doctor`.
-Everything else is for diagnostics, compatibility, or one-shot developer use.
+`mark-captcha-resolved`, and `close`. Agent setup uses
+`magicbrowse init`, then `doctor`. Everything else is for diagnostics,
+compatibility, or one-shot developer use.
 
 The hard rules from `SKILL.md` apply to every command: use a fresh
 browser by default, get explicit approval before using an existing
@@ -15,14 +15,15 @@ protected forms — never invent or placeholder protected data.
 
 ### `magicbrowse init <apiKey> [--api-url <url>]`
 
-Compatibility command that writes the same `~/.magicpay/config.json` read by
-MagicPay. Do not use it in the normal agent setup path; initialize the shared
-gateway config with `magicpay init <apiKey>` so the MagicBrowse + MagicPay
-stack has one owner for setup. When `--api-url` is provided, it also stores
-the gateway base URL there. Omit `--api-url` for normal setup; pass
-`--api-url <url>` only for a non-default staging, self-hosted, or test
-gateway. LLM-backed `act` requires the shared config unless
-`MAGICPAY_API_KEY` is set in the environment.
+Writes the gateway config used by LLM-backed `act`. When `--api-url` is
+provided, it also stores the gateway base URL. Omit `--api-url` for normal
+setup; pass `--api-url <url>` only for a non-default staging, self-hosted, or
+test gateway.
+
+Current CLI compatibility note: the persisted config path and environment
+override names still use the existing `~/.magicpay/config.json`,
+`MAGICPAY_API_KEY`, and `MAGICPAY_API_URL` names. Treat these as gateway
+configuration names, not protected-form ownership.
 
 Exit codes: `0` on success, `1` if `<apiKey>` is missing.
 
@@ -73,8 +74,8 @@ Exit codes: `0` on success, `1` if the endpoint is missing.
 Close or detach the current session. Always returns `0`.
 
 Use this only when the overall browser workflow is done or recovery requires
-teardown. If the current page was handed to MagicPay, wait for MagicPay to
-finish its workflow before closing a MagicBrowse-owned disposable browser.
+teardown. If the current page was handed to another tool or the user, wait for
+that handoff to finish before closing a MagicBrowse-owned disposable browser.
 Do not close an external/user-owned attach without explicit teardown approval.
 
 ## Natural-Language Browser Step
@@ -209,7 +210,7 @@ Exit codes follow `act`.
 ## Environment Variables
 
 - `MAGICPAY_API_KEY` — API key for the gateway, alternative to
-  `magicpay init`.
+  `magicbrowse init`.
 - `MAGICPAY_API_URL` — override the bundled default gateway base URL.
 - `MAGICBROWSE_HOME` — root for per-run records and the singleton
   `current-session.json` (default `~/.magicbrowse`). Set distinct

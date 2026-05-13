@@ -72,6 +72,12 @@ payment values, or CAPTCHA answers, and do not placeholder protected
 fields to slip past. Be honest about the boundary; the user decides
 what happens next.
 
+For protected forms, the result may include
+`handoff: { kind: "protected_form", resumeObjective }`. Pass the handoff to
+the orchestrator or approved protected-data handler, then call
+`magicbrowse act` with that page-local `resumeObjective` after the protected
+fill completes.
+
 ## When `status: needs_approval`
 
 Ask the user to approve the exact visible action and page state. After

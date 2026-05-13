@@ -23,8 +23,7 @@ Healthy. Proceed.
 
 If `doctor` had failed, the orchestrator would ask the user for an
 API key (sign-up at `https://agents.mercuryo.io/signup`) and run
-`magicpay init <apiKey>` once, then re-run `doctor`. The persisted config
-lives at `~/.magicpay/config.json` and is shared by MagicBrowse and MagicPay.
+`magicbrowse init <apiKey>` once, then re-run `doctor`.
 
 ## Granule 1 — Search
 
@@ -63,7 +62,7 @@ to the goal; it would break almost every real booking flow.
 ```text
 $ magicbrowse act "Fill the passenger first/last name and contact email with placeholder values, then proceed until the page shows the payment form. Do not enter any payment details yourself."
 ... ...
-{ "status": "needs_handoff", "finalMessage": "Payment page displayed with card number / expiry / CVV fields. Payment entry is protected — surface to the user.", ... }
+{ "status": "needs_handoff", "finalMessage": "Payment page displayed with card number / expiry / CVV fields. Payment entry is protected — surface to the user.", "handoff": { "kind": "protected_form", "resumeObjective": "Continue the checkout from the filled payment form to the next merchant response." }, ... }
 ```
 
 The goal explicitly reminds the planner not to enter payment details.
@@ -74,8 +73,10 @@ for the host's own log.
 > **Stop here.** The next step — typing into the payment fields — is
 > the protected boundary. `magicbrowse` does not enter credentials,
 > identity data, or payment data. Surface `finalMessage` to the user
-> and let them decide what happens next; do not invent or placeholder
-> protected values to push through.
+> and let them decide what happens next. If the result includes
+> `handoff.kind: "protected_form"`, pass that handoff to the orchestrator or
+> approved protected-data handler. The browser owner can resume with
+> `handoff.resumeObjective` after the protected fill completes.
 
 ## Surface and cleanup
 
@@ -88,10 +89,10 @@ $ magicbrowse close
 closed current magicbrowse session ...
 ```
 
-If the next step is a MagicPay protected workflow on the current page, do not
-close the browser before that handoff completes. Keep the browser available
-for MagicPay. After MagicPay finishes with `magicpay end-session`, close only
-if MagicBrowse launched an owned disposable browser for this task and the user
+If the next step is a protected-data workflow on the current page, do not close
+the browser before that handoff completes. Keep the browser available for the
+orchestrator, the user, or the approved protected-data handler. Close only if
+MagicBrowse launched an owned disposable browser for this task and the user
 does not need to inspect or take over the page.
 
 If the user instead takes over the browser themselves (or hands the
@@ -108,10 +109,10 @@ as teardown.
   the auth wall.
 - **CAPTCHA.** Same status: `needs_handoff`, with `finalMessage`
   describing the challenge. `magicbrowse` does not solve CAPTCHA. For a
-  confirmed real CAPTCHA on the current approved browser session, use
-  `magicpay solve-captcha [--timeout <s>]`; after a successful solve, run
-  `magicbrowse mark-captcha-resolved` before the next `act`. Do not invent
-  an answer or retry the same `act` against the wall.
+  confirmed real CAPTCHA on the current approved browser session, have the
+  user or an external solver clear it; after a successful solve, run
+  `magicbrowse mark-captcha-resolved` before the next `act`. Do not invent an
+  answer or retry the same `act` against the wall.
 - **Missing ordinary input.** `status: blocked` means MagicBrowse needs
   non-protected input or a different strategy before it can continue.
 - **Final booking/payment action.** `status: needs_approval` means the

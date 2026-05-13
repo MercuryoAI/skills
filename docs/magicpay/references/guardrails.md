@@ -6,13 +6,10 @@
 - Start or continue the workflow session for that page.
 - Discover the supported protected form.
 - Resolve protected form targets through MagicPay request paths and fill them
-  for review.
-- Submit protected forms only after explicit approval for the current
-  site/merchant, action, and visible amount or data.
+  without submitting.
+- Return post-fill browser continuation to the browser owner.
 - Run protected capabilities through `run-action` only after explicit approval
   for the capability and params.
-- Retry submit only when the guarded fill path explicitly leaves work undone
-  and the user approves that retry.
 - Complete the MagicPay workflow with `magicpay end-session`, then return
   browser lifecycle decisions to the caller-owned browser tool or
   orchestrator. MagicPay does not close the browser.
@@ -30,11 +27,10 @@ account change, or other consequential action, confirm:
 - the visible amount, account, identity, or other data being submitted;
 - whether the user wants final submission now.
 
-Use non-submit review flows first whenever available. In orchestrated skill
-workflows, that means `resolve-form <fillRef> --no-submit` first, then
-`submit-form <fillRef>` only after approval and a fresh page/form check. Do
-not treat guarded submit support as permission to submit without user
-approval.
+MagicPay fills protected forms only. After `resolve-form <fillRef>`, continue
+with the browser owner. If MagicBrowse produced a protected-form handoff, use
+its `handoff.resumeObjective` for the next `magicbrowse act`. Do not treat a
+filled protected form as approval to submit.
 
 ## Readiness Rules
 
@@ -78,15 +74,12 @@ still visible.
 
 ## Protected-Form Rules
 
-- Start from a current `find-form` result, not from stale assumptions.
-- Do not call `resolve-form` on a stale `fillRef`.
+- Start from a current `find-form` result, not from old assumptions.
+- Do not call `resolve-form` on an old `fillRef` after page changes.
 - Use `--item-ref` only when you intentionally want one specific vault item.
-- Use `resolve-form <fillRef> --no-submit` by default in orchestrated skill
-  workflows.
-- Treat `submit-form` as the explicit approved submit step or manual recovery,
-  not as the default next step.
-- If `resolve-form` reports stale bindings or no live submit control, refresh
-  the page state before retrying.
+- Use `resolve-form <fillRef>` to fill and stop.
+- If `resolve-form` reports `form_changed`, refresh the page state and rerun
+  `find-form` before retrying.
 
 ## Protected-Action Rules
 
@@ -102,10 +95,11 @@ still visible.
 
 ## Profile Match Rules
 
-- `resolve-fields` uses a session-local snapshot of reusable open-data facts.
+- `resolve-fields` refreshes the session-local snapshot of reusable
+  open-data facts before matching.
 - Use target ids from the latest observation only.
-- On sensitive identity or payment pages, refresh the snapshot and review
-  `matched` autofills before applying them.
+- On sensitive identity or payment pages, review `matched` autofills before
+  applying them.
 - Leave `ambiguous` and `no_match` unresolved; do not invent replacements.
 
 ## Secrecy And Safety
@@ -114,7 +108,7 @@ still visible.
 - Never print, log, summarize, or share `MAGICPAY_API_KEY`, local config, CDP
   endpoints, or vault item ids.
 - Base progress claims on the visible form state.
-- After page-level changes, rerun `find-form` before acting on old bindings.
+- After page-level changes, rerun `find-form` before acting on old form refs.
 
 ## Ask The User When
 
