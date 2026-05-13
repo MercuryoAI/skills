@@ -11,12 +11,12 @@
   "npmPackages": [
     {
       "name": "@mercuryo-ai/magicbrowse",
-      "version": "0.0.7",
+      "version": "0.0.8",
       "manifestPath": "packages/magicbrowse/package.json"
     },
     {
       "name": "@mercuryo-ai/magicpay-sdk",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "manifestPath": "packages/magicpay-sdk/package.json"
     },
     {
