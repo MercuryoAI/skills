@@ -11,7 +11,7 @@
   "npmPackages": [
     {
       "name": "@mercuryo-ai/magicbrowse",
-      "version": "0.0.10",
+      "version": "0.0.11",
       "manifestPath": "packages/magicbrowse/package.json"
     },
     {
