@@ -62,13 +62,69 @@ and handle the output:
 - Continue after a successful fill with the browser owner. If MagicBrowse
   produced a protected-form handoff, use its `handoff.resumeObjective` for the
   next `magicbrowse act`.
-- Before any browser submit or `run-action`,
-  confirm the current site/merchant, exact action, and visible amount or data
-  with the user.
-- If `resolve-form` or `run-action` returns `denied`, `expired`, `failed`,
+- Before any consequential browser action, get the matching typed MagicPay
+  approval for the current site/merchant, exact action, and visible amount or
+  data.
+- For protected action approval handoff, add `--return-pending` to the typed
+  action command: `authorize-payment`, `sign-message`, or `confirm-action`.
+  Tell the user the same request can be approved in MagicPay UI or by
+  providing the OTP they received. If they provide OTP, run
+  `magicpay confirm-otp --otp <digits>`, then `magicpay wait-request`. If
+  they approve in MagicPay UI, skip `confirm-otp` and still run
+  `magicpay wait-request`.
+- If `resolve-form` or a typed action command returns `denied`, `expired`, `failed`,
   `canceled`, or `timeout`, stop the protected path and report the exact state.
-- For `run-action`, use only a capability discovered from the current
-  form, vault, or action context. Do not guess a free-form capability name.
+- After typed approval, proceed with exactly that action; stop only if page
+  facts changed.
+
+## Payment Authorization Facts
+
+Before `magicpay authorize-payment`, collect the visible transaction facts
+from the current checkout/review page and the user's task:
+
+- `amount`: the final amount the user is about to authorize, including visible
+  taxes, fees, discounts, or subscription-period pricing. Do not use subtotal
+  when a final total is visible.
+- `currency`: an explicit three-letter code such as `USD` or `EUR`. A symbol
+  alone is not enough unless page or user context makes the code clear.
+- `recipient`: the merchant or payee the user believes they are paying.
+- `description`: optional short product, plan, order reference, subscription,
+  donation, or purpose summary.
+- `recurring`: optional boolean. Set it only when the page or user task is
+  clear; ask the user if recurring status materially affects approval and is
+  unclear.
+
+Merchant/payee sourcing rules:
+
+- Prefer the merchant name from the checkout header, order summary, invoice,
+  payment confirmation text, or the user's task.
+- Do not use payment processor or card-provider names such as Stripe,
+  Checkout.com, Mercuryo, Apple Pay, Google Pay, Visa, or Mastercard as
+  `recipient` unless that provider is the actual merchant.
+- Treat page title, hostname, and URL as supporting signals only. Use them as
+  the merchant name only when they clearly identify the payee and no stronger
+  visible label is present.
+- Normalize obvious checkout boilerplate, but keep meaningful brand or legal
+  qualifiers that are part of the visible merchant name.
+
+Escalate to the user when:
+
+- final amount is not visible, conflicts across the page, or could be subtotal
+  instead of total;
+- currency is missing or ambiguous;
+- merchant/payee cannot be distinguished from the payment processor;
+- recurring status matters and cannot be determined from visible context;
+- visible checkout facts conflict with the user's stated task.
+
+Do not change existing `itemRef` behavior while collecting payment facts.
+`itemRef` remains a vault item selector outside action params. Do not type,
+print, or pass card PAN, CVV, wallet private keys, passwords, or other
+protected values through the agent prompt or action params.
+
+After successful `authorize-payment`, continue with that exact payment:
+protected payment artifact use, payment form fill, and final Pay/Submit are
+covered while `amount`, `currency`, `recipient`, and `recurring` stay
+unchanged. Stop and ask again if any of those facts change.
 
 ### Recovery sequence for changed form bindings
 
@@ -91,8 +147,8 @@ When one form needs several protected fields:
 1. Complete one `find-form -> resolve-form` cycle for each field.
 2. Refresh the current form contract after each fill if the page mutates.
 3. Continue with the browser owner after the protected fill is complete.
-4. Stop for explicit approval if the next browser action would submit,
-   purchase, log in, save account settings, or otherwise commit state.
+4. Get the matching typed MagicPay approval if the next browser action would
+   submit, purchase, log in, save account settings, or otherwise commit state.
 
 ## After `end-session`
 
@@ -116,10 +172,13 @@ Stop and report back when:
 
 - request resolution reaches a terminal denied, expired, failed, canceled, or
   timeout state;
+- OTP is invalid, expired, or exhausted and the request cannot continue through
+  another supported approval path;
 - the browser is no longer on the intended protected page;
 - the form stays ambiguous after rerunning discovery;
-- the next step would submit or run a sensitive action and the user has not
-  approved the current site/merchant, action, and visible amount or data;
+- the next step would submit or run a sensitive action and there is no
+  matching typed approval for the unchanged current site/merchant, action, and
+  visible amount or data;
 - `magicpay status` still fails after `magicpay init <apiKey>` and
   `magicpay doctor` confirms a local config problem that needs repair;
 - `magicpay status` says the account or API key is invalid.

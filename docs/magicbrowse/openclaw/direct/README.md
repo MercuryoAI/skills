@@ -1,6 +1,6 @@
 # Install MagicBrowse in OpenClaw
 
-MagicBrowse gives OpenClaw a browser automation fallback for real web pages: launch a fresh Chrome session, or attach to an explicitly approved CDP session, drive it with natural-language steps through `magicbrowse act`, and use deterministic `magicbrowse observe` plus `click`/`type`/`fill`/`select`/`press` primitives when single-element precision is required. It stops at login, identity, checkout, donation, subscription, and payment pages, returns a structured handoff for protected forms when available, and asks before consequential actions such as submit, post, book, buy, save, or delete.
+MagicBrowse gives OpenClaw a browser automation fallback for real web pages: launch a fresh Chrome session, or attach to an explicitly approved CDP session, drive it with natural-language steps through `magicbrowse act`, and use deterministic `magicbrowse observe` plus `click`/`type`/`fill`/`select`/`press` primitives when single-element precision is required. It stops at login, identity, checkout, donation, subscription, and payment pages, returns a structured handoff for protected forms when available, and asks before consequential actions such as submit, post, book, buy, save, or delete unless a matching typed MagicPay approval already covers unchanged page facts.
 
 ## Before you start
 
@@ -20,7 +20,7 @@ Ask me for my API key and run `magicbrowse init <your-api-key>`. The CLI uses th
 If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
 Verify the setup with `magicbrowse doctor`. The primary workflow is `magicbrowse launch <url>` -> one or more `magicbrowse act "<goal>"` -> `magicbrowse close`.
 Use a fresh browser by default. Do not attach to an existing CDP endpoint, named profile, or user-data directory unless I explicitly approve that browser/session for this task.
-Stop at login, identity, checkout, donation, subscription, and payment pages and return a protected handoff for the orchestrator or approved protected-data handler. Also ask me before submitting, posting, sending, saving, deleting, booking, buying, ordering, paying, accepting terms, or changing account data/settings.
+Stop at login, identity, checkout, donation, subscription, and payment pages and return a protected handoff for the orchestrator or approved protected-data handler. Also ask me before submitting, posting, sending, saving, deleting, booking, buying, ordering, paying, accepting terms, or changing account data/settings, unless a matching typed MagicPay approval already covers the unchanged page facts.
 ```
 
 ## What your agent should do

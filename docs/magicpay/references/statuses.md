@@ -38,7 +38,7 @@ continue.
 
 - `filled`
   Protected values were filled. Continue with the browser owner. If the next
-  browser action is consequential, stop for explicit user approval.
+  browser action is consequential, get the matching typed MagicPay approval.
 - `form_changed`
   The protected form changed after approval, so the filled request could not
   be applied to the original form contract. Rerun `find-form` on the current
@@ -50,6 +50,18 @@ continue.
 ## Protected Actions
 
 - `artifact`
-  `run-action` completed and returned the request artifact for the protected
-  capability. Start `run-action` only after the user approves the capability,
-  params, site/merchant, and visible amount or data for the current task.
+  A typed action command completed and returned the request artifact. Proceed
+  with exactly that approved action; stop only if page facts changed.
+- `pending`
+  A typed action command with `--return-pending` created the request and
+  stored `currentRequestId`. The user can approve in MagicPay UI or provide
+  the OTP they received. If they approve in UI, run `wait-request`; if they
+  provide OTP, run `confirm-otp --otp <digits>` and then `wait-request`.
+- `otp_invalid`, `otp_expired`, `otp_attempts_exceeded`
+  The OTP channel failed. Report the typed failure without repeating the OTP.
+  While the request itself is still pending, keep MagicPay UI approval
+  available.
+- `request_already_resolved`
+  Another channel already resolved the same pending request. Continue through
+  `wait-request` or the returned terminal request state instead of applying a
+  second decision.

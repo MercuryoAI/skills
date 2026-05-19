@@ -8,8 +8,9 @@ compatibility, or one-shot developer use.
 
 The hard rules from `SKILL.md` apply to every command: use a fresh
 browser by default, get explicit approval before using an existing
-profile/CDP session, stop before consequential actions, and stop at
-protected forms — never invent or placeholder protected data.
+profile/CDP session, stop before consequential actions unless a matching typed
+MagicPay approval covers unchanged page facts, and stop at protected forms —
+never invent or placeholder protected data.
 
 ## Setup And Readiness
 
@@ -91,7 +92,9 @@ the next step would submit a form, post or send content, accept terms,
 change account data/settings, book, buy, order, delete, save, or
 otherwise commit an irreversible/account-affecting action, stop and
 ask for explicit approval. After approval, re-run `observe` and do
-only the approved final action.
+only the approved final action. A matching typed MagicPay approval counts for
+the exact payment, signing, or confirmation action while page facts stay
+unchanged.
 
 Options:
 
@@ -192,8 +195,8 @@ All primitives:
 - Emit a JSON action result on stdout (blocked or executed).
 - Inherit the same approval boundary as `act`; do not click/press the
   final submit, save, delete, buy, book, accept, or send control unless
-  the user explicitly approved that exact action and you re-observed
-  the page first.
+  the user explicitly approved that exact action or a matching typed MagicPay
+  approval covers the unchanged page facts. Re-observe the page first.
 
 ## Developer / One-Shot Compatibility
 

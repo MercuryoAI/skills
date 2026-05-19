@@ -117,7 +117,9 @@ as teardown.
   non-protected input or a different strategy before it can continue.
 - **Final booking/payment action.** `status: needs_approval` means the
   page is ready for a consequential action and the user must approve
-  the exact visible action before it is executed.
+  the exact visible action before it is executed. A successful typed MagicPay
+  approval counts for that exact payment, signing, or confirmation action;
+  ask again only if the approved page facts changed.
 - **`status: max_steps`.** The granule was too large or too vague.
   Split it on a page-change boundary or tighten the goal's terminal
   state, then retry.

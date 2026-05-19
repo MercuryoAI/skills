@@ -49,7 +49,8 @@ controlled browser-task stops and still exit `0`.
 - `needs_approval` — the next useful action would commit an external
   side effect such as buy, book, pay, send, post, publish, accept
   terms, delete, or save account settings. Ask for approval before the
-  exact final action.
+  exact final action unless a matching typed MagicPay approval already covers
+  the unchanged page facts.
 - `failed` — runtime, model, browser, or tool failure. Inspect
   `finalUrl` and the event stream before retrying.
 - `max_steps` — the planner did not converge inside the step ceiling.
@@ -84,6 +85,10 @@ Ask the user to approve the exact visible action and page state. After
 approval, re-run `observe` so target ids and page facts are fresh, then
 execute only the approved action. If the page changed meaningfully,
 ask again.
+
+A successful typed MagicPay approval is enough for the exact payment,
+signing, or confirmation action it approved. Do not ask again while the page
+facts remain unchanged.
 
 ## When `status: max_steps`
 

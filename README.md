@@ -32,7 +32,7 @@ Browser automation fallback — drive an approved Chrome session with goal-drive
 
 ### `magicpay`
 
-MagicPay helper for approved login, identity, checkout, donation, subscription, and payment pages, with user review before submit.
+MagicPay helper for approved login, identity, checkout, donation, subscription, payment pages, and typed action approvals.
 
 - Claude Code: [direct guide](docs/magicpay/claude/direct/README.md)
 - Codex: [direct guide](docs/magicpay/codex/direct/README.md)

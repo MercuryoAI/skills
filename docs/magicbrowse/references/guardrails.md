@@ -23,6 +23,10 @@ fresh, then execute only the exact final action the user approved. If
 the page changed meaningfully, ask again rather than widening the
 approval.
 
+A successful typed MagicPay approval counts for the exact payment, signing,
+or confirmation action it approved. Use it only while the approved page facts
+stay unchanged.
+
 When LLM-backed `act` reaches this boundary, it returns
 `status: needs_approval`. Treat that as a controlled stop, not a
 browser failure.
@@ -180,6 +184,7 @@ wall — *not* `status: failed`.
 - `act` returns `status: needs_approval`;
 - the next action would submit, post, send, save, delete, accept,
   book, buy, order, pay, publish, or otherwise commit a consequential
-  change;
+  change, and there is no matching typed MagicPay approval for unchanged page
+  facts;
 - the task crosses into a protected form — stop and surface, do not
   improvise, guess, or placeholder protected values.

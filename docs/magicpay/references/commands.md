@@ -3,8 +3,9 @@
 The hard rules from `SKILL.md` apply to every command: protect the
 MagicPay API key and CDP endpoint, use only the browser/session approved
 for this task, keep protected form resolution to fill-only, and
-ask for explicit approval before any submit, protected action, purchase,
-login, identity submission, account change, or other consequential action.
+get the matching typed MagicPay approval before any submit, protected action,
+purchase, login, identity submission, account change, or other consequential
+action.
 
 ## Setup And Readiness
 
@@ -106,13 +107,74 @@ data, the command fails closed instead of using stale profile facts.
 On sensitive identity or payment pages, review matched profile autofills
 before applying them. Use only target ids from the latest observation.
 
-### `magicpay run-action <capability> [--item-ref <vaultItemId>] --params-json <json>`
+### `magicpay authorize-payment --amount <number> --currency <code> --recipient <name> [--description <text>] [--recurring <true|false>] [--authorization-ref <ref>] [--item-ref <vaultItemId>] [--return-pending]`
 
-Run a protected capability through the same MagicPay request model. This is
-the canonical path for capabilities such as confirmation, provider-backed
-authorization, or other protected actions that are not direct form fills.
+Request approval for a payment authorization through the structured
+`authorize_payment` action contract.
 
-Run only after the user approves the capability, params, site/merchant, and
-visible amount or data for this task. The capability must come from the
-current form, vault, or action context; do not invent a free-form capability
-name or smuggle protected values through free-form strings.
+Before calling it, collect these visible transaction facts from the current
+checkout/review page and the user's task:
+
+- `amount` — final amount in major units as a JSON number, not cents and not a
+  formatted string.
+- `currency` — explicit three-letter currency code.
+- `recipient` — merchant or payee the user believes they are paying.
+- `description` — optional short order, plan, subscription, or purpose summary.
+- `recurring` — optional boolean; ask the user if recurring status matters and
+  is unclear.
+
+`--item-ref` remains the existing vault item selector path. It is not placed in
+`params`, and this command does not change how MagicPay discovers or selects
+vault items.
+
+After successful approval, continue with that exact payment: protected payment
+artifact use, payment form fill, and final Pay/Submit are covered while
+`amount`, `currency`, `recipient`, and `recurring` stay unchanged. Stop and ask
+again if any of those facts change.
+
+Use `--return-pending` when the agent needs to hand approval to the user
+without blocking the command. It creates the same pending request, stores
+`currentRequestId`, and returns the request handle. The user can then approve
+in MagicPay web/mobile UI or provide the OTP they received. OTP is optional.
+
+### `magicpay sign-message --item-ref <walletItemId> --message <text> [--return-pending]`
+
+Request approval to sign one exact wallet message with the selected wallet
+item. Use this for wallet message signing only. After approval, sign exactly
+that message; stop and ask again if the message changes.
+
+Use `--return-pending` for the same non-blocking approval handoff described
+above.
+
+### `magicpay confirm-action --summary <text> [--details <text>] [--return-pending]`
+
+Request approval for a non-payment consequential action that has no more
+specific typed command. Use a concise summary that names the visible action;
+add details when the page context, recipient, account, or consequences need to
+be explicit.
+
+Use this only for consequential actions without a dedicated typed MagicPay
+command. Payments use `authorize-payment`; wallet message signing uses
+`sign-message`.
+
+Use `--return-pending` for the same non-blocking approval handoff described
+above.
+
+### `magicpay confirm-otp --otp <digits> [--session <id>] [--request <id>]`
+
+Confirm the active pending runtime request by OTP. Use this only after a
+pending approval request exists and only when the user provides the OTP for
+that request. By default the command uses the active workflow session and
+`currentRequestId`; `--session` and `--request` are recovery selectors.
+
+Do not repeat the OTP in chat, summaries, logs, saved notes, or command
+reports. If OTP is invalid, expired, or exhausted, report that typed failure
+and keep MagicPay UI approval available while the request itself remains
+pending.
+
+### `magicpay wait-request [--session <id>] [--request <id>]`
+
+Resume waiting for the active pending runtime request and claim its result
+when it reaches a terminal result. Run this after either MagicPay UI approval
+or OTP confirmation. The command clears `currentRequestId` only after a
+terminal result or unrecoverable failure; timeout leaves the request resumable.

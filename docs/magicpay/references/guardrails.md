@@ -8,8 +8,8 @@
 - Resolve protected form targets through MagicPay request paths and fill them
   without submitting.
 - Return post-fill browser continuation to the browser owner.
-- Run protected capabilities through `run-action` only after explicit approval
-  for the capability and params.
+- Run typed protected action approvals through `authorize-payment`,
+  `sign-message`, or `confirm-action`.
 - Complete the MagicPay workflow with `magicpay end-session`, then return
   browser lifecycle decisions to the caller-owned browser tool or
   orchestrator. MagicPay does not close the browser.
@@ -20,7 +20,8 @@
 ## Consequential Action Approval
 
 Before any submit, protected action, purchase, login, identity submission,
-account change, or other consequential action, confirm:
+account change, or other consequential action, get the matching typed
+MagicPay approval for:
 
 - the current site or merchant;
 - the exact action to be taken;
@@ -31,6 +32,13 @@ MagicPay fills protected forms only. After `resolve-form <fillRef>`, continue
 with the browser owner. If MagicBrowse produced a protected-form handoff, use
 its `handoff.resumeObjective` for the next `magicbrowse act`. Do not treat a
 filled protected form as approval to submit.
+
+After typed approval, proceed with exactly that action; do not ask for a
+second approval unless approved page facts changed. `authorize-payment` covers
+the matching payment artifact use, payment form fill, and final Pay/Submit
+while `amount`, `currency`, `recipient`, and `recurring` stay unchanged.
+`sign-message` covers the exact message only. `confirm-action` covers only the
+summarized non-payment consequential action.
 
 ## Readiness Rules
 
@@ -83,15 +91,29 @@ still visible.
 
 ## Protected-Action Rules
 
-- Start `run-action` only when an active workflow session exists.
-- Start `run-action` only after the user approves the capability and params
-  for the current site/merchant and visible amount or data.
-- Use only a capability discovered from the current form, vault, or action
-  context. Do not invent a free-form capability name.
-- Provide structured JSON params to `run-action`; do not smuggle protected
-  values through ad-hoc strings or prompts.
-- Use `run-action` for protected capabilities instead of inventing a manual
-  form-fill equivalent.
+- Start typed action commands only when an active workflow session exists.
+- Before `authorize-payment`, collect visible `amount`, `currency`,
+  `recipient`, optional `description`, and optional `recurring` from the
+  current page and the user's task.
+- Prefer merchant/payee names over payment processor names. Use page title,
+  host, or URL only as supporting signals unless they clearly identify the
+  merchant.
+- Ask the user when amount, currency, merchant/payee, recurring status, or
+  task/page facts are missing, conflicting, or ambiguous.
+- Use `magicpay authorize-payment` for payment authorization.
+- Use `magicpay sign-message --item-ref <walletItemId> --message <text>` for
+  wallet message signing, and ask again if the message changes.
+- Use `magicpay confirm-action --summary <text> [--details <text>]` only for
+  consequential actions without a more specific typed command.
+- Keep `itemRef` on the existing selector path. Do not put it inside
+  `params`, and do not change how MagicPay discovers or selects vault items.
+- For approval handoff, add `--return-pending` to the typed action command,
+  then either MagicPay UI approval plus `wait-request` or OTP confirmation
+  plus `wait-request`.
+- Do not ask for OTP until a pending approval request exists. OTP is optional,
+  not a replacement for MagicPay UI approval.
+- Do not print, log, summarize, save, or repeat OTP digits. Treat them as
+  sensitive user input.
 
 ## Profile Match Rules
 
@@ -105,8 +127,12 @@ still visible.
 ## Secrecy And Safety
 
 - Never type, print, summarize, or log protected values manually.
+- Never type, print, summarize, or pass card PAN, CVV, wallet private keys,
+  passwords, or other protected values through action params.
 - Never print, log, summarize, or share `MAGICPAY_API_KEY`, local config, CDP
   endpoints, or vault item ids.
+- Never include OTP digits in logs, reasoning summaries, saved notes, task
+  reports, or command summaries.
 - Base progress claims on the visible form state.
 - After page-level changes, rerun `find-form` before acting on old form refs.
 
@@ -115,8 +141,11 @@ still visible.
 - the prepared page context is missing;
 - the prepared browser/session was not explicitly approved for this task;
 - the next step would submit, login, purchase, send identity data, change an
-  account, run a protected capability, or otherwise commit a consequential
-  action;
+  account, run a protected action, or otherwise commit a consequential action,
+  and there is no matching typed approval for the unchanged current facts;
+- payment authorization facts are missing or ambiguous: final amount,
+  currency, merchant/payee recipient, recurring status, or a conflict between
+  the user's task and the visible checkout page;
 - the form remains ambiguous;
 - approval reaches a terminal blocked state;
 - a profile-field match on a sensitive identity or payment page needs review;
