@@ -1,7 +1,8 @@
 # MagicPay Operating Guide
 
 This reference expands the main skill with the practical rules for running a
-MagicPay task on a prepared page.
+MagicPay product workflow. The product workflow session is the parent; browser
+launch or attach is a child resource inside that active session.
 
 ## Preflight And CLI Health
 
@@ -20,27 +21,30 @@ and handle the output:
 - **`status` reports an invalid or suspended account.** Stop and escalate
   to the user. Do not continue.
 
-## Start From The Prepared Page
+## Start From The Product Session
 
-- If the browser is already on the correct form page and the user approved
-  that browser/session for this task, attach to that browser instead of
-  reopening or navigating it.
+- After preflight, run `magicpay start-session [name]` before any normal
+  MagicPay browser launch or attach.
+- Use `magicpay launch [url]` when MagicPay should create the browser child
+  inside the active product workflow.
+- If another tool or the user already has the correct page open, use
+  `magicpay attach <cdp-url>` only for that approved private browser/session.
 - If the CDP endpoint changes, rerun `magicpay attach` before retrying
-  session-bound commands.
-- If MagicPay is already attached to the same approved endpoint, repeating
-  `attach` is allowed but not required as a setup ritual.
-- Do not carry one workflow session across different browser instances.
-  Keep CDP endpoints private.
-- MagicPay does not own browser teardown. `magicpay end-session` completes
-  only the MagicPay workflow and leaves browser cleanup to the tool or
-  orchestrator that prepared the page.
+  browser-dependent commands.
+- If MagicPay is already bound to the same approved endpoint inside the active
+  workflow, repeating `attach` is allowed but not required as a setup ritual.
+- Do not carry one browser child binding across different product workflow
+  sessions. Keep CDP endpoints private.
+- MagicPay does not own browser teardown. `magicpay close` closes or clears the
+  browser child while leaving the product workflow active. `magicpay
+  end-session` completes the MagicPay workflow.
 
 ## CAPTCHA Recovery
 
 - Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is
   confirmed present on the current page.
-- `solve-captcha` uses the current MagicPay-attached browser session; it does
-  not require `start-session`, close the browser, or create a new one.
+- `solve-captcha` uses the current browser child inside the active MagicPay
+  product workflow. It does not close the browser or create a new one.
 - After the solver returns, continue the normal browser or MagicPay form
   flow from the current page. If the page changed meaningfully, refresh the
   browser observation or rerun `find-form` before using old refs.
@@ -48,9 +52,9 @@ and handle the output:
 ## Form Recovery
 
 - `start-session` attempts to cancel/clear a stale previous workflow binding
-  before it creates the new session. If that recovery is still blocked, start
-  manual recovery with `magicpay status`, then either `magicpay end-session`
-  or a fresh `attach` / `start-session` on the approved browser.
+  before it creates the new product session. If that recovery is still
+  blocked, start manual recovery with `magicpay status`, then either
+  `magicpay end-session` or a fresh `start-session`.
 
 - If `find-form` returns `protected_form_not_found`, confirm that the browser
   is still on the intended login, identity, checkout, donation, subscription,
@@ -59,9 +63,14 @@ and handle the output:
   and ask the user to choose. Do not guess.
 - Use `resolve-form <fillRef>` to resolve and fill the protected form. It does
   not submit.
-- Continue after a successful fill with the browser owner. If MagicBrowse
-  produced a protected-form handoff, use its `handoff.resumeObjective` for the
-  next `magicbrowse act`.
+- Continue after a successful fill with the browser owner, but first refresh
+  the visible page state. If MagicBrowse produced a protected-form handoff,
+  use its `handoff.resumeObjective` for the next `magicbrowse act`.
+- For required non-secret fields that remain empty after the fresh page state,
+  use `resolve-fields <target-id...>` on explicit target ids from that latest
+  observation. Add `--request-missing` only when the field is required for the
+  user task, the matcher can identify it clearly, and it is not an optional
+  newsletter, marketing, promo, survey, analytics, or similar field.
 - Before any consequential browser action, get the matching typed MagicPay
   approval for the current site/merchant, exact action, and visible amount or
   data.
@@ -146,8 +155,12 @@ When one form needs several protected fields:
 
 1. Complete one `find-form -> resolve-form` cycle for each field.
 2. Refresh the current form contract after each fill if the page mutates.
-3. Continue with the browser owner after the protected fill is complete.
-4. Get the matching typed MagicPay approval if the next browser action would
+3. Resolve remaining required open fields from a fresh observation with
+   `resolve-fields`, using `--request-missing` only for explicit required task
+   fields that are safe to ask the user for.
+4. Continue with the browser owner after the required visible fields are
+   complete.
+5. Get the matching typed MagicPay approval if the next browser action would
    submit, purchase, log in, save account settings, or otherwise commit state.
 
 ## After `end-session`

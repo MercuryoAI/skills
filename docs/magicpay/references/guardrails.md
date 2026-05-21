@@ -2,8 +2,9 @@
 
 ## What This Skill Owns
 
-- Attach to a prepared browser page.
-- Start or continue the workflow session for that page.
+- Start or continue the MagicPay product workflow session.
+- Launch or attach an approved browser as a child resource inside that active
+  workflow session.
 - Discover the supported protected form.
 - Resolve protected form targets through MagicPay request paths and fill them
   without submitting.
@@ -12,10 +13,10 @@
   `sign-message`, or `confirm-action`.
 - Complete the MagicPay workflow with `magicpay end-session`, then return
   browser lifecycle decisions to the caller-owned browser tool or
-  orchestrator. MagicPay does not close the browser.
-- Recover from a confirmed real CAPTCHA on the current attached browser page
-  with `solve-captcha`, then call `magicbrowse mark-captcha-resolved` before
-  continuing through MagicBrowse.
+  orchestrator. `magicpay close` closes or clears only the browser child.
+- Recover from a confirmed real CAPTCHA on the current browser child with
+  `solve-captcha`, then call `magicbrowse mark-captcha-resolved` before
+  continuing through MagicBrowse when MagicBrowse owns the next step.
 
 ## Consequential Action Approval
 
@@ -47,6 +48,8 @@ summarized non-payment consequential action.
 - If `status` reports `cliUpdate`, use only
   `npm i -g @mercuryo-ai/magicpay-cli@latest`, then rerun `status`.
 - Use `doctor` only when local config still looks broken after `init`.
+- Normal product work starts with `magicpay start-session` before
+  `magicpay launch` or `magicpay attach`.
 
 Do not print, log, or share `MAGICPAY_API_KEY`, `~/.magicpay/config.json`, CDP
 endpoints, or vault item ids. If the environment is shared or compromised,
@@ -54,24 +57,27 @@ stop and ask the user to revoke or rotate the key.
 
 ## Browser Authority
 
-Use `magicpay attach` only for the prepared browser/session the user approved
-for this task. A CDP endpoint inherits the authority of any logged-in browser
-state. Keep endpoints private and do not paste them into shared logs.
-Run `attach` when MagicPay is not yet bound to the approved prepared
-browser/CDP session, or when the CDP endpoint changed. Re-attaching the same
-endpoint is allowed but is not required as a ritual.
+Use `magicpay launch` or `magicpay attach` only inside an active product
+workflow session. Use `attach` only for the private browser/session the user
+approved for this task. A CDP endpoint inherits the authority of any logged-in
+browser state. Keep endpoints private and do not paste them into shared logs.
+Run `attach` when MagicPay is not yet bound to the approved browser child, or
+when the CDP endpoint changed. Re-attaching the same endpoint is allowed but
+is not required as a ritual.
 
-Browser teardown remains outside MagicPay's authority. If the browser was
-launched as an owned disposable session by another tool, that tool can clean
-up after the overall task is done. If the browser was external, user-owned,
-or handed to the user for inspection, leave it open unless the user explicitly
-approves teardown.
+Browser teardown remains outside MagicPay's product-session authority.
+`magicpay close` closes or clears the browser child while keeping the product
+workflow active. If the browser was launched as an owned disposable session by
+another tool, that tool can clean up after the overall task is done. If the
+browser was external, user-owned, or handed to the user for inspection, leave
+it open unless the user explicitly approves teardown.
 
 ## CAPTCHA Recovery
 
 Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is
-confirmed present on the current attached page. Do not use it as page waiting,
-challenge detection, or a generic retry.
+confirmed present on the current browser child inside the active product
+workflow. Do not use it as page waiting, challenge detection, or a generic
+retry.
 
 When the next step is owned by MagicBrowse and the solve succeeded, call
 `magicbrowse mark-captcha-resolved`, then continue with
@@ -91,7 +97,8 @@ still visible.
 
 ## Protected-Action Rules
 
-- Start typed action commands only when an active workflow session exists.
+- Start typed action commands only when an active product workflow session
+  exists.
 - Before `authorize-payment`, collect visible `amount`, `currency`,
   `recipient`, optional `description`, and optional `recurring` from the
   current page and the user's task.
@@ -120,9 +127,15 @@ still visible.
 - `resolve-fields` refreshes the session-local snapshot of reusable
   open-data facts before matching.
 - Use target ids from the latest observation only.
+- Use `resolve-fields --request-missing` only for explicit observed fields
+  that are required to move the user's task forward and whose meaning is clear.
+- Do not request or fill optional newsletter, marketing, promo, survey,
+  analytics, or similar fields.
 - On sensitive identity or payment pages, review `matched` autofills before
   applying them.
 - Leave `ambiguous` and `no_match` unresolved; do not invent replacements.
+- After each protected or open-field fill, refresh the visible page state
+  before deciding whether the task can continue.
 
 ## Secrecy And Safety
 
@@ -138,8 +151,9 @@ still visible.
 
 ## Ask The User When
 
-- the prepared page context is missing;
-- the prepared browser/session was not explicitly approved for this task;
+- a browser-dependent step is needed but there is no browser child and neither
+  `magicpay launch` nor an approved private CDP endpoint is available;
+- the browser/session to attach was not explicitly approved for this task;
 - the next step would submit, login, purchase, send identity data, change an
   account, run a protected action, or otherwise commit a consequential action,
   and there is no matching typed approval for the unchanged current facts;

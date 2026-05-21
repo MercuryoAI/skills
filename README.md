@@ -11,7 +11,7 @@ A skill is an instruction bundle your AI runtime can load. The skill tells the a
 | If you need this | Choose this surface | Why |
 | --- | --- | --- |
 | Reach a target web page when your own browser tooling cannot do it reliably | `magicbrowse` | LLM-first browser autonomy fallback. Drive a Chrome session by natural-language goals through `magicbrowse act`; use deterministic `observe` plus primitives only when autonomy needs single-element precision. Stops at login, identity, checkout, donation, subscription, payment, and human-verification pages. |
-| A prepared login, identity, checkout, donation, subscription, or payment page needs approved stored values | `magicpay` | Use this when the browser is already on the sensitive page and the remaining work is discovery, approval, protected fill, and browser-owner continuation. |
+| A login, identity, checkout, donation, subscription, or payment workflow needs approved stored values | `magicpay` | Start the MagicPay product session first, then launch or attach the browser as a child resource for discovery, approval, protected fill, and browser-owner continuation. |
 
 ## How to use this catalog
 

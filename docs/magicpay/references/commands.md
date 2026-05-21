@@ -33,46 +33,77 @@ Inspect the local config file when `status` still fails after `init`.
 
 Print the installed CLI version.
 
-## Browser Attach And Session Control
-
-### `magicpay attach <cdp-url> [--provider <name>]`
-
-Connect MagicPay to an already running browser through CDP.
-
-Use only a private CDP endpoint for the prepared browser/session the user
-approved for this task. Treat the endpoint as sensitive because it inherits
-the browser's logged-in state. Run `attach` when MagicPay is not yet bound to
-the approved prepared browser/CDP session, or when the CDP endpoint changed.
-Re-attaching the same endpoint is allowed but is not required as a ritual.
-
-### `magicpay solve-captcha [--timeout <s>]`
-
-Solve a confirmed CAPTCHA on the current attached browser page.
-
-Only call this when a real CAPTCHA is confirmed present. The command uses the
-current MagicPay-attached browser session, does not require `start-session`,
-and does not close or recreate the browser. After a successful solve, continue
-the ordinary browser or protected-form flow from the current page. If the next
-step is through MagicBrowse, call `magicbrowse mark-captcha-resolved`, then
-continue with `magicbrowse act "continue..."`.
+## Product Session And Browser Child Control
 
 ### `magicpay start-session [name] [--merchant-name <name>]`
 
-Bind the attached browser to a MagicPay workflow session.
+Start the MagicPay product workflow session. This is the parent operation for
+normal MagicPay product work; it creates the product workflow before any
+browser child is required.
+
 `start-session` attempts to cancel/clear a stale previous workflow binding
-before it creates the new session. If that recovery is still blocked, start
-manual recovery with `magicpay status`, then either `magicpay end-session` or
-a fresh `attach` / `start-session` on the approved browser.
+before it creates the new product session. If that recovery is still blocked,
+start manual recovery with `magicpay status`, then either `magicpay
+end-session` or a fresh `start-session`.
+
+### `magicpay launch [url] [--profile <name>]`
+
+Launch a browser child inside the active MagicPay product workflow session.
+
+Use this after `magicpay start-session` when MagicPay should create the
+browser execution resource. The optional URL places the new browser child at
+the starting page. The browser child does not replace the product workflow
+identity.
+
+### `magicpay attach <cdp-url> [--provider <name>]`
+
+Attach an already running browser as the browser child inside the active
+MagicPay product workflow session.
+
+Use only a private CDP endpoint for the browser/session the user approved for
+this task. Treat the endpoint as sensitive because it inherits the browser's
+logged-in state. Run `attach` after `start-session` when MagicPay is not yet
+bound to the approved browser child, or when the CDP endpoint changed.
+Re-attaching the same endpoint is allowed but is not required as a ritual.
+
+### `magicpay browser-status`
+
+Inspect the browser child bound to the active MagicPay product workflow.
+
+This is a browser-dependent diagnostic command. Browser-only state is not
+enough; the command requires an active product workflow and a matching browser
+child binding.
+
+### `magicpay close`
+
+Close or clear the browser child bound to the active MagicPay product
+workflow.
+
+This does not end the product workflow session. Use it when the browser child
+should be cleaned up or replaced, then continue the same product workflow with
+another `launch` or `attach` if needed.
+
+### `magicpay solve-captcha [--timeout <s>]`
+
+Solve a confirmed CAPTCHA on the current browser child inside the active
+MagicPay product workflow.
+
+Only call this when a real CAPTCHA is confirmed present. The command uses the
+current bound browser child, and does not close or recreate the browser. After
+a successful solve, continue the ordinary browser or protected-form flow from
+the current page. If the next step is through MagicBrowse, call
+`magicbrowse mark-captcha-resolved`, then continue with `magicbrowse act
+"continue..."`.
 
 ### `magicpay end-session`
 
-Complete the active workflow session without closing the browser.
+Complete the active product workflow session and product root run.
 
 This is workflow completion only. After it succeeds, return control to the
-caller-owned browser lifecycle. A browser tool or orchestrator that launched
-an owned disposable browser may clean up its own session when the overall task
-is done; an external/user-owned browser stays open unless the user explicitly
-approves teardown.
+browser owner. A browser tool or orchestrator that launched an owned
+disposable browser may clean up its own session when the overall task is done;
+an external/user-owned browser stays open unless the user explicitly approves
+teardown. `end-session` does not require a live browser child.
 
 ## Protected-Form Flow
 
@@ -103,6 +134,14 @@ lane stay excluded. The target ids come from the companion browser tool's
 latest observation. In orchestration, auto-fill only `matched` results — never
 invent values for `ambiguous` or `no_match`. If MagicPay cannot refresh open
 data, the command fails closed instead of using stale profile facts.
+
+Without `--request-missing`, the command only matches values already present in
+the session/profile snapshot and never creates a user request. With
+`--request-missing`, the command may create a MagicPay data request for the
+explicit target ids whose field meaning is clear and whose value is missing.
+Use it only for open fields required to advance the current user task. Do not
+use it for optional newsletter, marketing, promo, survey, analytics, or similar
+fields, even when they are visible on the same page.
 
 On sensitive identity or payment pages, review matched profile autofills
 before applying them. Use only target ids from the latest observation.

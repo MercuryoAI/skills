@@ -1,33 +1,37 @@
 # Install MagicPay in OpenClaw
 
-MagicPay helps OpenClaw handle approved login, identity, checkout, donation, subscription, and payment pages: attach to the approved browser session, bind a workflow session, discover the supported form, and fill it with values the user has approved through MagicPay. The main path is `magicpay find-form` -> `magicpay resolve-form <fillRef>`; after the protected fill completes, continue the page through the browser owner, using a MagicBrowse protected-form `handoff.resumeObjective` when one was returned. Consequential actions use typed approvals: `magicpay authorize-payment`, `magicpay sign-message`, or `magicpay confirm-action`. After typed approval, proceed with exactly that action and stop only if page facts changed. MagicPay completes its workflow with `magicpay end-session`, but browser cleanup remains owned by the browser tool or orchestrator that prepared the page.
+MagicPay helps OpenClaw handle approved login, identity, checkout, donation, subscription, and payment pages after the OpenClaw built-in browser, guided by browser-automation, has prepared the page. OpenClaw uses its native `browser` tool for navigation, snapshots, clicks, non-protected fields, screenshots, tab checks, and continuation. MagicPay starts only at the protected or sensitive step: `magicpay start-session` -> `magicpay launch` or approved `magicpay attach` -> `magicpay find-form` -> `magicpay resolve-form <fillRef>`. After MagicPay fills protected values, continue through the OpenClaw built-in browser. MagicBrowse only as fallback when the native browser cannot reliably reach, inspect, or continue the page. Consequential actions use typed approvals: `magicpay authorize-payment`, `magicpay sign-message`, or `magicpay confirm-action`; after typed approval, proceed with exactly that action and stop only if page facts changed.
 
 ## Before you start
 
 - Node.js 18 or later is installed.
 - OpenClaw is installed and working.
+- OpenClaw's built-in `browser` tool is available for normal page preparation and continuation.
 - You have a MagicPay account and API key. Sign up at https://agents.mercuryo.io/signup if needed.
-- The relevant login, identity, checkout, donation, subscription, or payment page is already open in an approved browser session, or another tool can provide an approved private CDP endpoint for it.
+- Browser-dependent MagicPay steps need either a MagicPay-launched browser child or an approved private CDP endpoint after `magicpay start-session`.
 
 ## Ask your agent
 
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill in OpenClaw from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.24 using `magicpay-openclaw-v0.1.24.zip`. Place the extracted `magicpay/` folder directly inside `skills/` or `~/.openclaw/skills/`.
-Treat MagicPay as the helper for prepared login, identity, checkout, donation, subscription, and payment pages.
+Install the `magicpay` skill in OpenClaw from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.25 using `magicpay-openclaw-v0.1.25.zip`. Place the extracted `magicpay/` folder directly inside `skills/` or `~/.openclaw/skills/`.
+Treat MagicPay as the helper for approved login, identity, checkout, donation, subscription, and payment workflows. The product workflow is the parent; the browser is a child resource only for the protected step.
 Ask me for my API key and run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
 Verify the setup with `magicpay status`. If it still fails after init, run `magicpay doctor`.
-Use only the prepared browser/session I approve for this task. Keep my API key, local config, CDP endpoint, and vault item ids private.
-The main form flow is `magicpay find-form` -> `magicpay resolve-form <fillRef>`; after MagicPay fills the protected form, continue through the browser tool or orchestrator that prepared the page. If MagicBrowse returned a protected-form `handoff.resumeObjective`, use that as the next `magicbrowse act` goal. Before a consequential action, get the matching typed MagicPay approval: `magicpay authorize-payment` for payments, `magicpay sign-message` for wallet message signing, or `magicpay confirm-action` for consequential actions without a more specific typed command. After typed approval, proceed with exactly that action and stop only if page facts changed.
-`magicpay end-session` completes only the MagicPay workflow. Browser lifecycle remains owned by the browser tool or orchestrator that prepared the page: clean up an owned disposable browser only after the overall task is done and never close an external or user-owned browser without my explicit teardown approval.
-Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confirmed present on the current MagicPay-attached browser session.
+For navigation and page preparation in OpenClaw, use the OpenClaw built-in browser guided by browser-automation first: open pages, read snapshots, click, fill non-protected fields, check tabs, take screenshots, and continue after MagicPay fills protected values.
+Do not start MagicBrowse as the first browser path in OpenClaw. MagicBrowse only as fallback when the OpenClaw native browser cannot reliably reach, inspect, or continue the page.
+Start `magicpay start-session` only when the task reaches a protected or sensitive MagicPay step, not for generic browsing or page preparation.
+At the protected step, bind the approved browser inside that active product session with `magicpay launch` or approved `magicpay attach <cdp-url>`, then run `magicpay find-form` and `magicpay resolve-form <fillRef>`. After MagicPay fills the protected form, refresh and continue through the OpenClaw built-in `browser` tool. If MagicBrowse was explicitly used as fallback and returned a protected-form `handoff.resumeObjective`, use that as the next `magicbrowse act` goal.
+Before a consequential action, get the matching typed MagicPay approval: `magicpay authorize-payment` for payments, `magicpay sign-message` for wallet message signing, or `magicpay confirm-action` for consequential actions without a more specific typed command. After typed approval, proceed with exactly that action and stop only if page facts changed.
+`magicpay end-session` completes only the MagicPay product workflow. Browser lifecycle remains owned by OpenClaw's browser path; use `magicpay close` only to close or clear the browser child inside the active product session.
+Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confirmed present on the current browser child inside the active MagicPay product session.
 ```
 
 ## What your agent should do
 
-1. Download `magicpay-openclaw-v0.1.24.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.24.
+1. Download `magicpay-openclaw-v0.1.25.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.25.
 2. Extract the archive so the top-level folder is `magicpay/`.
 3. Place `magicpay/` directly inside `skills/` or `~/.openclaw/skills/`.
 4. If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
@@ -43,23 +47,25 @@ Supported skill locations:
 
 1. Ask OpenClaw to run `magicpay status`.
 2. If `magicpay status` still fails after init, run `magicpay doctor` to inspect the local config.
-3. Ask OpenClaw to attach to an approved prepared login, identity, checkout, donation, subscription, or payment page, run `magicpay find-form`, fill it with `magicpay resolve-form <fillRef>`, and continue the page through the browser owner.
+3. Ask OpenClaw to prepare the target page with the OpenClaw built-in browser and browser-automation before starting MagicPay for the protected step.
+4. Confirm the protected-step flow is `magicpay start-session` -> `magicpay launch` or approved `magicpay attach` -> `magicpay find-form` -> `magicpay resolve-form <fillRef>` -> continuation with the OpenClaw built-in browser -> `magicpay end-session`.
+5. Confirm MagicBrowse only as fallback: it should not be the first browser path unless the OpenClaw native browser cannot reliably reach, inspect, or continue the page.
 
 ## Try a first task
 
-Use MagicPay when the browser is already on the relevant login, identity, checkout, donation, subscription, or payment page and the user approved that browser/session for this task. The main form path is `magicpay find-form` -> `magicpay resolve-form <fillRef>`; after the protected fill completes, continue through the browser owner. If MagicBrowse returned a protected-form `handoff.resumeObjective`, use it as the next `magicbrowse act` goal. Before a consequential action, get the matching typed MagicPay approval: `magicpay authorize-payment`, `magicpay sign-message`, or `magicpay confirm-action`. After typed approval, proceed with exactly that action and stop only if page facts changed. `magicpay end-session` ends the MagicPay workflow, then the browser owner decides whether to keep or clean up the browser.
+Do not start MagicBrowse as the first browser path in OpenClaw. First use the OpenClaw built-in browser, guided by browser-automation, to open and prepare the page. Start `magicpay start-session` only when the task reaches a protected or sensitive MagicPay step. Then use `magicpay launch` or approved `magicpay attach`, `magicpay find-form`, and `magicpay resolve-form <fillRef>`. After the protected fill completes, continue through the OpenClaw built-in browser. MagicBrowse only as fallback when the native browser cannot reliably reach, inspect, or continue the page. Before a consequential action, get the matching typed MagicPay approval: `magicpay authorize-payment`, `magicpay sign-message`, or `magicpay confirm-action`.
 
-- Use MagicPay to attach to the approved checkout page, run `magicpay find-form`, fill with `magicpay resolve-form <fillRef>`, then continue the checkout through the browser owner.
-- Use MagicPay to continue the prepared login page; use `magicpay resolve-form <fillRef>`, then resume the login flow through the browser owner.
-- Use MagicPay on the prepared donation or subscription checkout page; fill the protected form, then use the matching typed approval before the final consequential confirmation.
-- Use MagicPay on a prepared payment authorization page; collect visible amount, currency, recipient, optional description, and optional recurring status, then call `magicpay authorize-payment` and continue the approved Pay/Submit only while those facts stay unchanged.
-- Use MagicPay on the already prepared identity-verification form and stop if `magicpay find-form` cannot confidently identify the form or before submitting identity data without a matching typed approval.
+- Use the OpenClaw built-in browser to reach the checkout and complete non-protected fields; at the protected step, run `magicpay start-session`, bind the approved browser with `magicpay launch` or approved `magicpay attach`, run `magicpay find-form`, fill with `magicpay resolve-form <fillRef>`, then continue with OpenClaw `browser`.
+- Use the OpenClaw built-in browser to continue a login page until protected credentials are required; after the product session exists and a browser child is bound, fill with `magicpay resolve-form <fillRef>`, then let OpenClaw `browser` proceed until the next approval boundary.
+- Use MagicPay on a donation or subscription checkout page only after OpenClaw `browser` reaches the protected form; bind the browser child, fill protected values, then use the matching typed approval before the final consequential confirmation.
+- Use MagicPay on a payment authorization page after the OpenClaw built-in browser shows the final facts; collect visible amount, currency, recipient, optional description, and optional recurring status, then call `magicpay authorize-payment` and continue the approved Pay/Submit only while those facts stay unchanged.
+- Use MagicPay on an identity-verification form after OpenClaw `browser` has reached it, and stop if `magicpay find-form` cannot confidently identify the form or before submitting identity data without a matching typed approval.
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking OpenClaw to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.24 using `magicpay-openclaw-v0.1.24.zip`.
+Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking OpenClaw to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.25 using `magicpay-openclaw-v0.1.25.zip`.
 
-1. Download `magicpay-openclaw-v0.1.24.zip`.
+1. Download `magicpay-openclaw-v0.1.25.zip`.
 2. Extract the archive. You should get a folder named `magicpay/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart OpenClaw if you already had a session open.
@@ -77,11 +83,13 @@ Use this fallback only if you want to manage the `magicpay/` folder yourself ins
 - **`magicpay` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicpay-cli@latest`, then verify with `magicpay --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 - **`magicpay status` still fails after init**: Run `magicpay doctor` to inspect the local config.
-- **`magicpay find-form` cannot confidently identify the form**: Confirm the browser is still on the intended page, then rerun `magicpay find-form`.
-- **Confirmed CAPTCHA on the current page**: Use `magicpay solve-captcha [--timeout <s>]` on the current MagicPay-attached browser session, then continue the normal browser or MagicPay form flow.
-- **Need to continue after protected fill**: Continue through the browser owner. If MagicBrowse returned a protected-form handoff, call `magicbrowse act` with `handoff.resumeObjective`; otherwise use the current visible page state to choose the next narrow browser goal.
-- **No prepared browser context**: Open the target page in an approved browser session first and provide a private CDP endpoint before invoking magicpay.
+- **OpenClaw uses MagicBrowse too early**: Return to the OpenClaw built-in browser guided by browser-automation. MagicBrowse only as fallback when the native browser cannot reliably reach, inspect, or continue the page.
+- **`magicpay find-form` cannot confidently identify the form**: Confirm the OpenClaw built-in browser is still on the intended page, then rerun `magicpay find-form`.
+- **Missing product workflow**: Run `magicpay start-session` only when the task reaches the protected or sensitive MagicPay step, before `magicpay launch`, `magicpay attach`, or browser-dependent MagicPay commands.
+- **No browser child**: Run `magicpay launch` or provide an approved private CDP endpoint for `magicpay attach` inside the active product session before browser-dependent MagicPay commands.
+- **Confirmed CAPTCHA on the current page**: Use `magicpay solve-captcha [--timeout <s>]` on the current browser child inside the active product session, then continue the normal OpenClaw browser or MagicPay form flow.
+- **Need to continue after protected fill**: Continue through the OpenClaw built-in browser. If MagicBrowse was explicitly used as fallback and returned a protected-form handoff, call `magicbrowse act` with `handoff.resumeObjective`; otherwise use the current visible page state in OpenClaw `browser` to choose the next narrow browser goal.
 
 ---
 
-This guide is for MagicPay v0.1.24.
+This guide is for MagicPay v0.1.25.

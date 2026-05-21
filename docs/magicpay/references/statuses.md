@@ -1,5 +1,10 @@
 # MagicPay Resolution And Action States
 
+MagicPay product work starts from an active workflow session created with
+`magicpay start-session`. Browser-dependent states below assume a browser
+child has been launched or attached inside that product session. Browser-only
+state is not a MagicPay product workflow.
+
 ## Protected-Form Discovery
 
 - `form_found`
