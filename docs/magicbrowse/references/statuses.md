@@ -6,14 +6,32 @@
 
 - `status: completed | blocked | needs_handoff | needs_approval |
   failed | max_steps | cancelled`
-- `finalMessage: string` — concise terminal report or stop explanation
-- `steps: number` — navigator step count
 - `finalUrl: string | undefined` — last URL the navigator observed
+- `finalMessage: string` — concise terminal report or stop explanation
+- `stepCount: number` — navigator step count
+- `blockedReason?: missing_input | item_unavailable | ambiguous | no_path`
+  — required when `status` is `blocked`
+- `handoff?: { kind, resumeObjective? }` — required when `status` is
+  `needs_handoff`
 
-Branch on `status`. Do not parse `finalMessage` to distinguish task
-success, missing input, handoff, approval, runtime failure, max steps,
-or cancellation. Use `finalMessage` as text to show the user or pass to
-the upstream orchestrator.
+JSON output shape:
+
+```json
+{
+  "type": "result",
+  "status": "needs_handoff",
+  "finalUrl": "https://merchant.example/checkout",
+  "finalMessage": "CAPTCHA challenge shown before the address form.",
+  "handoff": { "kind": "captcha" },
+  "stepCount": 14
+}
+```
+
+Branch on `status`, then on `blockedReason` or `handoff.kind` when
+present. Do not parse `finalMessage` to distinguish task success,
+missing input, handoff subtype, approval, runtime failure, max steps, or
+cancellation. Use `finalMessage` as text to show the user or pass to the
+upstream orchestrator.
 
 CLI exit codes:
 
@@ -39,13 +57,13 @@ controlled browser-task stops and still exit `0`.
 - `blocked` — MagicBrowse cannot continue because ordinary
   non-protected input is missing, the requested item is unavailable,
   the delegated task is ambiguous, or the page state has no reasonable
-  browser path left inside the task.
+  browser path left inside the task. Read `blockedReason`.
 - `needs_handoff` — the task reached protected data or human
   verification: login, password, OTP, identity/KYC data, payment or
   banking fields, API keys/tokens/secrets, CAPTCHA, or a similar human
-  check. Surface `finalMessage` to the user and stop; do not retry
-  through the barrier and do not invent or placeholder protected
-  values.
+  check. Read `handoff.kind`. Surface `finalMessage` to the user and
+  stop; do not retry through the barrier and do not invent or
+  placeholder protected values.
 - `needs_approval` — the next useful action would commit an external
   side effect such as buy, book, pay, send, post, publish, accept
   terms, delete, or save account settings. Ask for approval before the
@@ -59,25 +77,40 @@ controlled browser-task stops and still exit `0`.
 
 ## When `status: blocked`
 
-Treat this as a controlled stop. Ask for the missing ordinary input,
-choose another strategy outside MagicBrowse, or restart from a better
-entry point. Do not blindly rerun the same `act` goal.
+Treat this as a controlled stop. Branch on `blockedReason`:
+
+- `missing_input` — ask the user for the missing ordinary, non-protected
+  input.
+- `item_unavailable` — report that the requested item, route, result,
+  appointment, or option is unavailable; do not retry the same page path.
+- `ambiguous` — ask the user to clarify the delegated browser task or
+  required choice.
+- `no_path` — choose another strategy outside MagicBrowse, restart from
+  a better entry point, or abort.
+
+Do not blindly rerun the same `act` goal.
 
 ## When `status: needs_handoff`
 
-Surface `finalMessage` to the user and stop. The wall is real — auth,
-CAPTCHA, identity entry, payment entry, or some other human check —
-and `magicbrowse` will not pass it. Do not retry the same `act`
+Surface `finalMessage` to the user or orchestrator and stop. The wall is
+real and `magicbrowse` will not pass it. Do not retry the same `act`
 against the same wall. Do not invent credentials, identity values,
 payment values, or CAPTCHA answers, and do not placeholder protected
-fields to slip past. Be honest about the boundary; the user decides
-what happens next.
+fields to slip past.
 
-For protected forms, the result may include
-`handoff: { kind: "protected_form", resumeObjective }`. Pass the handoff to
-the orchestrator or approved protected-data handler, then call
-`magicbrowse act` with that page-local `resumeObjective` after the protected
-fill completes.
+Branch on `handoff.kind`:
+
+- `protected_form` — pass `{ kind: "protected_form", resumeObjective }`
+  to the orchestrator or approved protected-data handler. After the
+  protected fill completes, call `magicbrowse act` with that page-local
+  `resumeObjective`.
+- `captcha` — have the user or an approved external solver clear the
+  CAPTCHA, then run `magicbrowse mark-captcha-resolved` before the next
+  `act`.
+- `auth` — stop and ask the user to authenticate, approve the login, or
+  provide the required auth step through an approved flow.
+- `identity_verification` — stop and ask the user to complete or approve
+  the identity/KYC step through an approved flow.
 
 ## When `status: needs_approval`
 

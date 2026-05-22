@@ -134,6 +134,8 @@ lane stay excluded. The target ids come from the companion browser tool's
 latest observation. In orchestration, auto-fill only `matched` results — never
 invent values for `ambiguous` or `no_match`. If MagicPay cannot refresh open
 data, the command fails closed instead of using stale profile facts.
+Use `matched.value` only to fill the current browser field; do not echo
+open-data PII such as DOB, address, phone, email, or names in reports/logs.
 
 Without `--request-missing`, the command only matches values already present in
 the session/profile snapshot and never creates a user request. With
@@ -145,6 +147,36 @@ fields, even when they are visible on the same page.
 
 On sensitive identity or payment pages, review matched profile autofills
 before applying them. Use only target ids from the latest observation.
+
+### `magicpay save-profile-facts --facts-json <json>`
+
+Save explicit reusable open profile facts that the user chose to provide in
+chat. The JSON must be an object of string facts, for example:
+
+```bash
+magicpay save-profile-facts --facts-json '{"family_name":"Ivanov"}'
+```
+
+The profile fact key space is flexible. Save the explicit key/value facts the
+user chose to provide when they are non-protected and useful for future
+matching. For known web forms, prefer conventional keys such as `given_name`,
+`family_name`, `middle_name`, `full_name`, `email`, `phone`, `country`,
+`nationality`, address-like fields, or task-specific open facts such as
+`seat_preference`. Map page wording to conventional name keys when appropriate:
+First/Given name -> `given_name`; Last name/Surname -> `family_name`; Middle
+name -> `middle_name`; Full name -> `full_name`.
+Do not treat contextual keys or values as protected only because they contain
+words like password, token, key, or card. Classify by fact meaning: a password
+manager name or an API-key rotation policy can be an open profile fact; an
+actual password, token, private key, or card value is protected.
+It is not a protected vault write path. Do not save passwords, OTPs, CVV,
+private keys, payment-card values, or similar secrets through this command;
+chat entry makes those values model-visible.
+
+After a successful save, rerun `magicpay resolve-fields <target-id...>` on a
+fresh observation or the same current explicit target ids. Fill only the
+resulting `matched` targets. Do not fill browser fields directly from the chat
+prompt.
 
 ### `magicpay authorize-payment --amount <number> --currency <code> --recipient <name> [--description <text>] [--recurring <true|false>] [--authorization-ref <ref>] [--item-ref <vaultItemId>] [--return-pending]`
 

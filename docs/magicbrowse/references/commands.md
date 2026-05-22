@@ -114,9 +114,9 @@ Exit codes (mapped from the act `status` field):
 - `130` — `cancelled` (e.g. SIGINT).
 
 `blocked`, `needs_handoff`, and `needs_approval` are controlled
-browser-task stops, not runtime failures. Branch on `status`; use
-`finalMessage` only as the explanation to show the user or upstream
-orchestrator.
+browser-task stops, not runtime failures. Branch on `status`, then on
+`blockedReason` or `handoff.kind` when present; use `finalMessage` only
+as the explanation to show the user or upstream orchestrator.
 
 ### `magicbrowse mark-captcha-resolved [--ttl <s>]`
 

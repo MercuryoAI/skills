@@ -51,8 +51,10 @@ summarized non-payment consequential action.
 - Normal product work starts with `magicpay start-session` before
   `magicpay launch` or `magicpay attach`.
 
-Do not print, log, or share `MAGICPAY_API_KEY`, `~/.magicpay/config.json`, CDP
-endpoints, or vault item ids. If the environment is shared or compromised,
+Do not print, log, or share `MAGICPAY_API_KEY`, `~/.magicpay/config.json`, or
+CDP endpoints. Vault item ids are operational refs: pass them only between
+MagicPay commands that require them, and never show them to the user or put
+them in reports/external logs. If the environment is shared or compromised,
 stop and ask the user to revoke or rotate the key.
 
 ## Browser Authority
@@ -129,10 +131,26 @@ still visible.
 - Use target ids from the latest observation only.
 - Use `resolve-fields --request-missing` only for explicit observed fields
   that are required to move the user's task forward and whose meaning is clear.
+- When required open facts are missing, offer both paths: MagicPay cabinet
+  request as the safest option, or chat-provided open facts saved with
+  `save-profile-facts`.
+- If the user provides facts after choosing the chat path, that is consent to
+  save those explicit facts. If the facts were mentioned earlier, ask
+  confirmation before saving the concrete keys and values.
+- For recognized name facts, use conventional profile keys: First/Given name
+  -> `given_name`; Last name/Surname -> `family_name`; Middle name ->
+  `middle_name`; Full name -> `full_name`. For other explicit reusable facts,
+  use concise semantic keys; the profile world is flexible and not limited to
+  names or personal data.
+- After `save-profile-facts`, rerun fresh `resolve-fields`; never fill
+  directly from chat text.
 - Do not request or fill optional newsletter, marketing, promo, survey,
   analytics, or similar fields.
 - On sensitive identity or payment pages, review `matched` autofills before
   applying them.
+- Use `matched.value` only to fill the current browser field. Do not repeat
+  open-data PII such as DOB, address, phone, email, or names in chat, logs,
+  task reports, or summaries unless explicitly necessary.
 - Leave `ambiguous` and `no_match` unresolved; do not invent replacements.
 - After each protected or open-field fill, refresh the visible page state
   before deciding whether the task can continue.
@@ -142,8 +160,15 @@ still visible.
 - Never type, print, summarize, or log protected values manually.
 - Never type, print, summarize, or pass card PAN, CVV, wallet private keys,
   passwords, or other protected values through action params.
-- Never print, log, summarize, or share `MAGICPAY_API_KEY`, local config, CDP
-  endpoints, or vault item ids.
+- Do not save passwords, OTPs, CVV, private keys, payment-card values, or
+  similar secrets through `save-profile-facts`. Chat entry is model-visible;
+  MagicPay cannot protect secrets the user already put in chat.
+- Do not block contextual open facts only because their key or value contains
+  words such as password, token, key, or card. A password manager name is an
+  open fact; an actual password is protected.
+- Never print, log, summarize, or share `MAGICPAY_API_KEY`, local config, or
+  CDP endpoints. Vault item ids may be passed between MagicPay commands as
+  operational refs, but never show them to the user or external services.
 - Never include OTP digits in logs, reasoning summaries, saved notes, task
   reports, or command summaries.
 - Base progress claims on the visible form state.

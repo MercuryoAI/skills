@@ -104,17 +104,20 @@ as teardown.
 
 - **Auth wall on the partner site.** If the partner OTA gates the
   passenger form behind a sign-in, `act` returns
-  `status: needs_handoff` with `finalMessage` asking the user to log in.
-  The orchestrator surfaces that to the user; it does not retry into
-  the auth wall.
-- **CAPTCHA.** Same status: `needs_handoff`, with `finalMessage`
-  describing the challenge. `magicbrowse` does not solve CAPTCHA. For a
-  confirmed real CAPTCHA on the current approved browser session, have the
-  user or an external solver clear it; after a successful solve, run
-  `magicbrowse mark-captcha-resolved` before the next `act`. Do not invent an
-  answer or retry the same `act` against the wall.
-- **Missing ordinary input.** `status: blocked` means MagicBrowse needs
-  non-protected input or a different strategy before it can continue.
+  `status: needs_handoff` with `handoff.kind: "auth"` and `finalMessage`
+  asking the user to log in. The orchestrator surfaces that to the user; it
+  does not retry into the auth wall.
+- **CAPTCHA.** Same status: `needs_handoff`, with
+  `handoff.kind: "captcha"` and `finalMessage` describing the challenge.
+  `magicbrowse` does not solve CAPTCHA. For a confirmed real CAPTCHA on the
+  current approved browser session, have the user or an external solver clear
+  it; after a successful solve, run `magicbrowse mark-captcha-resolved`
+  before the next `act`. Do not invent an answer or retry the same `act`
+  against the wall.
+- **Missing ordinary input.** `status: blocked` with
+  `blockedReason: "missing_input"` means MagicBrowse needs non-protected
+  input before it can continue. Other `blockedReason` values distinguish
+  unavailable items, ambiguous tasks, and no remaining browser path.
 - **Final booking/payment action.** `status: needs_approval` means the
   page is ready for a consequential action and the user must approve
   the exact visible action before it is executed. A successful typed MagicPay

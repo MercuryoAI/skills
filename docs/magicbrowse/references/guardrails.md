@@ -138,7 +138,7 @@ to the user.
 Both the planner and navigator are instructed to refuse to attempt
 credential entry or solve CAPTCHAs. When `act` runs into either, it
 returns `status: needs_handoff` with a `finalMessage` describing the
-wall — *not* `status: failed`.
+wall and a machine-readable `handoff.kind` — *not* `status: failed`.
 
 - **Do not** retry the same `act` after a CAPTCHA or auth-wall handoff.
   The same prompt will hit the same wall.
@@ -147,13 +147,14 @@ wall — *not* `status: failed`.
 - **Do not** invent credentials, identity values, payment values, or
   CAPTCHA answers to get past the wall. Do not placeholder protected
   data either.
-- **Do** surface `finalMessage` to the user or orchestrator. When the result
-  includes `handoff: { kind: "protected_form", resumeObjective }`, pass the
-  handoff to the approved protected-data handler, then call
-  `magicbrowse act` with that `resumeObjective` after the fill completes. For
-  a confirmed real CAPTCHA on the current approved browser session, have the
-  user or an external solver clear it; after a successful solve, run
-  `magicbrowse mark-captcha-resolved` before the next `act`. If the next
+- **Do** surface `finalMessage` to the user or orchestrator and branch on
+  `handoff.kind`. For `protected_form`, pass
+  `{ kind: "protected_form", resumeObjective }` to the approved
+  protected-data handler, then call `magicbrowse act` with that
+  `resumeObjective` after the fill completes. For `captcha`, have the user
+  or an external solver clear it; after a successful solve, run
+  `magicbrowse mark-captcha-resolved` before the next `act`. For `auth` or
+  `identity_verification`, stop for the user or approved flow. If the next
   `act` still returns `needs_handoff`, the wall was not cleared; do not
   re-mark.
 

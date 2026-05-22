@@ -48,6 +48,9 @@ and handle the output:
 - After the solver returns, continue the normal browser or MagicPay form
   flow from the current page. If the page changed meaningfully, refresh the
   browser observation or rerun `find-form` before using old refs.
+- When continuation is owned by MagicBrowse, run
+  `magicbrowse mark-captcha-resolved` after a successful solve and before the
+  next `magicbrowse act`.
 
 ## Form Recovery
 
@@ -61,6 +64,15 @@ and handle the output:
   or payment step before retrying.
 - If `find-form` returns `protected_form_ambiguous`, surface the candidates
   and ask the user to choose. Do not guess.
+- If `find-form` returns `verification_required`, treat it as a CAPTCHA,
+  anti-bot, auth, or human-verification boundary; solve only confirmed real
+  CAPTCHA through `solve-captcha`, otherwise stop for the user.
+- If `find-form` returns `redirect_loss`, stop; the checkout, booking, or cart
+  context is already gone.
+- If `find-form` returns `protected_form_match_unusable`, read
+  `diagnostics.safeNextActions` and fail closed. Do not fill protected data.
+- If `find-form` returns `matcher_unavailable`, fail closed or retry only
+  after the page/tooling state changes.
 - Use `resolve-form <fillRef>` to resolve and fill the protected form. It does
   not submit.
 - Continue after a successful fill with the browser owner, but first refresh
@@ -68,9 +80,21 @@ and handle the output:
   use its `handoff.resumeObjective` for the next `magicbrowse act`.
 - For required non-secret fields that remain empty after the fresh page state,
   use `resolve-fields <target-id...>` on explicit target ids from that latest
-  observation. Add `--request-missing` only when the field is required for the
-  user task, the matcher can identify it clearly, and it is not an optional
-  newsletter, marketing, promo, survey, analytics, or similar field.
+  observation. If a required open fact is missing, tell the user exactly which
+  facts are missing and offer both paths: create a MagicPay request with
+  `resolve-fields <target-id...> --request-missing` so they fill the MagicPay
+  cabinet, or accept explicit chat-provided open facts and save them with
+  `save-profile-facts`. The MagicPay cabinet is the safest path; chat entry is
+  convenient but model-visible.
+- After `save-profile-facts`, rerun a fresh `resolve-fields` before filling.
+  Do not fill directly from the prompt. Do not request, save, or fill optional
+  newsletter, marketing, promo, survey, analytics, or similar fields.
+- When saving chat-provided name facts, use canonical profile keys: First/Given
+  name -> `given_name`; Last name/Surname -> `family_name`; Middle name ->
+  `middle_name`; Full name -> `full_name`.
+- For other chat-provided reusable facts, use concise semantic keys such as
+  `seat_preference`; the profile world is flexible and not limited to names or
+  personal data.
 - Before any consequential browser action, get the matching typed MagicPay
   approval for the current site/merchant, exact action, and visible amount or
   data.
@@ -156,8 +180,9 @@ When one form needs several protected fields:
 1. Complete one `find-form -> resolve-form` cycle for each field.
 2. Refresh the current form contract after each fill if the page mutates.
 3. Resolve remaining required open fields from a fresh observation with
-   `resolve-fields`, using `--request-missing` only for explicit required task
-   fields that are safe to ask the user for.
+   `resolve-fields`. For missing open facts, offer the MagicPay cabinet
+   request path first and the chat-provided `save-profile-facts` path as the
+   model-visible convenience. After saving, rerun `resolve-fields`.
 4. Continue with the browser owner after the required visible fields are
    complete.
 5. Get the matching typed MagicPay approval if the next browser action would
