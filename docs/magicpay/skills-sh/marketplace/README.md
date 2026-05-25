@@ -13,7 +13,7 @@ MagicPay helps compatible AI agents handle approved login, identity, checkout, d
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill from skills.sh using `npx skills add MercuryoAI/skills/skills-sh/magicpay --skill magicpay --yes --copy`.
+Install the `magicpay` skill from skills.sh using `npx skills add MercuryoAI/skills-sh --skill magicpay --yes --copy`.
 Treat MagicPay as the helper for approved login, identity, checkout, donation, subscription, and payment workflows. The product workflow is the parent; browser work is a child resource when MagicPay needs browser-dependent execution.
 Ask me for my API key and run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
@@ -30,13 +30,13 @@ Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confir
 
 ## Install source
 
-- Preferred path: install the universal MagicPay skill through `npx skills add MercuryoAI/skills/skills-sh/magicpay --skill magicpay --yes --copy`.
-- skills.sh source path: `MercuryoAI/skills/skills-sh/magicpay`
+- Preferred path: install the universal MagicPay skill through `npx skills add MercuryoAI/skills-sh --skill magicpay --yes --copy`.
+- skills.sh source repository: `MercuryoAI/skills-sh`
 - After install, ask the agent to request your API key and run `magicpay init <your-api-key>`.
 
 ## What your agent should do
 
-1. Install the `magicpay` skill with `npx skills add MercuryoAI/skills/skills-sh/magicpay --skill magicpay --yes --copy`.
+1. Install the `magicpay` skill with `npx skills add MercuryoAI/skills-sh --skill magicpay --yes --copy`.
 2. If the skills CLI asks for an agent target, choose the current agent or the universal `.agents/skills` path.
 3. Request your API key and run `magicpay init <your-api-key>`.
 4. Verify the install with `magicpay status`; MagicPay product workflows should start with `magicpay start-session`, and browser preparation should use the current agent's native browser automation before MagicBrowse when it is available.
@@ -71,7 +71,7 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ## Update or reinstall
 
-1. Ask your agent to rerun `npx skills add MercuryoAI/skills/skills-sh/magicpay --skill magicpay --yes --copy`, or use the skills CLI update command if the source is already tracked.
+1. Ask your agent to rerun `npx skills add MercuryoAI/skills-sh --skill magicpay --yes --copy`, or use the skills CLI update command if the source is already tracked.
 2. If prompted, provide your API key again and rerun `magicpay init <your-api-key>`.
 3. Start a fresh agent session if the current session still does not see the updated skill.
 
@@ -89,4 +89,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for MagicPay v0.1.28.
+This guide is for MagicPay v0.1.29.

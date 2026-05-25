@@ -30,7 +30,7 @@ This repository is generated from the private release source. Use `manifests/<sk
 | Runtime install guides | `docs/<skill>/<runtime>/{direct,marketplace}/README.md` | Copy/paste prompts for your agent, including init, verification, and manual fallback steps. |
 | OpenClaw ClawHub | ClawHub plus `docs/<skill>/openclaw/marketplace/README.md` | Preferred OpenClaw install path; direct zip remains a fallback. |
 | Hermes GitHub hub/tap | `skills/<skill>/SKILL.md` | Add the `MercuryoAI/skills` tap in Hermes, then install the skill from `MercuryoAI/skills/skills/<skill>`. |
-| skills.sh / universal agents | `skills-sh/<skill>/SKILL.md` plus `skills.sh.json` | Install with `npx skills add MercuryoAI/skills/skills-sh/<skill> --skill <skill> --yes --copy`; skills.sh can list the repo after the CLI sees this public source. |
+| skills.sh / universal agents | Separate `MercuryoAI/skills-sh` repository | Install with `npx skills add MercuryoAI/skills-sh --skill <skill> --yes --copy`; the skills.sh repo keeps the canonical `skills/<skill>/SKILL.md` layout. |
 
 ## Start with the right guide
 
@@ -56,7 +56,6 @@ MagicPay helper for approved login, identity, checkout, donation, subscription, 
 
 - `docs/` contains generated installation guides by skill and runtime.
 - `skills/` contains Hermes GitHub hub/tap payloads when a runtime exposes them.
-- `skills-sh/` contains universal skills.sh payloads when a runtime exposes them.
-- `skills.sh.json` customizes the skills.sh repository page after the repository is seen by the skills CLI telemetry service.
+- Universal skills.sh payloads are published from the separate `MercuryoAI/skills-sh` repository.
 - `manifests/` contains per-skill release metadata and owner/bin mappings.
 - `surface-manifest.json` describes the exported public artifact set.
