@@ -91,4 +91,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for MagicPay v0.1.30.
+This guide is for MagicPay v0.1.31.
