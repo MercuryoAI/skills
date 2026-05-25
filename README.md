@@ -29,8 +29,8 @@ This repository is generated from the private release source. Use `manifests/<sk
 | GitHub Releases | Release assets on `magicbrowse-v*` and `magicpay-v*` tags | Direct zip installs for runtimes that load local skill folders. Use the runtime direct guide for the exact archive name and install path. |
 | Runtime install guides | `docs/<skill>/<runtime>/{direct,marketplace}/README.md` | Copy/paste prompts for your agent, including init, verification, and manual fallback steps. |
 | OpenClaw ClawHub | ClawHub plus `docs/<skill>/openclaw/marketplace/README.md` | Preferred OpenClaw install path; direct zip remains a fallback. |
-| Hermes GitHub hub/tap | `skills/<skill>/SKILL.md` | Add the `MercuryoAI/skills` tap in Hermes, then install the skill from `MercuryoAI/skills/skills/<skill>`. |
-| skills.sh / universal agents | Separate `MercuryoAI/skills-sh` repository | Install with `npx skills add MercuryoAI/skills-sh --skill <skill> --yes --copy`; the skills.sh repo keeps the canonical `skills/<skill>/SKILL.md` layout. |
+| Hermes GitHub hub/tap | `hermes/<skill>/SKILL.md` | Add the `MercuryoAI/skills` tap in Hermes, then install the skill from `MercuryoAI/skills/hermes/<skill>`. |
+| skills.sh / universal agents | `skills/<skill>/SKILL.md` in this repository | Install with `npx skills add MercuryoAI/skills --skill <skill> --yes --copy`; skills.sh URLs stay under `mercuryoai/skills/<skill>`. |
 
 ## Start with the right guide
 
@@ -55,7 +55,8 @@ MagicPay helper for approved login, identity, checkout, donation, subscription, 
 ## Layout
 
 - `docs/` contains generated installation guides by skill and runtime.
-- `skills/` contains Hermes GitHub hub/tap payloads when a runtime exposes them.
-- Universal skills.sh payloads are published from the separate `MercuryoAI/skills-sh` repository.
+- `skills/` contains universal skills.sh payloads.
+- `hermes/` contains Hermes GitHub hub/tap payloads.
 - `manifests/` contains per-skill release metadata and owner/bin mappings.
+- `skills.sh.json` customizes the skills.sh repository page.
 - `surface-manifest.json` describes the exported public artifact set.

@@ -1,12 +1,13 @@
 ---
 name: magicpay
-description: MagicPay CLI skill for approved login, identity, checkout,
-  donation, subscription, and payment pages in compatible AI agents. Use when an
-  agent needs to start a MagicPay product workflow, prefer the current agent's
-  native browser for page preparation and continuation when available, use
-  MagicBrowse only as fallback when needed, bind an approved browser as a child
-  resource, request user-approved MagicPay values, fill protected forms, and
-  continue through the browser owner.
+description: Handle approved login, identity, checkout, donation, subscription,
+  payment pages, and typed action approvals through the magicpay CLI in Hermes.
+  Start MagicPay with `magicpay start-session` as soon as the task is identified
+  as a MagicPay workflow; prefer Hermes native browser automation for page
+  preparation and continuation, with MagicBrowse only as fallback.
+author: Mercuryo
+license: MIT
+metadata: {"hermes":{"tags":["payment","browser","checkout","identity","login","magicpay"],"related_skills":["magicbrowse"],"requires_toolsets":["terminal"]}}
 ---
 
 MagicPay is for approved product workflows that need stored user data and
@@ -52,6 +53,26 @@ Use this skill when the remaining product work is to:
 MagicPay works best as a focused companion to a browsing tool. It owns the
 protected product workflow; the browser is only the execution resource used
 inside that workflow.
+
+## Hermes Native Browser Preference
+
+When this skill runs in Hermes, do not start MagicBrowse as the first browser
+path. Prefer Hermes native browser automation for normal page work: opening and
+preparing pages, checking current page state, filling non-protected fields, and
+continuing after MagicPay fills a protected form.
+
+This does not change the MagicPay product order. If the user task is a MagicPay
+workflow, run `magicpay status` or config recovery, then `magicpay start-session`
+before browser preparation. The active MagicPay product workflow is the parent;
+Hermes native browser automation is the normal page-work owner when available,
+and MagicPay binds a browser child only when a MagicPay browser-dependent
+command needs one.
+
+Use MagicBrowse only as fallback if Hermes native browser automation is
+unavailable or cannot reliably reach, inspect, or continue the page. If native
+browser automation is unavailable in the current Hermes session, do not attempt
+unavailable browser tools; use MagicBrowse or a MagicPay-launched browser
+fallback while keeping `magicpay start-session` as the product workflow parent.
 
 ## Hard Rules
 

@@ -31,13 +31,13 @@ Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confir
 ## Install source
 
 - Preferred path: add `MercuryoAI/skills` as a Hermes GitHub tap, then install `magicpay` from that tap.
-- Direct Hermes identifier: `MercuryoAI/skills/skills/magicpay`
+- Direct Hermes identifier: `MercuryoAI/skills/hermes/magicpay`
 - After install, ask Hermes to request your API key and run `magicpay init <your-api-key>`.
 
 ## What your agent should do
 
 1. Add the MercuryoAI skills tap with `hermes skills tap add MercuryoAI/skills` if it is not already configured.
-2. Install the `magicpay` skill from `MercuryoAI/skills/skills/magicpay`.
+2. Install the `magicpay` skill from `MercuryoAI/skills/hermes/magicpay`.
 3. Request your API key and run `magicpay init <your-api-key>`.
 4. Verify the install with `magicpay status`; MagicPay product workflows should start with `magicpay start-session`, and browser preparation should use Hermes native browser automation before MagicBrowse when it is available.
 5. Start a fresh Hermes session if the current session does not see the installed skill.
@@ -92,4 +92,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for MagicPay v0.1.29.
+This guide is for MagicPay v0.1.30.
