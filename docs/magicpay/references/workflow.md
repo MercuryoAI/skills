@@ -37,7 +37,7 @@ and handle the output:
   sessions. Keep CDP endpoints private.
 - MagicPay does not own browser teardown. `magicpay close` closes or clears the
   browser child while leaving the product workflow active. `magicpay
-  end-session` completes the MagicPay workflow.
+end-session` completes the MagicPay workflow.
 
 ## CAPTCHA Recovery
 
@@ -45,56 +45,43 @@ and handle the output:
   confirmed present on the current page.
 - `solve-captcha` uses the current browser child inside the active MagicPay
   product workflow. It does not close the browser or create a new one.
-- After the solver returns, continue the normal browser or MagicPay form
-  flow from the current page. If the page changed meaningfully, refresh the
-  browser observation or rerun `find-form` before using old refs.
+- After the solver returns, continue the normal browser or MagicPay Memory
+  fill flow from the current page. If the page changed meaningfully, refresh
+  the browser observation or rerun `magicpay plan-fill` before using an old
+  plan.
 - When continuation is owned by MagicBrowse, run
   `magicbrowse mark-captcha-resolved` after a successful solve and before the
   next `magicbrowse act`.
 
-## Form Recovery
+## Memory Fill Recovery
 
 - `start-session` attempts to cancel/clear a stale previous workflow binding
   before it creates the new product session. If that recovery is still
   blocked, start manual recovery with `magicpay status`, then either
   `magicpay end-session` or a fresh `start-session`.
 
-- If `find-form` returns `protected_form_not_found`, confirm that the browser
-  is still on the intended login, identity, checkout, donation, subscription,
-  or payment step before retrying.
-- If `find-form` returns `protected_form_ambiguous`, surface the candidates
-  and ask the user to choose. Do not guess.
-- If `find-form` returns `verification_required`, treat it as a CAPTCHA,
-  anti-bot, auth, or human-verification boundary; solve only confirmed real
-  CAPTCHA through `solve-captcha`, otherwise stop for the user.
-- If `find-form` returns `redirect_loss`, stop; the checkout, booking, or cart
-  context is already gone.
-- If `find-form` returns `protected_form_match_unusable`, read
-  `diagnostics.safeNextActions` and fail closed. Do not fill protected data.
-- If `find-form` returns `matcher_unavailable`, fail closed or retry only
-  after the page/tooling state changes.
-- Use `resolve-form <fillRef>` to resolve and fill the protected form. It does
-  not submit.
+- Run `magicpay plan-fill --request-json <json>` on the current page before
+  applying saved Memory. Use only purpose/options in the request; do not pass
+  raw values, target matches, catalogs, materializers, browser writers, or page
+  target lists.
+- If `plan-fill` reports `matcher_unavailable`, fail closed or retry only after
+  the gateway/tooling state changes. Do not fall back to deterministic matching.
+- If `plan-fill` reports a non-blocking blocker
+  `payment_card.authorization_required`, the backend is saying that a
+  provider-backed payment card exists but this active MagicPay workflow session
+  is not authorized to reveal card handles yet. This is not a matcher failure
+  and not a reason to ask for PAN/CVV. If the task needs that card, collect the
+  visible payment authorization facts, run `magicpay authorize-payment`, then
+  rerun `plan-fill` for the current page.
+- If the page changed after planning, rerun `plan-fill` instead of applying a
+  stale plan.
+- Run `magicpay apply-fill --request-json '{}'` for the active plan. It fills
+  planned fields only and does not submit the page.
 - Continue after a successful fill with the browser owner, but first refresh
-  the visible page state. If MagicBrowse produced a protected-form handoff,
-  use its `handoff.resumeObjective` for the next `magicbrowse act`.
-- For required non-secret fields that remain empty after the fresh page state,
-  use `resolve-fields <target-id...>` on explicit target ids from that latest
-  observation. If a required open fact is missing, tell the user exactly which
-  facts are missing and offer both paths: create a MagicPay request with
-  `resolve-fields <target-id...> --request-missing` so they fill the MagicPay
-  cabinet, or accept explicit chat-provided open facts and save them with
-  `save-profile-facts`. The MagicPay cabinet is the safest path; chat entry is
-  convenient but model-visible.
-- After `save-profile-facts`, rerun a fresh `resolve-fields` before filling.
-  Do not fill directly from the prompt. Do not request, save, or fill optional
-  newsletter, marketing, promo, survey, analytics, or similar fields.
-- When saving chat-provided name facts, use canonical profile keys: First/Given
-  name -> `given_name`; Last name/Surname -> `family_name`; Middle name ->
-  `middle_name`; Full name -> `full_name`.
-- For other chat-provided reusable facts, use concise semantic keys such as
-  `seat_preference`; the profile world is flexible and not limited to names or
-  personal data.
+  the visible page state.
+- If required fields remain empty after Memory fill, ask the user how to
+  proceed or stop. Do not invent values and do not fill directly from chat
+  text.
 - Before any consequential browser action, get the matching typed MagicPay
   approval for the current site/merchant, exact action, and visible amount or
   data.
@@ -105,8 +92,9 @@ and handle the output:
   `magicpay confirm-otp --otp <digits>`, then `magicpay wait-request`. If
   they approve in MagicPay UI, skip `confirm-otp` and still run
   `magicpay wait-request`.
-- If `resolve-form` or a typed action command returns `denied`, `expired`, `failed`,
-  `canceled`, or `timeout`, stop the protected path and report the exact state.
+- If `apply-fill` or a typed action command returns `denied`, `expired`,
+  `failed`, `canceled`, or `timeout`, stop the MagicPay path and report the
+  exact state.
 - After typed approval, proceed with exactly that action; stop only if page
   facts changed.
 
@@ -150,7 +138,7 @@ Escalate to the user when:
 - visible checkout facts conflict with the user's stated task.
 
 Do not change existing `itemRef` behavior while collecting payment facts.
-`itemRef` remains a vault item selector outside action params. Do not type,
+`itemRef` remains a Memory item selector outside action params. Do not type,
 print, or pass card PAN, CVV, wallet private keys, passwords, or other
 protected values through the agent prompt or action params.
 
@@ -159,30 +147,25 @@ protected payment artifact use, payment form fill, and final Pay/Submit are
 covered while `amount`, `currency`, `recipient`, and `recurring` stay
 unchanged. Stop and ask again if any of those facts change.
 
-### Recovery sequence for changed form bindings
+### Recovery Sequence For Changed Fill Plans
 
-When `resolve-form` returns `form_changed` or the protected form is no longer
-present, the stored `fillRef` no longer matches the live DOM. Do not retry
-with the same `fillRef`.
+When the page changes after planning, the stored Memory plan may no longer
+match the live DOM. Do not retry with the same stale plan.
 
 1. Let the page settle — wait for any in-flight re-render to finish.
-2. Run `find-form` on the current page to get a fresh `fillRef`.
-3. If `find-form` returns `protected_form_not_found`, the browser is no
-   longer on the target step. Ask the user or re-navigate; do not guess.
-4. If `find-form` returns a new `fillRef`, call
-   `resolve-form <newFillRef>`.
-5. Do not reuse any `fillRef` from before step 2.
+2. Run `magicpay plan-fill --request-json <json>` on the current page.
+3. If planning cannot produce safe matches, ask the user or re-navigate; do
+   not guess.
+4. If planning succeeds, call `magicpay apply-fill --request-json '{}'`.
+5. Do not reuse a plan from before step 2.
 
 ## Multiple Sensitive Fields
 
-When one form needs several protected fields:
+When one form needs several saved Memory fields:
 
-1. Complete one `find-form -> resolve-form` cycle for each field.
-2. Refresh the current form contract after each fill if the page mutates.
-3. Resolve remaining required open fields from a fresh observation with
-   `resolve-fields`. For missing open facts, offer the MagicPay cabinet
-   request path first and the chat-provided `save-profile-facts` path as the
-   model-visible convenience. After saving, rerun `resolve-fields`.
+1. Run one `magicpay plan-fill` for the current page.
+2. Run `magicpay apply-fill` for the active plan.
+3. Refresh the current page state after fill if the page mutates.
 4. Continue with the browser owner after the required visible fields are
    complete.
 5. Get the matching typed MagicPay approval if the next browser action would
@@ -212,8 +195,9 @@ Stop and report back when:
   timeout state;
 - OTP is invalid, expired, or exhausted and the request cannot continue through
   another supported approval path;
-- the browser is no longer on the intended protected page;
-- the form stays ambiguous after rerunning discovery;
+- the browser is no longer on the intended sensitive page;
+- Memory planning stays ambiguous or unavailable after rerunning it on the
+  current page;
 - the next step would submit or run a sensitive action and there is no
   matching typed approval for the unchanged current site/merchant, action, and
   visible amount or data;

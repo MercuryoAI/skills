@@ -14,7 +14,7 @@ MagicBrowse gives Claude Code a browser automation fallback for real web pages: 
 Copy this request into your agent session:
 
 ```text
-Install the `magicbrowse` skill in Claude Code from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.11 using `magicbrowse-claude-code-v0.1.11.zip`. Place the extracted `magicbrowse/` folder directly inside `.claude/skills/` or `~/.claude/skills/`.
+Install the `magicbrowse` skill in Claude Code from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.12 using `magicbrowse-claude-code-v0.1.12.zip`. Place the extracted `magicbrowse/` folder directly inside `.claude/skills/` or `~/.claude/skills/`.
 Treat MagicBrowse as a browser automation fallback. Use it only when your own browser tooling cannot reach a target page reliably.
 Ask me for my API key and run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
@@ -25,7 +25,7 @@ Stop at login, identity, checkout, donation, subscription, and payment pages and
 
 ## What your agent should do
 
-1. Download `magicbrowse-claude-code-v0.1.11.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.11.
+1. Download `magicbrowse-claude-code-v0.1.12.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.12.
 2. Extract the archive so the top-level folder is `magicbrowse/`.
 3. Place `magicbrowse/` directly inside `.claude/skills/` or `~/.claude/skills/`.
 4. If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
@@ -53,9 +53,9 @@ Use MagicBrowse as a fallback when your own browser tooling cannot reach a targe
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicbrowse/` folder yourself instead of asking Claude Code to install it from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.11 using `magicbrowse-claude-code-v0.1.11.zip`.
+Use this fallback only if you want to manage the `magicbrowse/` folder yourself instead of asking Claude Code to install it from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.12 using `magicbrowse-claude-code-v0.1.12.zip`.
 
-1. Download `magicbrowse-claude-code-v0.1.11.zip`.
+1. Download `magicbrowse-claude-code-v0.1.12.zip`.
 2. Extract the archive. You should get a folder named `magicbrowse/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart Claude Code if you already had a session open.
@@ -83,4 +83,4 @@ Use this fallback only if you want to manage the `magicbrowse/` folder yourself 
 
 ---
 
-This guide is for MagicBrowse v0.1.11.
+This guide is for MagicBrowse v0.1.12.

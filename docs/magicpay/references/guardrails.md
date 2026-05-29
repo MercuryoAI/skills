@@ -5,9 +5,8 @@
 - Start or continue the MagicPay product workflow session.
 - Launch or attach an approved browser as a child resource inside that active
   workflow session.
-- Discover the supported protected form.
-- Resolve protected form targets through MagicPay request paths and fill them
-  without submitting.
+- Plan Memory field fill with `magicpay plan-fill`.
+- Apply approved Memory values with `magicpay apply-fill` without submitting.
 - Return post-fill browser continuation to the browser owner.
 - Run typed protected action approvals through `authorize-payment`,
   `sign-message`, or `confirm-action`.
@@ -29,10 +28,9 @@ MagicPay approval for:
 - the visible amount, account, identity, or other data being submitted;
 - whether the user wants final submission now.
 
-MagicPay fills protected forms only. After `resolve-form <fillRef>`, continue
-with the browser owner. If MagicBrowse produced a protected-form handoff, use
-its `handoff.resumeObjective` for the next `magicbrowse act`. Do not treat a
-filled protected form as approval to submit.
+MagicPay fills planned fields only. After `magicpay apply-fill`, continue with
+the browser owner from a refreshed page state. Do not treat filled fields as
+approval to submit.
 
 After typed approval, proceed with exactly that action; do not ask for a
 second approval unless approved page facts changed. `authorize-payment` covers
@@ -43,7 +41,7 @@ summarized non-payment consequential action.
 
 ## Readiness Rules
 
-- Use `magicpay status` before a new protected-form task.
+- Use `magicpay status` before a new MagicPay Memory fill task.
 - If `status` reports a missing or invalid API key, run `magicpay init`.
 - If `status` reports `cliUpdate`, use only
   `npm i -g @mercuryo-ai/magicpay-cli@latest`, then rerun `status`.
@@ -88,14 +86,23 @@ external participant resolved CAPTCHA for this page; MagicBrowse still checks
 the actual page state and must stop again if CAPTCHA or human verification is
 still visible.
 
-## Protected-Form Rules
+## Memory Fill Rules
 
-- Start from a current `find-form` result, not from old assumptions.
-- Do not call `resolve-form` on an old `fillRef` after page changes.
-- Use `--item-ref` only when you intentionally want one specific vault item.
-- Use `resolve-form <fillRef>` to fill and stop.
-- If `resolve-form` reports `form_changed`, refresh the page state and rerun
-  `find-form` before retrying.
+- Start from `magicpay plan-fill --request-json <json>` on the current page,
+  not from old assumptions.
+- Do not apply a stale plan after page changes.
+- Keep the plan request small: purpose/options only, never raw values, target
+  matches, Memory catalogs, materializers, browser writers, or page target
+  lists.
+- Treat `payment_card.authorization_required` as a non-blocking Memory
+  availability state: the card exists, but provider-backed card handles remain
+  hidden until `authorize-payment` succeeds in the active workflow session.
+  Never ask for raw card details or route around this state through lower-level
+  materialization calls.
+- Use `magicpay apply-fill --request-json '{}'` to fill and stop before final
+  commitment controls.
+- If apply reports that the page changed, refresh the page state and rerun
+  `magicpay plan-fill` before retrying.
 
 ## Protected-Action Rules
 
@@ -115,7 +122,7 @@ still visible.
 - Use `magicpay confirm-action --summary <text> [--details <text>]` only for
   consequential actions without a more specific typed command.
 - Keep `itemRef` on the existing selector path. Do not put it inside
-  `params`, and do not change how MagicPay discovers or selects vault items.
+  `params`, and do not change how MagicPay discovers or selects Memory items.
 - For approval handoff, add `--return-pending` to the typed action command,
   then either MagicPay UI approval plus `wait-request` or OTP confirmation
   plus `wait-request`.
@@ -124,55 +131,21 @@ still visible.
 - Do not print, log, summarize, save, or repeat OTP digits. Treat them as
   sensitive user input.
 
-## Profile Match Rules
-
-- `resolve-fields` refreshes the session-local snapshot of reusable
-  open-data facts before matching.
-- Use target ids from the latest observation only.
-- Use `resolve-fields --request-missing` only for explicit observed fields
-  that are required to move the user's task forward and whose meaning is clear.
-- When required open facts are missing, offer both paths: MagicPay cabinet
-  request as the safest option, or chat-provided open facts saved with
-  `save-profile-facts`.
-- If the user provides facts after choosing the chat path, that is consent to
-  save those explicit facts. If the facts were mentioned earlier, ask
-  confirmation before saving the concrete keys and values.
-- For recognized name facts, use conventional profile keys: First/Given name
-  -> `given_name`; Last name/Surname -> `family_name`; Middle name ->
-  `middle_name`; Full name -> `full_name`. For other explicit reusable facts,
-  use concise semantic keys; the profile world is flexible and not limited to
-  names or personal data.
-- After `save-profile-facts`, rerun fresh `resolve-fields`; never fill
-  directly from chat text.
-- Do not request or fill optional newsletter, marketing, promo, survey,
-  analytics, or similar fields.
-- On sensitive identity or payment pages, review `matched` autofills before
-  applying them.
-- Use `matched.value` only to fill the current browser field. Do not repeat
-  open-data PII such as DOB, address, phone, email, or names in chat, logs,
-  task reports, or summaries unless explicitly necessary.
-- Leave `ambiguous` and `no_match` unresolved; do not invent replacements.
-- After each protected or open-field fill, refresh the visible page state
-  before deciding whether the task can continue.
-
 ## Secrecy And Safety
 
 - Never type, print, summarize, or log protected values manually.
 - Never type, print, summarize, or pass card PAN, CVV, wallet private keys,
   passwords, or other protected values through action params.
-- Do not save passwords, OTPs, CVV, private keys, payment-card values, or
-  similar secrets through `save-profile-facts`. Chat entry is model-visible;
-  MagicPay cannot protect secrets the user already put in chat.
-- Do not block contextual open facts only because their key or value contains
-  words such as password, token, key, or card. A password manager name is an
-  open fact; an actual password is protected.
+- Do not pass raw Memory values through chat, logs, reports, summaries, or
+  public command arguments.
 - Never print, log, summarize, or share `MAGICPAY_API_KEY`, local config, or
   CDP endpoints. Vault item ids may be passed between MagicPay commands as
   operational refs, but never show them to the user or external services.
 - Never include OTP digits in logs, reasoning summaries, saved notes, task
   reports, or command summaries.
 - Base progress claims on the visible form state.
-- After page-level changes, rerun `find-form` before acting on old form refs.
+- After page-level changes, rerun `magicpay plan-fill` before acting on old
+  fill plans.
 
 ## Ask The User When
 
@@ -185,7 +158,6 @@ still visible.
 - payment authorization facts are missing or ambiguous: final amount,
   currency, merchant/payee recipient, recurring status, or a conflict between
   the user's task and the visible checkout page;
-- the form remains ambiguous;
+- Memory planning remains ambiguous or unavailable;
 - approval reaches a terminal blocked state;
-- a profile-field match on a sensitive identity or payment page needs review;
 - client-side validation or merchant-specific recovery needs a human choice.

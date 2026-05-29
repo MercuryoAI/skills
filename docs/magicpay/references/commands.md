@@ -1,9 +1,9 @@
 # MagicPay Command Guide
 
-The hard rules from `SKILL.md` apply to every command: protect the
-MagicPay API key and CDP endpoint, use only the browser/session approved
-for this task, keep protected form resolution to fill-only, and
-get the matching typed MagicPay approval before any submit, protected action,
+The hard rules from `SKILL.md` apply to every current command: protect the
+MagicPay API key and CDP endpoint, use only the browser/session approved for
+this task, keep Memory fill to plan/apply without final submission, and get
+the matching typed MagicPay approval before any submit, protected action,
 purchase, login, identity submission, account change, or other consequential
 action.
 
@@ -23,7 +23,7 @@ revoke the key before continuing.
 ### `magicpay status`
 
 Check CLI health, authenticated identity, and update state. Use this as the
-normal preflight command before a protected-form task.
+normal preflight command before a MagicPay Memory fill task.
 
 ### `magicpay doctor`
 
@@ -90,8 +90,8 @@ MagicPay product workflow.
 
 Only call this when a real CAPTCHA is confirmed present. The command uses the
 current bound browser child, and does not close or recreate the browser. After
-a successful solve, continue the ordinary browser or protected-form flow from
-the current page. If the next step is through MagicBrowse, call
+a successful solve, continue the ordinary browser or Memory fill flow from the
+current page. If the next step is through MagicBrowse, call
 `magicbrowse mark-captcha-resolved`, then continue with `magicbrowse act
 "continue..."`.
 
@@ -105,78 +105,57 @@ disposable browser may clean up its own session when the overall task is done;
 an external/user-owned browser stays open unless the user explicitly approves
 teardown. `end-session` does not require a live browser child.
 
-## Protected-Form Flow
+## Memory Fill
 
-### `magicpay find-form [--purpose <auto|login|identity|payment_card>]`
+### `magicpay plan-fill --request-json <json>`
 
-Discover the supported protected form on the current page and return the
-current protected-form contract.
+Run `magicpay plan-fill` before `magicpay apply-fill` to plan Memory field fill
+from the active browser page. The request should be a small options object such
+as `{}` or `{"purpose":"checkout"}`. The command observes the current page,
+fetches value-free Memory descriptors from MagicPay, asks the Memory matcher for
+semantic target matches, validates the model output, and stores a short-lived
+fill plan in the active workflow.
 
-### `magicpay resolve-form <fillRef> [--item-ref <vaultItemId>] [--refresh-fields <field1,field2>]`
+Do not pass target matches, Memory catalogs, raw values, materializers, browser
+writers, or page target lists in the request. The plan result must remain
+handles-only. If the Memory matcher is unavailable, fail closed and report the
+blocked state instead of guessing.
 
-Resolve one protected form target through MagicPay. The CLI creates the
-request, waits for the result, and fills the target. It does not submit the
-form. Use `--item-ref` to pin one vault item instead of letting MagicPay choose
-from the available candidates. Use `--refresh-fields` to ask MagicPay to
-refresh selected stored fields while resolving the current form.
+When MagicPay Memory has a provider-backed payment card but the active
+workflow session has not been authorized for payment-card reveal, `plan-fill`
+keeps the plan value-free and reports machine state instead of card handles:
 
-After a successful fill, continue the browser task through the browser owner.
-If MagicBrowse produced a protected-form handoff, call `magicbrowse act` with
-the returned `handoff.resumeObjective`.
-
-### `magicpay resolve-fields <target-id...>`
-
-Refresh the session-local open-data snapshot, then match one or more observed
-non-secret target ids against that fresh snapshot (name, email, phone, locale,
-date of birth, address, and similar reusable public facts). Returns `matched`,
-`ambiguous`, or `no_match` per target. Targets already owned by the protected
-lane stay excluded. The target ids come from the companion browser tool's
-latest observation. In orchestration, auto-fill only `matched` results — never
-invent values for `ambiguous` or `no_match`. If MagicPay cannot refresh open
-data, the command fails closed instead of using stale profile facts.
-Use `matched.value` only to fill the current browser field; do not echo
-open-data PII such as DOB, address, phone, email, or names in reports/logs.
-
-Without `--request-missing`, the command only matches values already present in
-the session/profile snapshot and never creates a user request. With
-`--request-missing`, the command may create a MagicPay data request for the
-explicit target ids whose field meaning is clear and whose value is missing.
-Use it only for open fields required to advance the current user task. Do not
-use it for optional newsletter, marketing, promo, survey, analytics, or similar
-fields, even when they are visible on the same page.
-
-On sensitive identity or payment pages, review matched profile autofills
-before applying them. Use only target ids from the latest observation.
-
-### `magicpay save-profile-facts --facts-json <json>`
-
-Save explicit reusable open profile facts that the user chose to provide in
-chat. The JSON must be an object of string facts, for example:
-
-```bash
-magicpay save-profile-facts --facts-json '{"family_name":"Ivanov"}'
+```json
+{
+  "kind": "payment_card.authorization_required",
+  "category": "payment_card",
+  "status": "authorization_required",
+  "reason": "payment_authorization_required",
+  "blocking": false
+}
 ```
 
-The profile fact key space is flexible. Save the explicit key/value facts the
-user chose to provide when they are non-protected and useful for future
-matching. For known web forms, prefer conventional keys such as `given_name`,
-`family_name`, `middle_name`, `full_name`, `email`, `phone`, `country`,
-`nationality`, address-like fields, or task-specific open facts such as
-`seat_preference`. Map page wording to conventional name keys when appropriate:
-First/Given name -> `given_name`; Last name/Surname -> `family_name`; Middle
-name -> `middle_name`; Full name -> `full_name`.
-Do not treat contextual keys or values as protected only because they contain
-words like password, token, key, or card. Classify by fact meaning: a password
-manager name or an API-key rotation policy can be an open profile fact; an
-actual password, token, private key, or card value is protected.
-It is not a protected vault write path. Do not save passwords, OTPs, CVV,
-private keys, payment-card values, or similar secrets through this command;
-chat entry makes those values model-visible.
+The CLI also adds a diagnostic warning explaining that the card exists and
+requires payment authorization before reveal. If the card is needed for the
+current payment, collect `amount`, `currency`, `recipient`, optional
+`description`, and optional `recurring`, run `magicpay authorize-payment`,
+then rerun `plan-fill` for the current page. Do not ask the user for raw card
+details and do not bypass this through lower-level Memory or materialization
+calls.
 
-After a successful save, rerun `magicpay resolve-fields <target-id...>` on a
-fresh observation or the same current explicit target ids. Fill only the
-resulting `matched` targets. Do not fill browser fields directly from the chat
-prompt.
+### `magicpay apply-fill --request-json <json>`
+
+Run `magicpay plan-fill` before `magicpay apply-fill`; apply only the active
+Memory fill plan. Use `{}` for the normal active-plan path, or pass a documented
+plan selector if a recovery flow needs it. The command refreshes the browser
+page state, materializes only the approved values needed by the plan, writes the
+planned fields through the browser bridge, and stops before final commitment
+actions.
+
+After a successful fill, refresh the visible page state through the browser
+owner and continue from that state. Use typed action approval before any final
+Pay, Book, Send, Submit, login, identity submission, account change, or other
+consequential action.
 
 ### `magicpay authorize-payment --amount <number> --currency <code> --recipient <name> [--description <text>] [--recurring <true|false>] [--authorization-ref <ref>] [--item-ref <vaultItemId>] [--return-pending]`
 
@@ -194,9 +173,9 @@ checkout/review page and the user's task:
 - `recurring` — optional boolean; ask the user if recurring status matters and
   is unclear.
 
-`--item-ref` remains the existing vault item selector path. It is not placed in
+`--item-ref` remains the existing Memory item selector. It is not placed in
 `params`, and this command does not change how MagicPay discovers or selects
-vault items.
+Memory items.
 
 After successful approval, continue with that exact payment: protected payment
 artifact use, payment form fill, and final Pay/Submit are covered while
