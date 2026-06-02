@@ -190,7 +190,7 @@ the same browser bridge as `apply-fill`. It returns the same apply-style shape:
 Optional `projectionPart` is allowed for explicit typed recovery: `year`,
 `month`, `day`, `country_code`, `national_number`, `given`, `family`,
 `segment_1`, `segment_2`, `segment_3`, or `segment_4`. Unsupported parts return
-projection diagnostics; do not invent substring or slice operations.
+projection diagnostics.
 
 Do not use `fill-field` as the default fill path, do not pass raw values, and
 do not pass target lists, Memory catalogs, materializers, or browser writers.

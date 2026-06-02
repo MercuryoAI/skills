@@ -129,6 +129,21 @@ MagicPay Memory holds saved items and field descriptors. The public fill path
 uses value-free descriptors and opaque refs during planning, then materializes
 only the approved values needed by the active plan during apply.
 
+Treat a Memory item as a user-owned reusable data record, not as a single field.
+The item label is the human-readable name for that record and should describe
+the group of fields that future fills may choose together. Good labels name the
+purpose: `Airline login`, `Traveler profile`, `Home shipping address`, `Wallet`,
+or `Facts about user`. Do not put raw values in the label, do not use one field
+name as the item label when the item contains a broader record, and do not create
+one item per field unless the user is saving one truly standalone fact.
+
+Use `Facts about user` only for global profile facts with no narrower record.
+Use narrower labels for site/account-specific logins, traveler profiles,
+addresses, wallets, payment-related records, and other coherent groups. When
+chat-provided reusable facts need saving, list Memory items first, update the
+semantically suitable editable item, and create a new item only when no suitable
+record exists.
+
 The user's MagicPay Memory holds reusable items with stable field names,
 human-readable hints, opaque refs, and optional public value types. Field names
 are stable identifiers chosen by the product/runtime, such as `username`,
