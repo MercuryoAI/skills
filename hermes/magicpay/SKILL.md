@@ -160,18 +160,23 @@ MagicPay Memory holds saved items and field descriptors. The public fill path
 uses value-free descriptors and opaque refs during planning, then materializes
 only the approved values needed by the active plan during apply.
 
-The user's MagicPay vault holds items in four categories:
+The user's MagicPay Memory holds reusable items with stable field names,
+human-readable hints, opaque refs, and optional public value types. Field names
+are stable identifiers chosen by the product/runtime, such as `username`,
+`password`, `full_name`, `date_of_birth`, or `phone`; hints explain when a
+field is useful without containing raw values.
 
-- `login` — username, password (e.g. a ChatGPT or merchant login).
-- `identity` — full name, date of birth, contact, address, nationality,
-  travel-document fields.
-- `payment_card` — cardholder, PAN, expiry, CVV.
-- `wallet` — wallet address, chain.
+Public editable value types are only:
 
-Schemas are fixed on the server (`login.basic`, `identity.basic`,
-`identity.document`, `payment_card.provider`, `wallet.default`). An agent
-does not invent new categories or field names — it works with what the
-current form declares and matches it to what the user has stored.
+- `date` — canonical value `YYYY-MM-DD`;
+- `phone_number` — canonical E.164 value, for example `+14155550100`;
+- `person_name` — non-empty full name string.
+
+When no value type is present, Memory fill treats the field as ordinary direct
+fill and does not split or normalize it. Internal card value types such as
+`payment_card_number` and `payment_card_expiry` belong only to provider-backed
+payment-card Memory surfaced by MagicPay after authorization; do not set or
+request those types through public Memory CRUD.
 
 Do not assume emptiness or abundance from prior context. If you need to know
 whether saved Memory can fill the current page, run `magicpay plan-fill` and
@@ -198,7 +203,7 @@ workflow session after the matching payment authorization is approved.
 For MagicPay JSON output, branch on fields in this order: `success`, then
 `outcomeType`, then command-specific `error`, `reason`, or `fill.outcome`.
 Use `message` and prose `reason` as user-facing text only. Do not parse text
-to discover whether a result is `protected_form_not_found`,
+to discover whether a result is `memory_fill_required`,
 `secret_validation_failed`, `verification_required`, or another machine code.
 
 ## Core Flow
@@ -353,7 +358,7 @@ Ask the user only when:
   `recurring` from visible checkout facts first, and ask the user if any of
   those facts are missing, conflicting, or ambiguous.
 - Do not change existing `itemRef` selector behavior. Keep `itemRef` outside
-  action params and use it only when intentionally selecting a known vault
+  action params and use it only when intentionally selecting a known Memory
   item.
 - Keep Memory matching LLM-first. Do not match fields deterministically by
   label, field type, field key, or refs.

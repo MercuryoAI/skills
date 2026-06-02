@@ -50,7 +50,7 @@ summarized non-payment consequential action.
   `magicpay launch` or `magicpay attach`.
 
 Do not print, log, or share `MAGICPAY_API_KEY`, `~/.magicpay/config.json`, or
-CDP endpoints. Vault item ids are operational refs: pass them only between
+CDP endpoints. Memory item ids are operational refs: pass them only between
 MagicPay commands that require them, and never show them to the user or put
 them in reports/external logs. If the environment is shared or compromised,
 stop and ask the user to revoke or rotate the key.
@@ -139,7 +139,7 @@ still visible.
 - Do not pass raw Memory values through chat, logs, reports, summaries, or
   public command arguments.
 - Never print, log, summarize, or share `MAGICPAY_API_KEY`, local config, or
-  CDP endpoints. Vault item ids may be passed between MagicPay commands as
+  CDP endpoints. Memory item ids may be passed between MagicPay commands as
   operational refs, but never show them to the user or external services.
 - Never include OTP digits in logs, reasoning summaries, saved notes, task
   reports, or command summaries.

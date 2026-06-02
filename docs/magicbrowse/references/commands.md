@@ -9,8 +9,8 @@ compatibility, or one-shot developer use.
 The hard rules from `SKILL.md` apply to every command: use a fresh
 browser by default, get explicit approval before using an existing
 profile/CDP session, stop before consequential actions unless a matching typed
-MagicPay approval covers unchanged page facts, and stop at protected forms —
-never invent or placeholder protected data.
+MagicPay approval covers unchanged page facts, and stop at memory fills —
+never invent or placeholder Memory data.
 
 ## Setup And Readiness
 
@@ -24,7 +24,7 @@ test gateway.
 Current CLI compatibility note: the persisted config path and environment
 override names still use the existing `~/.magicpay/config.json`,
 `MAGICPAY_API_KEY`, and `MAGICPAY_API_URL` names. Treat these as gateway
-configuration names, not protected-form ownership.
+configuration names, not memory-fill ownership.
 
 Exit codes: `0` on success, `1` if `<apiKey>` is missing.
 

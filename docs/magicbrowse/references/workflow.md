@@ -57,12 +57,12 @@ Note: the planner navigated through a redirect from the meta-search to
 a partner OTA. That is expected — do not add "stay on the same host"
 to the goal; it would break almost every real booking flow.
 
-## Granule 3 — Reach the protected boundary
+## Granule 3 — Reach the Memory boundary
 
 ```text
 $ magicbrowse act "Fill the passenger first/last name and contact email with placeholder values, then proceed until the page shows the payment form. Do not enter any payment details yourself."
 ... ...
-{ "status": "needs_handoff", "finalMessage": "Payment page displayed with card number / expiry / CVV fields. Payment entry is protected — surface to the user.", "handoff": { "kind": "protected_form", "resumeObjective": "Continue the checkout from the filled payment form to the next merchant response." }, ... }
+{ "status": "needs_handoff", "finalMessage": "Payment page displayed with card number / expiry / CVV fields. Payment entry is Memory-managed — surface to the user.", "handoff": { "kind": "memory_fill", "resumeObjective": "Continue the checkout from the filled payment form to the next merchant response." }, ... }
 ```
 
 The goal explicitly reminds the planner not to enter payment details.
@@ -71,12 +71,12 @@ fields by default; the explicit instruction is a belt-and-braces note
 for the host's own log.
 
 > **Stop here.** The next step — typing into the payment fields — is
-> the protected boundary. `magicbrowse` does not enter credentials,
+> the Memory boundary. `magicbrowse` does not enter credentials,
 > identity data, or payment data. Surface `finalMessage` to the user
 > and let them decide what happens next. If the result includes
-> `handoff.kind: "protected_form"`, pass that handoff to the orchestrator or
-> approved protected-data handler. The browser owner can resume with
-> `handoff.resumeObjective` after the protected fill completes.
+> `handoff.kind: "memory_fill"`, pass that handoff to the orchestrator or
+> MagicPay Memory fill workflow. The browser owner can resume with
+> `handoff.resumeObjective` after the Memory fill completes.
 
 ## Surface and cleanup
 
@@ -89,9 +89,9 @@ $ magicbrowse close
 closed current magicbrowse session ...
 ```
 
-If the next step is a protected-data workflow on the current page, do not close
+If the next step is a Memory fill workflow on the current page, do not close
 the browser before that handoff completes. Keep the browser available for the
-orchestrator, the user, or the approved protected-data handler. Close only if
+orchestrator, the user, or the MagicPay Memory fill workflow. Close only if
 MagicBrowse launched an owned disposable browser for this task and the user
 does not need to inspect or take over the page.
 
@@ -115,7 +115,7 @@ as teardown.
   before the next `act`. Do not invent an answer or retry the same `act`
   against the wall.
 - **Missing ordinary input.** `status: blocked` with
-  `blockedReason: "missing_input"` means MagicBrowse needs non-protected
+  `blockedReason: "missing_input"` means MagicBrowse needs ordinary
   input before it can continue. Other `blockedReason` values distinguish
   unavailable items, ambiguous tasks, and no remaining browser path.
 - **Final booking/payment action.** `status: needs_approval` means the
@@ -134,7 +134,7 @@ as teardown.
 
 - ✗ A single `act "book the cheapest non-stop London → Lisbon and pay
   with my card"` — combines four strategic decisions into one task and
-  crosses the protected-form boundary.
+  crosses the memory-fill boundary.
 - ✗ `magicbrowse run --url ... --goal ...` — the bundled `close`
   destroys session continuity; a multi-step workflow must use
   `launch → act … act → close`.
@@ -143,4 +143,4 @@ as teardown.
   planner memory; re-narration is a granularity smell.
 - ✗ Driving payment fields with `type` or `fill`, or placeholdering
   real card/identity data to push past the form. Stop at the boundary
-  and surface to the user — never fabricate protected values.
+  and surface to the user — never fabricate Memory values.

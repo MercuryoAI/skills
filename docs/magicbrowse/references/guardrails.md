@@ -31,12 +31,12 @@ When LLM-backed `act` reaches this boundary, it returns
 `status: needs_approval`. Treat that as a controlled stop, not a
 browser failure.
 
-## Protected-Form Boundary
+## Memory Fill Boundary
 
-The `magicbrowse` skill ends at the boundary of any protected form.
+The `magicbrowse` skill ends at the boundary of any memory fill.
 It gets the host *to* the form; it never *into* it. Reach the page,
-stop before entering protected values, and return the handoff to the
-orchestrator or approved protected-data handler.
+stop before entering Memory values, and return the handoff to the
+orchestrator or MagicPay Memory fill workflow.
 
 **Forbidden field categories.** Do not use `act`, `type`, `fill`, or
 `select` on:
@@ -54,7 +54,7 @@ orchestrator or approved protected-data handler.
   number, account number, billing-address fields when they are part
   of the card form.
 - **Vault- or secret-store-sourced values.** Any value whose origin is
-  the user's vault, password manager, or other secret store, even if
+  the user's Memory, password manager, or other Memory store, even if
   the field type itself looks generic.
 - **Any value you do not legitimately have.** If you do not know it,
   do not guess and do not fabricate.
@@ -62,16 +62,16 @@ orchestrator or approved protected-data handler.
 The planner and navigator already refuse credential entry at the LLM
 layer. This guardrail raises that refusal from a probabilistic LLM
 behaviour to a host-facing contract: even if the planner *would*
-refuse, the host must not attempt it. Stop before entering protected
+refuse, the host must not attempt it. Stop before entering Memory-managed
 values, surface the situation to the user or orchestrator, and never invent
-or placeholder protected values. Be honest about what `magicbrowse` cannot
+or placeholder Memory values. Be honest about what `magicbrowse` cannot
 do.
 
 The narrow exception is **placeholder values to traverse a
-non-protected screen** (e.g. typing dummy passenger names to reach
+ordinary screen** (e.g. typing dummy passenger names to reach
 the payment page in a flight booking flow). Do not type real
 identity data; use semantically obvious placeholders. The moment a
-field starts asking for something protected, stop.
+field starts asking for something Memory-managed, stop.
 
 ## Act Before Snapshot Primitives
 
@@ -130,7 +130,7 @@ current page context.
 
 Avoid private, sensitive, or unrelated pages unless the user approves
 that workflow. Do not use vision mode on sensitive pages unless it is
-explicitly required and approved. At protected forms, stop and surface
+explicitly required and approved. At memory fills, stop and surface
 to the user.
 
 ## CAPTCHA And Auth Walls
@@ -145,12 +145,12 @@ wall and a machine-readable `handoff.kind` — *not* `status: failed`.
 - **Do not** try to solve CAPTCHA through `magicbrowse`. MagicBrowse does not
   solve CAPTCHA.
 - **Do not** invent credentials, identity values, payment values, or
-  CAPTCHA answers to get past the wall. Do not placeholder protected
+  CAPTCHA answers to get past the wall. Do not placeholder Memory-managed
   data either.
 - **Do** surface `finalMessage` to the user or orchestrator and branch on
-  `handoff.kind`. For `protected_form`, pass
-  `{ kind: "protected_form", resumeObjective }` to the approved
-  protected-data handler, then call `magicbrowse act` with that
+  `handoff.kind`. For `memory_fill`, pass
+  `{ kind: "memory_fill", resumeObjective }` to the approved
+  Memory fill workflow, then call `magicbrowse act` with that
   `resumeObjective` after the fill completes. For `captcha`, have the user
   or an external solver clear it; after a successful solve, run
   `magicbrowse mark-captcha-resolved` before the next `act`. For `auth` or
@@ -167,7 +167,7 @@ wall and a machine-readable `handoff.kind` — *not* `status: failed`.
 - `magicbrowse close` is teardown or recovery, never a success
   signal. Task success or stop reason comes from the `act` `status`;
   `finalMessage` explains that outcome. Use it after handoff work is done,
-  not as part of protected-data handoff completion itself.
+  not as part of Memory handoff completion itself.
 - `magicbrowse act` can exit `0` for controlled stops such as `blocked`,
   `needs_handoff`, and `needs_approval`. Branch on `status`, not on the shell
   exit code.
@@ -187,5 +187,5 @@ wall and a machine-readable `handoff.kind` — *not* `status: failed`.
   book, buy, order, pay, publish, or otherwise commit a consequential
   change, and there is no matching typed MagicPay approval for unchanged page
   facts;
-- the task crosses into a protected form — stop and surface, do not
-  improvise, guess, or placeholder protected values.
+- the task crosses into a memory fill — stop and surface, do not
+  improvise, guess, or placeholder Memory values.

@@ -20,7 +20,7 @@ Ask me for my API key and run `magicbrowse init <your-api-key>`. The CLI uses th
 If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
 Verify the setup with `magicbrowse doctor`. The primary workflow is `magicbrowse launch <url>` -> one or more `magicbrowse act "<goal>"` -> `magicbrowse close`.
 Use a fresh browser by default. Do not attach to an existing CDP endpoint, named profile, or user-data directory unless I explicitly approve that browser/session for this task.
-Stop at login, identity, checkout, donation, subscription, and payment pages and return a protected handoff for the orchestrator or approved protected-data handler. Also ask me before submitting, posting, sending, saving, deleting, booking, buying, ordering, paying, accepting terms, or changing account data/settings, unless a matching typed MagicPay approval already covers the unchanged page facts.
+Stop at login, identity, checkout, donation, subscription, and payment pages and return a Memory fill handoff for the orchestrator. Also ask me before submitting, posting, sending, saving, deleting, booking, buying, ordering, paying, accepting terms, or changing account data/settings, unless a matching typed MagicPay approval already covers the unchanged page facts.
 ```
 
 ## Install source
@@ -72,10 +72,10 @@ Use the manual path only if you want to manage the skill files yourself instead 
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 - **`magicbrowse doctor` still fails after `magicbrowse init`**: Inspect the persisted gateway config for a malformed key or wrong gateway URL.
 - **Browser launch is unavailable**: Use an environment that allows Chrome startup, or explicitly approve a private CDP endpoint for this task before using attach.
-- **`magicbrowse act` returns `status: needs_handoff`**: Surface the message to the user. If the result includes `handoff.kind: protected_form`, pass it to the orchestrator or approved protected-data handler, then resume MagicBrowse with `handoff.resumeObjective` after the fill is complete. For a confirmed real CAPTCHA, use an external solver or user action, then `magicbrowse mark-captcha-resolved` before the next MagicBrowse step.
+- **`magicbrowse act` returns `status: needs_handoff`**: Surface the message to the user. If the result includes `handoff.kind: memory_fill`, pass it to the orchestrator's MagicPay Memory fill workflow, then resume MagicBrowse with `handoff.resumeObjective` after the fill is complete. For a confirmed real CAPTCHA, use an external solver or user action, then `magicbrowse mark-captcha-resolved` before the next MagicBrowse step.
 - **`magicbrowse act` returns `status: blocked` or `status: needs_approval`**: Ask for the missing input or exact approval instead of treating it as a runtime failure.
 - **`magicbrowse act` returns `status: max_steps`**: The granule was too large or vague. Split the task on a page-change boundary or tighten the goal's expected terminal state.
-- **The task reaches a login, identity, checkout, donation, subscription, or payment page**: Stop before protected data entry and return the handoff to the orchestrator or approved protected-data handler.
+- **The task reaches a login, identity, checkout, donation, subscription, or payment page**: Stop before Memory-managed data entry and return the handoff to the orchestrator.
 - **The next step would submit, post, send, save, delete, book, buy, order, pay, or accept terms**: Stop and ask for explicit approval before executing that final action.
 - **Concurrent workflows clobbering each other**: Set a distinct `MAGICBROWSE_HOME` per workflow; the default `~/.magicbrowse/current-session.json` is a singleton.
 
