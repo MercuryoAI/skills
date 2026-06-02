@@ -39,6 +39,11 @@ while `amount`, `currency`, `recipient`, and `recurring` stay unchanged.
 `sign-message` covers the exact message only. `confirm-action` covers only the
 summarized non-payment consequential action.
 
+After any approved submit, observe the resulting page before claiming success,
+progress, or failure. If the page is still on the same form with validation
+errors, classify the visible result before choosing a recovery path. Do not
+infer or reveal hidden Memory values from the error text.
+
 ## Readiness Rules
 
 - Use `magicpay status` before a new MagicPay Memory fill task.
@@ -49,11 +54,13 @@ summarized non-payment consequential action.
 - Normal product work starts with `magicpay start-session` before
   `magicpay launch` or `magicpay attach`.
 
-Do not print, log, or share `MAGICPAY_API_KEY`, `~/.magicpay/config.json`, or
-CDP endpoints. Memory item ids are operational refs: pass them only between
-MagicPay commands that require them, and never show them to the user or put
-them in reports/external logs. If the environment is shared or compromised,
-stop and ask the user to revoke or rotate the key.
+Do not print, log, or share `MAGICPAY_API_KEY`, the local MagicPay config
+file, or CDP endpoints. The config file is `~/.magicpay/config.json` by
+default or `$MAGICPAY_HOME/config.json` when `MAGICPAY_HOME` is set. Memory
+item ids are operational refs: pass them only between MagicPay commands that
+require them, and never show them to the user or put them in reports/external
+logs. If the environment is shared or compromised, stop and ask the user to
+revoke or rotate the key.
 
 ## Browser Authority
 
@@ -88,8 +95,9 @@ still visible.
 
 ## Memory Fill Rules
 
-- Start from `magicpay plan-fill --request-json <json>` on the current page,
-  not from old assumptions.
+- Start from `magicpay plan-fill` on the current page, not from old
+  assumptions. Use `--planner-hint <text>` only for short human-readable
+  context when needed.
 - Do not apply a stale plan after page changes.
 - Keep the plan request small: purpose/options only, never raw values, target
   matches, Memory catalogs, materializers, browser writers, or page target
@@ -99,8 +107,14 @@ still visible.
   hidden until `authorize-payment` succeeds in the active workflow session.
   Never ask for raw card details or route around this state through lower-level
   materialization calls.
-- Use `magicpay apply-fill --request-json '{}'` to fill and stop before final
-  commitment controls.
+- Use `magicpay apply-fill` to fill and stop before final commitment controls.
+- Use `magicpay fill-field` only as value-free recovery when the higher-level
+  plan/apply path missed a visible field or chose the wrong target. The agent
+  may bind Memory refs to observed target refs; it must not pass raw values.
+- If Memory candidates are ambiguous, explain the displayed candidate facts to
+  the user and submit the selected `choiceId` with
+  `magicpay choose-memory --choice <choiceId>`. Do not use labels or list
+  positions as CLI selectors.
 - If apply reports that the page changed, refresh the page state and rerun
   `magicpay plan-fill` before retrying.
 
@@ -144,6 +158,8 @@ still visible.
 - Never include OTP digits in logs, reasoning summaries, saved notes, task
   reports, or command summaries.
 - Base progress claims on the visible form state.
+- Base post-submit success claims on a fresh observed result page, not on the
+  click/submit action itself.
 - After page-level changes, rerun `magicpay plan-fill` before acting on old
   fill plans.
 

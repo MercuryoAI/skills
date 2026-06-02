@@ -82,7 +82,9 @@ inside that workflow.
 > mandatory, and do not reveal, store, repeat, or summarize OTP digits.
 
 > **Credential and browser authority are sensitive.** Do not print, log, or
-> share `MAGICPAY_API_KEY`, `~/.magicpay/config.json`, or CDP endpoints.
+> share `MAGICPAY_API_KEY`, the local MagicPay config file
+> (`~/.magicpay/config.json` by default or `$MAGICPAY_HOME/config.json`), or
+> CDP endpoints.
 > Memory refs and item ids are operational refs: pass them only between
 > MagicPay commands; do not show them to the user, include them in reports, or
 > send them to external tools.
@@ -198,10 +200,10 @@ to discover whether a result is `memory_fill_required`,
      continue the normal browser or MagicPay form flow on the same page.
    - **On a failed or timed-out solve**, do not call
      `magicbrowse mark-captcha-resolved`. Surface the failure to the user.
-5. Plan the Memory fill: `magicpay plan-fill --request-json <json>`.
-   Use a small request such as `{"purpose":"checkout"}` or `{}`. Do not pass
-   page targets, target matches, Memory catalogs, raw values, materializers, or
-   browser writers.
+5. Plan the Memory fill: `magicpay plan-fill`.
+   If the planner needs context, pass a short human-readable
+   `--planner-hint <text>`. Do not pass page targets, target matches, Memory
+   catalogs, raw values, materializers, or browser writers.
    - If the returned plan has a non-blocking blocker
      `payment_card.authorization_required` or a warning that the Memory store
      contains a payment card but authorization is required, treat it as
@@ -210,10 +212,14 @@ to discover whether a result is `memory_fill_required`,
      card, collect `amount`, `currency`, `recipient`, optional `description`,
      and optional `recurring`, run `magicpay authorize-payment`, then rerun
      `plan-fill`.
-6. Apply the active plan: `magicpay apply-fill --request-json '{}'`.
+6. Apply the active plan: `magicpay apply-fill`.
    MagicPay refreshes the page state, materializes approved Memory values, and
    fills only planned fields through the browser bridge. It does not click Pay,
    Book, Send, Submit, or other final commitment controls.
+   - If `apply-fill` reports `memory.choose_candidate`, use candidate labels
+     only for explaining choices to the user. Submit the selected backend-owned
+     `choiceId` with `magicpay choose-memory --choice <choiceId>`, then let
+     that command continue the fill.
 7. Continue with the browser owner from the filled page. When native browser
    automation is available, refresh the page state and continue there. Use
    MagicBrowse here only if the native browser path failed. If the next browser
@@ -276,10 +282,11 @@ Ask the user only when:
 ## Operating Rules
 
 - Never type, print, summarize, or log protected values manually.
-- Never print or log `MAGICPAY_API_KEY`, `~/.magicpay/config.json`, or CDP
-  endpoints. Treat Memory item ids as operational refs: pass them between
-  MagicPay commands when required, but never show them to the user or include
-  them in reports/logs.
+- Never print or log `MAGICPAY_API_KEY`, the local MagicPay config file, or
+  CDP endpoints. The config file is `~/.magicpay/config.json` by default or
+  `$MAGICPAY_HOME/config.json` when `MAGICPAY_HOME` is set. Treat Memory item
+  ids as operational refs: pass them between MagicPay commands when required,
+  but never show them to the user or include them in reports/logs.
 - Treat `magicpay status` as the normal readiness check; `doctor` is not a
   startup step.
 - Keep MagicPay focused on the product workflow and sensitive-page operations;

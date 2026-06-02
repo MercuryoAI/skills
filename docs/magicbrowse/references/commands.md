@@ -154,8 +154,13 @@ unexpected positional argument, no current session, or runtime error.
 
 All take a `<target-id>` from the most recent `observe`. Target-ids
 are bare integers from `[N]<type>text</type>` lines. They are scoped
-to that single snapshot — re-run `observe` after any meaningful page
-change.
+to that single snapshot — re-run `observe` after any primitive that may
+change the page state.
+
+Primitive `status: "completed"` means the direct action ran. It is not a
+goal-level completion check and does not prove that the intended page state is
+now true. If the next step depends on changed page state, use a fresh
+`observe` result before deciding what to do next.
 
 ### `magicbrowse observe`
 
@@ -193,6 +198,8 @@ All primitives:
 
 - Return `0` on success and `1` on missing arguments.
 - Emit a JSON action result on stdout (blocked or executed).
+- Report direct action execution only; use `observe` or `act` when the
+  orchestrator must verify page-state change.
 - Inherit the same approval boundary as `act`; do not click/press the
   final submit, save, delete, buy, book, accept, or send control unless
   the user explicitly approved that exact action or a matching typed MagicPay

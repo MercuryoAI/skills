@@ -83,11 +83,18 @@ operation is deliberately a single-element recovery step.
 The navigator has the current page context, the natural-language goal,
 and its completion check in one planner loop. A host that starts from
 snapshot ids has to preserve that intent externally while remembering
-that every id expires after each click, navigation, popup, or lazy-load.
+that every id expires after any page mutation or expected state change.
 That is a recovery path, not the happy path.
 
 When primitives are necessary, re-run `observe` after every page
 mutation and use the fresh target id only for the next primitive.
+For deterministic `click`/`type`/`fill`/`select`/`press`, a
+`status: "completed"` result means the direct action was dispatched through
+the action layer. It does not certify that a higher-level page condition is
+now true. If the next step depends on changed page state, branch on a fresh
+`observe` result. If the task needs its own completion check, use `act` with a
+checkable terminal condition rather than treating a primitive result as task
+success.
 
 ## Singleton Session
 

@@ -92,6 +92,27 @@ Branch on `success`, then `status`:
 - `page_changed` or `stale_plan` — the live page no longer matches the active
   plan. Rerun `magicpay plan-fill` on the current page before applying again.
 
+`fieldDiagnostics[]` is facts-only. Each entry contains `targetRef`,
+`fieldName`, `reasonCode`, `confidence`, and optional redacted `evidence`;
+it does not contain a command or remediation field. Use `reasonCode` together
+with required/optional field status, visible page context, task risk, and UX
+constraints:
+
+| `reasonCode` | Agent policy |
+| --- | --- |
+| `target_not_found`, `stale_target` | Refresh or re-observe the page, then rerun `plan-fill` before another `apply-fill`. |
+| `target_not_writable` | Do not blind replan. Check whether the field is gated by a prerequisite, disabled until user action, optional/skippable, or a stop condition. |
+| `memory.missing` | Ask the user or use the active Memory request flow; do not invent a value. |
+| `memory.conflict` | Ask the user to choose the correct candidate. |
+| `memory.ask_before_use` | Wait for approval or denial before materializing the value handle. |
+| `provider_needs_reauth` | Use the provider reauth path before retrying provider-backed fill. |
+| `provider_unavailable` | Retry only if provider state changed; otherwise skip optional field or stop. |
+| `projection.invalid_value`, `projection.missing_select_option` | Ask/update Memory or stop, depending on field criticality and visible allowed options. |
+| `projection.missing_format_hint` | Peek or re-observe target details, then refine format hints before retrying. |
+| `projection.unsupported_shape`, `projection.ambiguous_value` | Use browser fallback only when safe; otherwise ask or stop. |
+| `unsupported_frame`, `unsupported_target` | Use browser fallback only when the target is visible and the action remains value-safe; otherwise stop with the product error. |
+| `magicbrowse_write_failed_uncertain`, `magicpay_internal_error` | Do not claim success. Refresh evidence, apply remaining safe fields, or stop and report the product error. |
+
 Failure shape:
 
 ```json
@@ -112,6 +133,65 @@ Branch on `reason` and optional `error`:
   approved value handle. Surface the blocker without exposing raw values.
 - `error: "browser_fill_blocked"` — the browser fill layer refused the fill.
   Treat as blocked; refresh state before any retry.
+
+## `fill-field`
+
+Use `fill-field` only when the higher-automation path missed a field or chose
+the wrong target and the agent can point to a specific observed `targetRef`.
+It accepts value-free assignments from Memory item/field refs to browser
+targets and returns the same apply-style result shape as `apply-fill`.
+
+Success or partial shape:
+
+```json
+{
+  "success": true,
+  "status": "filled",
+  "completedLedger": [],
+  "fieldDiagnostics": []
+}
+```
+
+Policy:
+
+| Result | Agent policy |
+| --- | --- |
+| `filled` | Refresh the browser state and continue from the observed page. |
+| `partial` | Inspect `fieldDiagnostics` per field before deciding whether to replan, ask, skip, or stop. |
+| `needs_replan` with `target_not_found` / `stale_target` | Refresh or re-observe, then return to `plan-fill` unless the agent has a new concrete binding. |
+| `blocked` with `target_not_writable` | Do not blind replan. Check prerequisite, user unlock, optional status, or stop. |
+| Memory/provider diagnostics | Use the same user, approval, and provider paths as `apply-fill`; do not bypass them through raw values. |
+| Projection diagnostics | Refine `projectionPart` only if the target is visibly a typed part; otherwise ask, skip optional, or stop. |
+
+Failure shape:
+
+```json
+{
+  "success": false,
+  "error": "invalid_product_fill_field_request"
+}
+```
+
+Never use `fill-field` as the default fill path. Start with `plan-fill`, use
+`apply-fill`, and drop to `fill-field` only when the agent has better observed
+target evidence than the matcher/planner result.
+
+## Post-submit Result Policy
+
+After any approved form submit, observe the page again before claiming success
+or deciding recovery:
+
+- If navigation happened or the page shows a clear confirmation/success state,
+  continue from that observed state.
+- If the page remains on the form with field-level validation messages,
+  associate each visible error with its field. Treat saved-value errors as a
+  possible Memory/provider value problem, but do not guess hidden values. Ask
+  the user to update the relevant Memory item, choose another approved item, or
+  stop.
+- If the page shows only a general form error, stop and report the visible
+  reason. Retry only after page, user, Memory, or provider facts change.
+- Never claim success from the submit click alone, and never retry blindly on
+  merchant validation errors.
 
 ## Request Paths
 

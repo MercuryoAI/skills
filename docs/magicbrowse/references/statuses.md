@@ -133,7 +133,13 @@ needs the headroom.
 ## Layer-4 Primitive Results
 
 `click`, `type`, `fill`, `select`, and `press` emit a JSON action
-result on stdout. Common blocked reasons:
+result on stdout. For these direct actions, `status: "completed"` means the
+primitive ran through the action layer. It is not a semantic claim that the
+intended page state changed. When the next step depends on changed page state,
+re-`observe` and branch on the fresh snapshot. Use `act` for a delegated task
+that needs its own completion check.
+
+Common blocked reasons:
 
 - `target_not_found` — the `<target-id>` does not match anything in
   the most recent observe snapshot. Re-`observe` and retry.

@@ -16,8 +16,10 @@ and handle the output:
   `npm i -g @mercuryo-ai/magicpay-cli@latest`, then rerun
   `magicpay status`.
 - **`status` still fails after `init`.** Run `magicpay doctor` to inspect
-  the local `~/.magicpay/config.json` file. `doctor` is diagnostics only;
-  do not treat it as a required first step.
+  the local MagicPay config file. By default it is
+  `~/.magicpay/config.json`; when `MAGICPAY_HOME` is set, it is
+  `$MAGICPAY_HOME/config.json`. `doctor` is diagnostics only; do not treat it
+  as a required first step.
 - **`status` reports an invalid or suspended account.** Stop and escalate
   to the user. Do not continue.
 
@@ -25,6 +27,10 @@ and handle the output:
 
 - After preflight, run `magicpay start-session [name]` before any normal
   MagicPay browser launch or attach.
+- For isolated test or parallel workflows, set a distinct `MAGICPAY_HOME`
+  before running MagicPay commands. This isolates MagicPay config, workflow
+  state, browser-session pointer, and run files. Browser-runtime diagnostics
+  remain separate and still use `MAGICBROWSE_HOME` when that layer is involved.
 - Use `magicpay launch [url]` when MagicPay should create the browser child
   inside the active product workflow.
 - If another tool or the user already has the correct page open, use
@@ -60,10 +66,10 @@ end-session` completes the MagicPay workflow.
   blocked, start manual recovery with `magicpay status`, then either
   `magicpay end-session` or a fresh `start-session`.
 
-- Run `magicpay plan-fill --request-json <json>` on the current page before
-  applying saved Memory. Use only purpose/options in the request; do not pass
-  raw values, target matches, catalogs, materializers, browser writers, or page
-  target lists.
+- Run `magicpay plan-fill` on the current page before applying saved Memory.
+  Use `--planner-hint <text>` only for short human-readable context; do not
+  pass raw values, target matches, catalogs, materializers, browser writers, or
+  page target lists.
 - If `plan-fill` reports `matcher_unavailable`, fail closed or retry only after
   the gateway/tooling state changes. Do not fall back to deterministic matching.
 - If `plan-fill` reports a non-blocking blocker
@@ -75,13 +81,25 @@ end-session` completes the MagicPay workflow.
   rerun `plan-fill` for the current page.
 - If the page changed after planning, rerun `plan-fill` instead of applying a
   stale plan.
-- Run `magicpay apply-fill --request-json '{}'` for the active plan. It fills
-  planned fields only and does not submit the page.
+- Run `magicpay apply-fill` for the active plan. It fills planned fields only
+  and does not submit the page.
+- If `apply-fill` reports `memory.choose_candidate`, ask the user which
+  displayed candidate to use, then run
+  `magicpay choose-memory --choice <choiceId>`. Use `choiceId` as the selector;
+  labels are display text only.
 - Continue after a successful fill with the browser owner, but first refresh
   the visible page state.
 - If required fields remain empty after Memory fill, ask the user how to
   proceed or stop. Do not invent values and do not fill directly from chat
   text.
+- For `apply-fill.fieldDiagnostics`, treat diagnostics as facts. The agent
+  chooses remediation from the policy table in `references/statuses.md`; in
+  particular, `target_not_writable` is not a blind replan signal.
+- If `plan-fill` / `apply-fill` missed a visible field or matched the wrong
+  target, and you can identify the correct Memory item/field plus observed
+  `targetRef`, use `magicpay fill-field --request-json <json>` as a
+  lower-automation recovery step. Do not use it as the default path, and never
+  pass raw values.
 - Before any consequential browser action, get the matching typed MagicPay
   approval for the current site/merchant, exact action, and visible amount or
   data.
@@ -97,6 +115,11 @@ end-session` completes the MagicPay workflow.
   exact state.
 - After typed approval, proceed with exactly that action; stop only if page
   facts changed.
+- After submitting a form, always observe the resulting page before claiming
+  success or progress. If navigation or a clear confirmation page appeared,
+  continue from that state. If the browser is still on the form with validation
+  messages or invalid fields, follow the post-submit result policy in
+  `references/statuses.md`; do not retry blindly.
 
 ## Payment Authorization Facts
 
@@ -153,10 +176,10 @@ When the page changes after planning, the stored Memory plan may no longer
 match the live DOM. Do not retry with the same stale plan.
 
 1. Let the page settle — wait for any in-flight re-render to finish.
-2. Run `magicpay plan-fill --request-json <json>` on the current page.
+2. Run `magicpay plan-fill` on the current page.
 3. If planning cannot produce safe matches, ask the user or re-navigate; do
    not guess.
-4. If planning succeeds, call `magicpay apply-fill --request-json '{}'`.
+4. If planning succeeds, call `magicpay apply-fill`.
 5. Do not reuse a plan from before step 2.
 
 ## Multiple Sensitive Fields

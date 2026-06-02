@@ -36,7 +36,7 @@ This repository is generated from the private release source. Use `manifests/<sk
 
 ### `magicbrowse`
 
-Browser automation fallback — drive an approved Chrome session with goal-driven act as the default MagicBrowse primitive; use observe plus deterministic click/type/select/press/fill only for recovery or single-element precision.
+Browser automation fallback — drive an approved Chrome session with goal-driven act as the default MagicBrowse primitive; use observe plus deterministic click/type/select/press/fill only for recovery or single-element precision, then verify any expected page-state change with a fresh observation.
 
 - Claude Code: [direct guide](docs/magicbrowse/claude/direct/README.md)
 - Codex: [direct guide](docs/magicbrowse/codex/direct/README.md)

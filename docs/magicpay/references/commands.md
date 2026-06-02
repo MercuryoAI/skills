@@ -11,10 +11,12 @@ action.
 
 ### `magicpay init <apiKey> [--api-url <url>]`
 
-Save the API key to `~/.magicpay/config.json`. When `--api-url` is provided,
-`init` also stores the gateway base URL there. Omit `--api-url` for normal
-setup; the CLI uses its bundled default MagicPay gateway URL. Pass
-`--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
+Save the API key to the MagicPay config file. By default this is
+`~/.magicpay/config.json`; when `MAGICPAY_HOME` is set, it is
+`$MAGICPAY_HOME/config.json`. When `--api-url` is provided, `init` also stores
+the gateway base URL there. Omit `--api-url` for normal setup; the CLI uses
+its bundled default MagicPay gateway URL. Pass `--api-url <url>` only for a
+non-default staging, self-hosted, or test gateway.
 
 Do not print, log, or share the API key or the persisted config. If this
 machine or workspace is shared or compromised, ask the user to rotate or
@@ -107,19 +109,20 @@ teardown. `end-session` does not require a live browser child.
 
 ## Memory Fill
 
-### `magicpay plan-fill --request-json <json>`
+### `magicpay plan-fill`
 
 Run `magicpay plan-fill` before `magicpay apply-fill` to plan Memory field fill
-from the active browser page. The request should be a small options object such
-as `{}` or `{"purpose":"checkout"}`. The command observes the current page,
-fetches value-free Memory descriptors from MagicPay, asks the Memory matcher for
+from the active browser page. The command observes the current page, fetches
+value-free Memory descriptors from MagicPay, asks the Memory matcher for
 semantic target matches, validates the model output, and stores a short-lived
-fill plan in the active workflow.
+fill plan in the active workflow. Optional usage:
+`magicpay plan-fill --planner-hint <text>`. Use the hint only for short
+human-readable context about the current form.
 
 Do not pass target matches, Memory catalogs, raw values, materializers, browser
-writers, or page target lists in the request. The plan result must remain
-handles-only. If the Memory matcher is unavailable, fail closed and report the
-blocked state instead of guessing.
+writers, or page target lists. The plan result must remain handles-only. If the
+Memory matcher is unavailable, fail closed and report the blocked state instead
+of guessing.
 
 When MagicPay Memory has a provider-backed payment card but the active
 workflow session has not been authorized for payment-card reveal, `plan-fill`
@@ -143,19 +146,59 @@ then rerun `plan-fill` for the current page. Do not ask the user for raw card
 details and do not bypass this through lower-level Memory or materialization
 calls.
 
-### `magicpay apply-fill --request-json <json>`
+### `magicpay apply-fill`
 
 Run `magicpay plan-fill` before `magicpay apply-fill`; apply only the active
-Memory fill plan. Use `{}` for the normal active-plan path, or pass a documented
-plan selector if a recovery flow needs it. The command refreshes the browser
-page state, materializes only the approved values needed by the plan, writes the
-planned fields through the browser bridge, and stops before final commitment
-actions.
+Memory fill plan. Optional usage: `magicpay apply-fill --plan <planId>` when a
+recovery flow needs a specific stored plan. The command refreshes the browser page state,
+materializes only the approved values needed by the plan, writes the planned
+fields through the browser bridge, and stops before final commitment actions.
+
+If the result includes `memory.choose_candidate`, ask the user which displayed
+candidate to use, then run `magicpay choose-memory --choice <choiceId>`.
+`choiceId` is the selector; candidate labels are display text only.
 
 After a successful fill, refresh the visible page state through the browser
 owner and continue from that state. Use typed action approval before any final
 Pay, Book, Send, Submit, login, identity submission, account change, or other
 consequential action.
+
+### `magicpay fill-field --request-json <json>`
+
+Use `fill-field` only as a lower-automation recovery step after `plan-fill` /
+`apply-fill` missed a field or matched the wrong target. The agent supplies
+explicit value-free assignments:
+
+```json
+{
+  "assignments": [
+    {
+      "itemRef": "mem_profile",
+      "fieldRef": "field.email",
+      "targetRef": "selector:1"
+    }
+  ]
+}
+```
+
+The command fetches the current Memory catalog, resolves each assignment to a
+backend value handle, refreshes current target state, validates approval,
+provider, target writability, and projection constraints, then writes through
+the same browser bridge as `apply-fill`. It returns the same apply-style shape:
+`status`, `fields`, `fieldDiagnostics`, and `completedLedger`.
+
+Optional `projectionPart` is allowed for explicit typed recovery: `year`,
+`month`, `day`, `country_code`, `national_number`, `given`, `family`,
+`segment_1`, `segment_2`, `segment_3`, or `segment_4`. Unsupported parts return
+projection diagnostics; do not invent substring or slice operations.
+
+Do not use `fill-field` as the default fill path, do not pass raw values, and
+do not pass target lists, Memory catalogs, materializers, or browser writers.
+
+### `magicpay choose-memory --choice <choiceId>`
+
+Choose one backend-owned Memory candidate returned by `apply-fill` and continue
+the active fill plan. Do not choose by number or label in the CLI contract.
 
 ### `magicpay authorize-payment --amount <number> --currency <code> --recipient <name> [--description <text>] [--recurring <true|false>] [--authorization-ref <ref>] [--item-ref <vaultItemId>] [--return-pending]`
 
