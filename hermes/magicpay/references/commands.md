@@ -124,6 +124,105 @@ writers, or page target lists. The plan result must remain handles-only. If the
 Memory matcher is unavailable, fail closed and report the blocked state instead
 of guessing.
 
+### `magicpay list-memory-items --url <current-url> [--status <status>]`
+
+List value-free Memory item metadata for the current site scope. Use
+`--all-sites` instead of `--url` only for explicit global Memory review or
+editing. The command returns item ids, labels, statuses, read-only markers, and
+field refs with labels/hints, never raw values.
+
+### `magicpay list-memory-items --all-sites [--status <status>]`
+
+List value-free Memory item metadata across sites. Use this only for explicit
+global review or editing, not as the default page-fill path.
+
+### `magicpay get-memory-item --item-id <itemId>`
+
+Get one value-free Memory item by stable item id. Use it when a prior list
+result identified the item that needs inspection before editing.
+
+### `magicpay delete-memory-item --item-id <itemId>`
+
+Soft-delete one editable Memory item by stable item id. Do not delete
+provider-backed read-only items.
+
+### `magicpay create-memory-item --item-label <label>`
+
+Create a new Memory item. Add fields with UX-first shortcuts:
+
+```bash
+magicpay create-memory-item \
+  --item-label "Airline login" \
+  --site airline.example \
+  --text "Login email=ada@example.com" \
+  --secret-text "Password=correct-horse"
+
+magicpay create-memory-item \
+  --item-label "Traveler profile" \
+  --person "Full name=Ada Lovelace" \
+  --date "Date of birth=1815-12-10" \
+  --phone "Phone=+14155550100" \
+  --secret-phone "Backup phone=+14155550101"
+```
+
+Create shortcuts use `"Label=value"` because the fields are new and have no
+`fieldRef` yet. Use `--text` for ordinary direct fill, `--date` for
+`YYYY-MM-DD`, `--phone` for E.164 phone numbers such as `+14155550100`, and
+`--person` for a full name. The `--secret-*` variants set the same value type
+with secret display/logging metadata.
+
+### `magicpay add-memory-field --item-id <itemId> --label <label> --value <value>`
+
+Add exactly one field to an existing editable item:
+
+```bash
+magicpay add-memory-field \
+  --item-id mem_airline_login \
+  --label "Recovery code" \
+  --value "123456" \
+  --secret true \
+  --hint "One-time recovery code"
+```
+
+Optional flags are `--type text|date|phone_number|person_name`, `--secret
+true|false`, and `--hint <text>`. `--type text` means ordinary untyped direct
+fill.
+
+### `magicpay update-memory-field --field-ref <fieldRef>`
+
+Update one existing editable field by stable `fieldRef`:
+
+```bash
+magicpay update-memory-field --field-ref field_phone --value "+14155550101"
+magicpay update-memory-field --field-ref field_phone --secret true
+magicpay update-memory-field --field-ref field_phone --type text
+magicpay update-memory-field \
+  --field-ref field_password \
+  --label "Account password" \
+  --hint "Account password"
+```
+
+Existing fields are never addressed by label. List or get Memory first, choose
+the intended `fieldRef`, then update that ref. `--secret true|false` is mutable
+display/logging metadata for any field, including phone fields. It is not
+encryption and not a value type. `--type text` clears semantic value type.
+
+### `magicpay delete-memory-field --field-ref <fieldRef>`
+
+Remove one existing editable field by stable `fieldRef`:
+
+```bash
+magicpay delete-memory-field --field-ref field_recovery_code
+```
+
+If a `fieldRef` is unknown or duplicated, field-level commands fail closed with
+a structured CLI error and do not mutate Memory.
+
+Raw JSON is an advanced service/debug escape hatch only:
+`magicpay create-memory-item --raw-item-json <json>` and `magicpay
+update-memory-item --item-id <itemId> --raw-item-json <json>`. Do not use it as
+the normal agent path.
+
 When MagicPay Memory has a provider-backed payment card but the active
 workflow session has not been authorized for payment-card reveal, `plan-fill`
 keeps the plan value-free and reports machine state instead of card handles:

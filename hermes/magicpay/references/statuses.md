@@ -93,7 +93,7 @@ Branch on `success`, then `status`:
   plan. Rerun `magicpay plan-fill` on the current page before applying again.
 
 `fieldDiagnostics[]` is facts-only. Each entry contains `targetRef`,
-`fieldName`, `reasonCode`, `confidence`, and optional redacted `evidence`;
+display `fieldLabel`, `reasonCode`, `confidence`, and optional redacted `evidence`;
 it does not contain a command or remediation field. Use `reasonCode` together
 with required/optional field status, visible page context, task risk, and UX
 constraints:

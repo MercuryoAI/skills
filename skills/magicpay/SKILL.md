@@ -144,11 +144,12 @@ chat-provided reusable facts need saving, list Memory items first, update the
 semantically suitable editable item, and create a new item only when no suitable
 record exists.
 
-The user's MagicPay Memory holds reusable items with stable field names,
-human-readable hints, opaque refs, and optional public value types. Field names
-are stable identifiers chosen by the product/runtime, such as `username`,
-`password`, `full_name`, `date_of_birth`, or `phone`; hints explain when a
-field is useful without containing raw values.
+The user's MagicPay Memory holds reusable items with human field labels,
+human-readable hints, opaque `fieldRef` identifiers, and optional public value
+types. Use labels such as `Login email`, `Password`, `Full name`, `Date of
+birth`, or `Phone` for user-facing text and matcher evidence; use `fieldRef`
+for existing-field identity in update/apply flows. Hints explain when a field is
+useful without containing raw values.
 
 Public editable value types are only:
 
@@ -164,7 +165,23 @@ request those types through public Memory CRUD.
 
 Do not assume emptiness or abundance from prior context. If you need to know
 whether saved Memory can fill the current page, run `magicpay plan-fill` and
-branch on its result. Do not read or print raw Memory contents yourself.
+branch on its result. If you need to list Memory items manually, pass the
+current page URL with `magicpay list-memory-items --url <current-url>`; use
+`--all-sites` only for explicit global Memory review or editing. Do not read or
+print raw Memory contents yourself.
+
+For Memory CRUD, list first and use stable refs. Create a new item with
+`magicpay create-memory-item --item-label <label>` plus field shortcuts such as
+`--text "Login email=ada@example.com"`, `--date "Date of birth=1815-12-10"`,
+`--phone "Phone=+14155550100"`, or `--person "Full name=Ada Lovelace"`.
+Use `--secret-text`, `--secret-date`, `--secret-phone`, or `--secret-person`
+when the new field should be hidden in display/logging. For existing fields,
+never address by label: use `magicpay update-memory-field --field-ref
+<fieldRef>` or `magicpay delete-memory-field --field-ref <fieldRef>`. Use
+`magicpay add-memory-field --item-id <itemId> --label <label> --value <value>`
+to add one field to an existing item. `--secret true|false` is mutable
+display/logging metadata for any field, not encryption. Use raw JSON only when
+the user explicitly asks for a service/debug payload.
 Provider-backed payment cards are special: before payment authorization,
 `plan-fill` can show that a card exists through an
 `authorization_required` Memory availability entry, but it does not expose

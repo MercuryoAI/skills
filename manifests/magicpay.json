@@ -3,15 +3,15 @@
   "displayName": "MagicPay",
   "description": "MagicPay helper for approved login, identity, checkout, donation, subscription, payment pages, and typed action approvals.",
   "boundary": "sensitive-page",
-  "releaseVersion": "0.1.35",
-  "releaseTag": "magicpay-v0.1.35",
+  "releaseVersion": "0.1.36",
+  "releaseTag": "magicpay-v0.1.36",
   "ownerPackage": "@mercuryo-ai/magicpay-cli",
   "ownerBin": "magicpay",
   "installPackage": "@mercuryo-ai/magicpay-cli",
   "npmPackages": [
     {
       "name": "@mercuryo-ai/magicbrowse",
-      "version": "0.0.17",
+      "version": "0.0.18",
       "manifestPath": "packages/magicbrowse/package.json"
     },
     {
@@ -26,7 +26,7 @@
     },
     {
       "name": "@mercuryo-ai/magicpay-sdk",
-      "version": "0.1.16",
+      "version": "0.1.17",
       "manifestPath": "packages/magicpay-sdk/package.json"
     },
     {
@@ -41,7 +41,7 @@
     },
     {
       "name": "@mercuryo-ai/magicpay-cli",
-      "version": "0.1.25",
+      "version": "0.1.26",
       "manifestPath": "packages/magicpay-cli/package.json"
     }
   ],
@@ -51,7 +51,7 @@
       "runtime": "claude",
       "runtimeDisplayName": "Claude Code",
       "directBundleDir": "direct/claude-skill/magicpay",
-      "directReleaseArchive": "magicpay-claude-code-v0.1.35.zip",
+      "directReleaseArchive": "magicpay-claude-code-v0.1.36.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "github-marketplace",
       "marketplaceEnabled": false,
@@ -63,7 +63,7 @@
       "runtime": "codex",
       "runtimeDisplayName": "Codex",
       "directBundleDir": "direct/codex-skill/magicpay",
-      "directReleaseArchive": "magicpay-codex-v0.1.35.zip",
+      "directReleaseArchive": "magicpay-codex-v0.1.36.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "repo-marketplace",
       "marketplaceEnabled": false,
@@ -75,7 +75,7 @@
       "runtime": "hermes",
       "runtimeDisplayName": "Hermes",
       "directBundleDir": "direct/hermes-skill/magicpay",
-      "directReleaseArchive": "magicpay-hermes-v0.1.35.zip",
+      "directReleaseArchive": "magicpay-hermes-v0.1.36.zip",
       "marketplacePayloadDir": "marketplace/hermes-github-hub/magicpay",
       "marketplaceKind": "hermes-github-hub",
       "marketplaceEnabled": true,
@@ -87,7 +87,7 @@
       "runtime": "openclaw",
       "runtimeDisplayName": "OpenClaw",
       "directBundleDir": "direct/openclaw-skill/magicpay",
-      "directReleaseArchive": "magicpay-openclaw-v0.1.35.zip",
+      "directReleaseArchive": "magicpay-openclaw-v0.1.36.zip",
       "marketplacePayloadDir": "marketplace/openclaw-clawhub/magicpay",
       "marketplaceKind": "clawhub",
       "marketplaceEnabled": true,
@@ -99,7 +99,7 @@
       "runtime": "skills-sh",
       "runtimeDisplayName": "General Agent",
       "directBundleDir": "direct/general-agent-skill/magicpay",
-      "directReleaseArchive": "magicpay-general-agent-v0.1.35.zip",
+      "directReleaseArchive": "magicpay-general-agent-v0.1.36.zip",
       "marketplacePayloadDir": "marketplace/skills-sh/magicpay",
       "marketplaceKind": "skills-sh",
       "marketplaceEnabled": true,

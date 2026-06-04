@@ -3,15 +3,15 @@
   "displayName": "MagicBrowse",
   "description": "Browser automation fallback — drive an approved Chrome session with goal-driven act as the default MagicBrowse primitive; use observe plus deterministic click/type/select/press/fill only for recovery or single-element precision, then verify any expected page-state change with a fresh observation.",
   "boundary": "browser-only",
-  "releaseVersion": "0.1.13",
-  "releaseTag": "magicbrowse-v0.1.13",
+  "releaseVersion": "0.1.14",
+  "releaseTag": "magicbrowse-v0.1.14",
   "ownerPackage": "@mercuryo-ai/magicbrowse-cli",
   "ownerBin": "magicbrowse",
   "installPackage": "@mercuryo-ai/magicbrowse-cli",
   "npmPackages": [
     {
       "name": "@mercuryo-ai/magicbrowse",
-      "version": "0.0.17",
+      "version": "0.0.18",
       "manifestPath": "packages/magicbrowse/package.json"
     },
     {
@@ -21,7 +21,7 @@
     },
     {
       "name": "@mercuryo-ai/magicpay-sdk",
-      "version": "0.1.16",
+      "version": "0.1.17",
       "manifestPath": "packages/magicpay-sdk/package.json"
     },
     {
@@ -41,7 +41,7 @@
       "runtime": "claude",
       "runtimeDisplayName": "Claude Code",
       "directBundleDir": "direct/claude-skill/magicbrowse",
-      "directReleaseArchive": "magicbrowse-claude-code-v0.1.13.zip",
+      "directReleaseArchive": "magicbrowse-claude-code-v0.1.14.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "github-marketplace",
       "marketplaceEnabled": false,
@@ -53,7 +53,7 @@
       "runtime": "codex",
       "runtimeDisplayName": "Codex",
       "directBundleDir": "direct/codex-skill/magicbrowse",
-      "directReleaseArchive": "magicbrowse-codex-v0.1.13.zip",
+      "directReleaseArchive": "magicbrowse-codex-v0.1.14.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "repo-marketplace",
       "marketplaceEnabled": false,
@@ -65,7 +65,7 @@
       "runtime": "openclaw",
       "runtimeDisplayName": "OpenClaw",
       "directBundleDir": "direct/openclaw-skill/magicbrowse",
-      "directReleaseArchive": "magicbrowse-openclaw-v0.1.13.zip",
+      "directReleaseArchive": "magicbrowse-openclaw-v0.1.14.zip",
       "marketplacePayloadDir": "marketplace/openclaw-clawhub/magicbrowse",
       "marketplaceKind": "clawhub",
       "marketplaceEnabled": true,
