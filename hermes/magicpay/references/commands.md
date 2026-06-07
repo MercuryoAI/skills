@@ -266,7 +266,8 @@ consequential action.
 
 Use `fill-field` only as a lower-automation recovery step after `plan-fill` /
 `apply-fill` missed a field or matched the wrong target. The agent supplies
-explicit value-free assignments:
+explicit value-free assignments. Each assignment identifies an approved Memory
+field and one currently observed browser target:
 
 ```json
 {
@@ -279,6 +280,11 @@ explicit value-free assignments:
   ]
 }
 ```
+
+Use `itemRef` or `itemId` to narrow the Memory item when needed, `fieldRef` to
+select the field, and `targetRef` from the current browser observation. Do not
+invent refs; if the target evidence is stale, re-observe or rerun
+`plan-fill` instead.
 
 The command fetches the current Memory catalog, resolves each assignment to a
 backend value handle, refreshes current target state, validates approval,
