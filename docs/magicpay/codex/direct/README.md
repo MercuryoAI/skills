@@ -14,7 +14,7 @@ MagicPay helps Codex handle approved login, identity, checkout, donation, subscr
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill in Codex from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.39 using `magicpay-codex-v0.1.39.zip`. Place the extracted `magicpay/` folder directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
+Install the `magicpay` skill in Codex from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.41 using `magicpay-codex-v0.1.41.zip`. Place the extracted `magicpay/` folder directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
 Treat MagicPay as the helper for approved login, identity, checkout, donation, subscription, and payment workflows. The product workflow is the parent; the browser is a child resource.
 Ask me for my API key and run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
@@ -27,7 +27,7 @@ Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confir
 
 ## What your agent should do
 
-1. Download `magicpay-codex-v0.1.39.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.39.
+1. Download `magicpay-codex-v0.1.41.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.41.
 2. Extract the archive so the top-level folder is `magicpay/`.
 3. Place `magicpay/` directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
 4. If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
@@ -57,9 +57,9 @@ Use MagicPay for approved login, identity, checkout, donation, subscription, or 
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking Codex to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.39 using `magicpay-codex-v0.1.39.zip`.
+Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking Codex to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.41 using `magicpay-codex-v0.1.41.zip`.
 
-1. Download `magicpay-codex-v0.1.39.zip`.
+1. Download `magicpay-codex-v0.1.41.zip`.
 2. Extract the archive. You should get a folder named `magicpay/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart Codex if you already had a session open.
@@ -85,4 +85,4 @@ Use this fallback only if you want to manage the `magicpay/` folder yourself ins
 
 ---
 
-This guide is for MagicPay v0.1.39.
+This guide is for MagicPay v0.1.41.

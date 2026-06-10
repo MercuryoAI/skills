@@ -59,13 +59,14 @@ inside that workflow.
 
 ## Hermes Native Page-Control Preference
 
-When this skill runs in Hermes, do not start MagicBrowse as the first
-page-control path. The browser process is always a real/native browser; the
-choice is which controller drives its pages. Prefer Hermes native page-control
-automation for normal page work when it can drive the same private-CDP browser
-process that MagicPay will attach to: opening and preparing pages, checking
-current page state, filling ordinary fields, and continuing after MagicPay
-applies Memory fill.
+Hermes Native Browser Preference means the browser process is always a
+real/native browser, while Hermes native page-control automation is the
+preferred controller when it can drive the same private-CDP browser process
+that MagicPay will attach to. When this skill runs in Hermes, do not start
+MagicBrowse as the first page-control path. Prefer Hermes native page-control
+automation for normal page work when it can drive that process: opening and
+preparing pages, checking current page state, filling ordinary fields, and
+continuing after MagicPay applies Memory fill.
 
 This does not change the MagicPay product order. If the user task is a MagicPay
 workflow, run `magicpay status` or config recovery, then `magicpay start-session`
