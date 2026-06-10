@@ -1,6 +1,6 @@
 # Install MagicBrowse in Codex
 
-MagicBrowse gives Codex a browser automation fallback for real web pages: launch a fresh Chrome session, or attach to an explicitly approved CDP session, drive it with natural-language steps through `magicbrowse act`, and use deterministic `magicbrowse observe` plus `click`/`type`/`fill`/`select`/`press` primitives when single-element precision is required. It stops at login, identity, checkout, donation, subscription, and payment pages, returns a structured handoff for protected forms when available, and asks before consequential actions such as submit, post, book, buy, save, or delete unless a matching typed MagicPay approval already covers unchanged page facts.
+MagicBrowse gives Codex a browser page-control fallback for real web pages: launch a fresh Chrome session, or attach to an explicitly approved CDP session, drive it with natural-language steps through `magicbrowse act`, and use deterministic `magicbrowse observe` plus `click`/`type`/`fill`/`select`/`press` primitives when single-element precision is required. It stops at login, identity, checkout, donation, subscription, and payment pages, returns a structured handoff for protected forms when available, and asks before consequential actions such as submit, post, book, buy, save, or delete unless a matching typed MagicPay approval already covers unchanged page facts.
 
 ## Before you start
 
@@ -14,8 +14,8 @@ MagicBrowse gives Codex a browser automation fallback for real web pages: launch
 Copy this request into your agent session:
 
 ```text
-Install the `magicbrowse` skill in Codex from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.14 using `magicbrowse-codex-v0.1.14.zip`. Place the extracted `magicbrowse/` folder directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
-Treat MagicBrowse as a browser automation fallback. Use it only when your own browser tooling cannot reach a target page reliably.
+Install the `magicbrowse` skill in Codex from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.16 using `magicbrowse-codex-v0.1.16.zip`. Place the extracted `magicbrowse/` folder directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
+Treat MagicBrowse as a page-control fallback controller. Use it only when the runtime's own page-control tool cannot reach a target page reliably.
 Ask me for my API key and run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
 Verify the setup with `magicbrowse doctor`. The primary workflow is `magicbrowse launch <url>` -> one or more `magicbrowse act "<goal>"` -> `magicbrowse close`.
@@ -25,7 +25,7 @@ Stop at login, identity, checkout, donation, subscription, and payment pages and
 
 ## What your agent should do
 
-1. Download `magicbrowse-codex-v0.1.14.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.14.
+1. Download `magicbrowse-codex-v0.1.16.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.16.
 2. Extract the archive so the top-level folder is `magicbrowse/`.
 3. Place `magicbrowse/` directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
 4. If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
@@ -45,7 +45,7 @@ Supported skill locations:
 
 ## Try a first task
 
-Use MagicBrowse as a fallback when your own browser tooling cannot reach a target page reliably. The primary workflow is `magicbrowse launch <url>` -> one or more `magicbrowse act "<goal>"` -> `magicbrowse close`. Run `magicbrowse doctor` once after install to verify the gateway config.
+Use MagicBrowse as a page-control fallback controller when the runtime's own page-control tool cannot reach a target page reliably. The primary workflow is `magicbrowse launch <url>` -> one or more `magicbrowse act "<goal>"` -> `magicbrowse close`. Run `magicbrowse doctor` once after install to verify the gateway config.
 
 - Use MagicBrowse to `magicbrowse launch <url>` and `magicbrowse act "summarize the visible pricing table"`.
 - Use MagicBrowse to `magicbrowse launch <meta-search-url>` and `magicbrowse act "search one-way flights London → Lisbon next Tuesday and reach the passenger details page"`.
@@ -53,9 +53,9 @@ Use MagicBrowse as a fallback when your own browser tooling cannot reach a targe
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicbrowse/` folder yourself instead of asking Codex to install it from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.14 using `magicbrowse-codex-v0.1.14.zip`.
+Use this fallback only if you want to manage the `magicbrowse/` folder yourself instead of asking Codex to install it from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.16 using `magicbrowse-codex-v0.1.16.zip`.
 
-1. Download `magicbrowse-codex-v0.1.14.zip`.
+1. Download `magicbrowse-codex-v0.1.16.zip`.
 2. Extract the archive. You should get a folder named `magicbrowse/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart Codex if you already had a session open.
@@ -83,4 +83,4 @@ Use this fallback only if you want to manage the `magicbrowse/` folder yourself 
 
 ---
 
-This guide is for MagicBrowse v0.1.14.
+This guide is for MagicBrowse v0.1.16.

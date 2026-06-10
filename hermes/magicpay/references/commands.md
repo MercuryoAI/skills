@@ -57,6 +57,10 @@ browser execution resource. The optional URL places the new browser child at
 the starting page. The browser child does not replace the product workflow
 identity.
 
+The success result includes the child's `cdpUrl`. Use it when a
+page-control tool (for example `magicbrowse attach`) should drive the
+same browser inside the workflow; keep the endpoint private.
+
 ### `magicpay attach <cdp-url> [--provider <name>]`
 
 Attach an already running browser as the browser child inside the active
@@ -101,8 +105,8 @@ current page. If the next step is through MagicBrowse, call
 
 Complete the active product workflow session and product root run.
 
-This is workflow completion only. After it succeeds, return control to the
-browser owner. A browser tool or orchestrator that launched an owned
+This is workflow completion only. After it succeeds, return page control to the
+page-control owner. A browser tool or orchestrator that launched an owned
 disposable browser may clean up its own session when the overall task is done;
 an external/user-owned browser stays open unless the user explicitly approves
 teardown. `end-session` does not require a live browser child.

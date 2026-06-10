@@ -87,7 +87,7 @@ Success shape:
 Branch on `success`, then `status`:
 
 - `filled` — planned Memory values were filled. Refresh the browser state and
-  continue with the browser owner. If the next browser action is consequential,
+  continue with the page-control owner. If the next browser action is consequential,
   get matching typed MagicPay approval.
 - `page_changed` or `stale_plan` — the live page no longer matches the active
   plan. Rerun `magicpay plan-fill` on the current page before applying again.
@@ -109,8 +109,8 @@ constraints:
 | `provider_unavailable` | Retry only if provider state changed; otherwise skip optional field or stop. |
 | `projection.invalid_value`, `projection.missing_select_option` | Ask/update Memory or stop, depending on field criticality and visible allowed options. |
 | `projection.missing_format_hint` | Peek or re-observe target details, then refine format hints before retrying. |
-| `projection.unsupported_shape`, `projection.ambiguous_value` | Use browser fallback only when safe; otherwise ask or stop. |
-| `unsupported_frame`, `unsupported_target` | Use browser fallback only when the target is visible and the action remains value-safe; otherwise stop with the product error. |
+| `projection.unsupported_shape`, `projection.ambiguous_value` | Use page-control fallback only when safe; otherwise ask or stop. |
+| `unsupported_frame`, `unsupported_target` | Use page-control fallback only when the target is visible and the action remains value-safe; otherwise stop with the product error. |
 | `magicbrowse_write_failed_uncertain`, `magicpay_internal_error` | Do not claim success. Refresh evidence, apply remaining safe fields, or stop and report the product error. |
 
 Failure shape:

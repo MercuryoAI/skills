@@ -55,9 +55,9 @@ controlled browser-task stops and still exit `0`.
   terminal state. Confirm with the visible evidence in `finalMessage`
   when the host needs an extra business-rule check.
 - `blocked` — MagicBrowse cannot continue because ordinary
-  ordinary input is missing, the requested item is unavailable,
+  input is missing, the requested item is unavailable,
   the delegated task is ambiguous, or the page state has no reasonable
-  browser path left inside the task. Read `blockedReason`.
+  page-control path left inside the task. Read `blockedReason`.
 - `needs_handoff` — the task reached Memory data or human
   verification: login, password, OTP, identity/KYC data, payment or
   banking fields, API keys/tokens/secrets, CAPTCHA, or a similar human
@@ -79,8 +79,7 @@ controlled browser-task stops and still exit `0`.
 
 Treat this as a controlled stop. Branch on `blockedReason`:
 
-- `missing_input` — ask the user for the missing ordinary, ordinary
-  input.
+- `missing_input` — ask the user for the missing ordinary input.
 - `item_unavailable` — report that the requested item, route, result,
   appointment, or option is unavailable; do not retry the same page path.
 - `ambiguous` — ask the user to clarify the delegated browser task or

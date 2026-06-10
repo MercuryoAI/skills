@@ -2,15 +2,16 @@
 
 This walkthrough shows the primary workflow end-to-end: reach the
 checkout page of an airline meta-search, then stop at the payment
-boundary and surface to the user. The scenario assumes your own
-browser tooling cannot drive the meta-search reliably.
+boundary and surface to the user. The scenario assumes the runtime's
+page-control tool cannot drive the meta-search reliably.
 
 ## Scenario
 
-The user wants to book a one-way flight from London to Lisbon next
-Tuesday for one passenger. The orchestrator has already chosen
-`magicbrowse` as the fallback after its own browser tools failed to
-search the site reliably.
+The user wants to know the final payable fare for a one-way flight from
+London to Lisbon next Tuesday for one passenger, before deciding whether
+to book. The orchestrator has already chosen `magicbrowse` as the
+fallback after the runtime's page-control tool failed to search
+the site reliably.
 
 ## Preflight
 
@@ -75,8 +76,15 @@ for the host's own log.
 > identity data, or payment data. Surface `finalMessage` to the user
 > and let them decide what happens next. If the result includes
 > `handoff.kind: "memory_fill"`, pass that handoff to the orchestrator or
-> MagicPay Memory fill workflow. The browser owner can resume with
+> MagicPay Memory fill workflow. The page-control owner can resume with
 > `handoff.resumeObjective` after the Memory fill completes.
+
+Placeholders were acceptable in this granule only because the task is
+non-committal price exploration — nothing typed here is meant to be
+submitted as part of a real transaction. In a real booking, passenger
+identity and contact fields are Memory-managed fill targets themselves:
+end the granule at that form and hand off to the Memory fill workflow
+instead of typing placeholders that would end up inside a real order.
 
 ## Surface and cleanup
 
@@ -117,7 +125,7 @@ as teardown.
 - **Missing ordinary input.** `status: blocked` with
   `blockedReason: "missing_input"` means MagicBrowse needs ordinary
   input before it can continue. Other `blockedReason` values distinguish
-  unavailable items, ambiguous tasks, and no remaining browser path.
+  unavailable items, ambiguous tasks, and no remaining page-control path.
 - **Final booking/payment action.** `status: needs_approval` means the
   page is ready for a consequential action and the user must approve
   the exact visible action before it is executed. A successful typed MagicPay

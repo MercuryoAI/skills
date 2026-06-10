@@ -7,7 +7,7 @@
   workflow session.
 - Plan Memory field fill with `magicpay plan-fill`.
 - Apply approved Memory values with `magicpay apply-fill` without submitting.
-- Return post-fill browser continuation to the browser owner.
+- Return post-fill page continuation to the page-control owner.
 - Run typed protected action approvals through `authorize-payment`,
   `sign-message`, or `confirm-action`.
 - Complete the MagicPay workflow with `magicpay end-session`, then return
@@ -29,7 +29,7 @@ MagicPay approval for:
 - whether the user wants final submission now.
 
 MagicPay fills planned fields only. After `magicpay apply-fill`, continue with
-the browser owner from a refreshed page state. Do not treat filled fields as
+the page-control owner from a refreshed page state. Do not treat filled fields as
 approval to submit.
 
 After typed approval, proceed with exactly that action; do not ask for a

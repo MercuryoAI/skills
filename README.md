@@ -1,6 +1,6 @@
 # Mercuryo Agent Skills
 
-Installable skill bundles for MagicBrowse browser automation fallback and MagicPay approved login, identity, checkout, donation, subscription, and payment pages in supported AI runtimes.
+Installable skill bundles for MagicBrowse browser page-control fallback and MagicPay approved login, identity, checkout, donation, subscription, and payment pages in supported AI runtimes.
 
 ## What is a skill?
 
@@ -10,7 +10,7 @@ A skill is an instruction bundle your AI runtime can load. The skill tells the a
 
 | If you need this | Choose this surface | Why |
 | --- | --- | --- |
-| Reach a target web page when your own browser tooling cannot do it reliably | `magicbrowse` | LLM-first browser autonomy fallback. Drive a Chrome session by natural-language goals through `magicbrowse act`; use deterministic `observe` plus primitives only when autonomy needs single-element precision. Stops at login, identity, checkout, donation, subscription, payment, and human-verification pages. |
+| Reach a target web page when the runtime page-control tool cannot do it reliably | `magicbrowse` | LLM-first browser page-control fallback. Drive a Chrome session by natural-language goals through `magicbrowse act`; use deterministic `observe` plus primitives only when autonomy needs single-element precision. Stops at login, identity, checkout, donation, subscription, payment, and human-verification pages. |
 | A login, identity, checkout, donation, subscription, or payment workflow needs approved stored values | `magicpay` | Start the MagicPay product session first, then launch or attach the browser as a child resource for discovery, approval, protected fill, and browser-owner continuation. |
 
 ## How to use this catalog
@@ -36,7 +36,7 @@ This repository is generated from the private release source. Use `manifests/<sk
 
 ### `magicbrowse`
 
-Browser automation fallback — drive an approved Chrome session with goal-driven act as the default MagicBrowse primitive; use observe plus deterministic click/type/select/press/fill only for recovery or single-element precision, then verify any expected page-state change with a fresh observation.
+Browser page-control fallback — drive an approved Chrome session with goal-driven act as the default MagicBrowse primitive; use observe plus deterministic click/type/select/press/fill only for recovery or single-element precision, then verify any expected page-state change with a fresh observation.
 
 - Claude Code: [direct guide](docs/magicbrowse/claude/direct/README.md)
 - Codex: [direct guide](docs/magicbrowse/codex/direct/README.md)

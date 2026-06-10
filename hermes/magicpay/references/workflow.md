@@ -33,8 +33,16 @@ and handle the output:
   remain separate and still use `MAGICBROWSE_HOME` when that layer is involved.
 - Use `magicpay launch [url]` when MagicPay should create the browser child
   inside the active product workflow.
+- `magicpay launch` returns the child's `cdpUrl`. Pass it to a
+  page-control tool (for example `magicbrowse attach <cdpUrl>`) when
+  that tool should drive the same browser inside the workflow. This is an
+  in-workflow bind of an owned disposable browser, not an external attach
+  that needs separate user approval; still keep the endpoint private.
 - If another tool or the user already has the correct page open, use
   `magicpay attach <cdp-url>` only for that approved private browser/session.
+  A page prepared in a browser without a reachable CDP endpoint cannot be
+  adopted; the flow must be redone in an attachable or MagicPay-launched
+  browser.
 - If the CDP endpoint changes, rerun `magicpay attach` before retrying
   browser-dependent commands.
 - If MagicPay is already bound to the same approved endpoint inside the active
@@ -87,7 +95,7 @@ end-session` completes the MagicPay workflow.
   displayed candidate to use, then run
   `magicpay choose-memory --choice <choiceId>`. Use `choiceId` as the selector;
   labels are display text only.
-- Continue after a successful fill with the browser owner, but first refresh
+- Continue after a successful fill with the page-control owner, but first refresh
   the visible page state.
 - If required fields remain empty after Memory fill, ask the user how to
   proceed or stop. Do not invent values and do not fill directly from chat
@@ -189,7 +197,7 @@ When one form needs several saved Memory fields:
 1. Run one `magicpay plan-fill` for the current page.
 2. Run `magicpay apply-fill` for the active plan.
 3. Refresh the current page state after fill if the page mutates.
-4. Continue with the browser owner after the required visible fields are
+4. Continue with the page-control owner after the required visible fields are
    complete.
 5. Get the matching typed MagicPay approval if the next browser action would
    submit, purchase, log in, save account settings, or otherwise commit state.
@@ -207,8 +215,8 @@ browser lifecycle:
   the user explicitly approves teardown.
 
 Do not encode a MagicBrowse dependency into MagicPay orchestration. The same
-rule applies to any browser owner: MagicPay ends the protected workflow; the
-browser owner decides cleanup.
+rule applies to any browser lifecycle owner: MagicPay ends the protected
+workflow; that owner decides cleanup.
 
 ## When To Stop
 

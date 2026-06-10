@@ -66,7 +66,10 @@ endpoint is **positional**, not a `--cdp-url` flag.
 
 Only attach to a private endpoint that the user provided or explicitly
 approved for the current task. Treat CDP endpoints as sensitive because
-they inherit the authority of that browser session.
+they inherit the authority of that browser session. Attaching to the
+browser child that MagicPay launched inside the current approved product
+workflow is the normal in-workflow path and needs no separate approval;
+the approval requirement targets external or user-owned browsers.
 
 Exit codes: `0` on success, `1` if the endpoint is missing.
 

@@ -67,11 +67,15 @@ values, surface the situation to the user or orchestrator, and never invent
 or placeholder Memory values. Be honest about what `magicbrowse` cannot
 do.
 
-The narrow exception is **placeholder values to traverse a
-ordinary screen** (e.g. typing dummy passenger names to reach
-the payment page in a flight booking flow). Do not type real
-identity data; use semantically obvious placeholders. The moment a
-field starts asking for something Memory-managed, stop.
+The narrow exception is **placeholder values to traverse an ordinary
+screen during non-committal exploration** (e.g. typing dummy passenger
+names to reveal the final fare in a flight-price check). Do not type
+real identity data; use semantically obvious placeholders. The moment a
+field starts asking for something Memory-managed, stop. If the flow is
+expected to submit real data — booking, ordering, registering — do not
+placeholder those fields at all: they are Memory-fill handoff targets,
+and placeholder values left in a real submission corrupt it. End the
+granule at that form instead.
 
 ## Act Before Snapshot Primitives
 
@@ -122,9 +126,13 @@ authority even though `magicbrowse` never receives the password.
 
 Only use `magicbrowse attach`, `--profile`, or `--user-data-dir` when
 the user explicitly approves that browser/session for the current
-task. Keep CDP endpoints private and do not paste them into shared
-logs. Close or detach when the overall browser workflow is done, and start a
-fresh session for unrelated work. If MagicBrowse handed the current page to
+task. The exception is the browser child MagicPay launched inside the
+current approved product workflow: attaching to it is the normal
+in-workflow path for preparing pages in the same browser, not an
+external attach that needs separate approval. Keep CDP endpoints
+private and do not paste them into shared logs. Close or detach when
+the overall browser workflow is done, and start a fresh session for
+unrelated work. If MagicBrowse handed the current page to
 another tool or the user, wait until that handoff finishes before closing a
 MagicBrowse-owned disposable browser. Do not close an external/user-owned
 browser or approved attach without explicit teardown approval.
