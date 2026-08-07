@@ -1,5 +1,5 @@
 {
-  "packageName": "@mercuryo-ai/agent-skills",
+  "publicRepository": "nuanu-ai/skills",
   "packageVersion": "0.1.0",
   "publicSignupUrl": "https://agents.mercuryo.io/signup",
   "sourceExportManifest": "export-manifest.json",
