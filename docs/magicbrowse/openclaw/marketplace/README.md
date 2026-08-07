@@ -17,7 +17,7 @@ Copy this request into your agent session:
 Install the `magicbrowse` skill from ClawHub in this workspace.
 Treat MagicBrowse as a page-control fallback controller. Use it only when the runtime's own page-control tool cannot reach a target page reliably.
 Ask me for my API key and run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
-If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
+If `magicbrowse` is missing, install or repair `@nuanu-ai/magicbrowse-cli`.
 Verify the setup with `magicbrowse doctor`. The primary workflow is `magicbrowse launch <url>` -> one or more `magicbrowse act "<goal>"` -> `magicbrowse close`.
 Use a fresh browser by default. Do not attach to an existing CDP endpoint, named profile, or user-data directory unless I explicitly approve that browser/session for this task.
 Stop at login, identity, checkout, donation, subscription, and payment pages and return a Memory fill handoff for the orchestrator. Also ask me before submitting, posting, sending, saving, deleting, booking, buying, ordering, paying, accepting terms, or changing account data/settings, unless a matching typed MagicPay approval already covers the unchanged page facts.
@@ -68,7 +68,7 @@ Use the manual path only if you want to manage the skill files yourself instead 
 ## Troubleshooting
 
 - **Skill not recognized by OpenClaw**: Start a fresh OpenClaw session so the runtime can rescan installed skills.
-- **`magicbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicbrowse-cli@latest`, then verify with `magicbrowse --version`.
+- **`magicbrowse` command not found**: Ask the agent to install or repair `@nuanu-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @nuanu-ai/magicbrowse-cli@latest`, then verify with `magicbrowse --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 - **`magicbrowse doctor` still fails after `magicbrowse init`**: Inspect the persisted gateway config for a malformed key or wrong gateway URL.
 - **Browser launch is unavailable**: Use an environment that allows Chrome startup, or explicitly approve a private CDP endpoint for this task before using attach.
@@ -81,4 +81,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for MagicBrowse v0.1.16.
+This guide is for MagicBrowse v0.1.18.

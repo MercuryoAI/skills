@@ -1,4 +1,4 @@
-# Install MagicPay in Hermes from MercuryoAI/skills
+# Install MagicPay in Hermes from nuanu-ai/skills
 
 MagicPay helps Hermes handle approved login, identity, checkout, donation, subscription, and payment pages. Start the MagicPay product workflow first with `magicpay start-session`, then choose the browser process before page preparation. Use Hermes native page-control automation when it can drive the same private-CDP browser process that MagicPay will attach to; otherwise launch the MagicPay browser child first and drive that same browser process through an available controller such as MagicBrowse. When MagicPay needs browser-dependent work, bind that browser process as a child resource inside the active product workflow, then run `magicpay plan-fill` -> `magicpay apply-fill`. After MagicPay applies Memory fill, continue through the page-control tool that owns the browser. Consequential actions use typed approvals: `magicpay authorize-payment`, `magicpay sign-message`, or `magicpay confirm-action`; after typed approval, proceed with exactly that action and stop only if page facts changed.
 
@@ -13,10 +13,10 @@ MagicPay helps Hermes handle approved login, identity, checkout, donation, subsc
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill from the MercuryoAI/skills GitHub tap in this Hermes workspace.
+Install the `magicpay` skill from the nuanu-ai/skills GitHub tap in this Hermes workspace.
 Treat MagicPay as the helper for approved login, identity, checkout, donation, subscription, and payment workflows. The product workflow is the parent; browser work is a child resource when MagicPay needs browser-dependent execution.
 Ask me for my API key and run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
-If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
+If `magicpay` is missing, install or repair `@nuanu-ai/magicpay-cli`.
 Verify the setup with `magicpay status`. If it still fails after init, run `magicpay doctor`.
 As soon as the task is identified as a MagicPay product workflow, run `magicpay start-session` before browser preparation.
 For browser work in Hermes, choose the browser process before page preparation: use Hermes native page-control automation when it can drive the same private-CDP browser process that MagicPay will attach to; otherwise launch the MagicPay browser child first and drive that same browser process through an available controller such as MagicBrowse.
@@ -30,14 +30,14 @@ Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confir
 
 ## Install source
 
-- Preferred path: add `MercuryoAI/skills` as a Hermes GitHub tap, then install `magicpay` from that tap.
-- Direct Hermes identifier: `MercuryoAI/skills/hermes/magicpay`
+- Preferred path: add `nuanu-ai/skills` as a Hermes GitHub tap, then install `magicpay` from that tap.
+- Direct Hermes identifier: `nuanu-ai/skills/hermes/magicpay`
 - After install, ask Hermes to request your API key and run `magicpay init <your-api-key>`.
 
 ## What your agent should do
 
-1. Add the MercuryoAI skills tap with `hermes skills tap add MercuryoAI/skills` if it is not already configured.
-2. Install the `magicpay` skill from `MercuryoAI/skills/hermes/magicpay`.
+1. Add the Nuanu AI skills tap with `hermes skills tap add nuanu-ai/skills` if it is not already configured.
+2. Install the `magicpay` skill from `nuanu-ai/skills/hermes/magicpay`.
 3. Request your API key and run `magicpay init <your-api-key>`.
 4. Verify the install with `magicpay status`; MagicPay product workflows should start with `magicpay start-session`, and page preparation should use Hermes native page-control only when it drives the same browser process MagicPay can attach to.
 5. Start a fresh Hermes session if the current session does not see the installed skill.
@@ -63,7 +63,7 @@ Start with `magicpay status`, then `magicpay start-session` as soon as the task 
 
 ## Manual zip fallback
 
-Use the manual path only if you want to manage the skill files yourself instead of letting Hermes install from the MercuryoAI/skills GitHub tap.
+Use the manual path only if you want to manage the skill files yourself instead of letting Hermes install from the nuanu-ai/skills GitHub tap.
 
 1. Download the public release archive for the current MagicPay skill version.
 2. Extract the archive. You should get a folder named `magicpay/`.
@@ -72,14 +72,14 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ## Update or reinstall
 
-1. Ask your agent to update or reinstall the `magicpay` skill from the MercuryoAI/skills GitHub tap.
+1. Ask your agent to update or reinstall the `magicpay` skill from the nuanu-ai/skills GitHub tap.
 2. If prompted, provide your API key again and rerun `magicpay init <your-api-key>`.
 3. Start a fresh Hermes session if the current session still does not see the updated skill.
 
 ## Troubleshooting
 
 - **Skill not recognized by Hermes**: Start a fresh Hermes session so the runtime can rescan installed skills.
-- **`magicpay` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicpay-cli@latest`, then verify with `magicpay --version`.
+- **`magicpay` command not found**: Ask the agent to install or repair `@nuanu-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @nuanu-ai/magicpay-cli@latest`, then verify with `magicpay --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 - **`magicpay status` still fails after init**: Run `magicpay doctor` to inspect the local config.
 - **Hermes native page-control automation is unavailable**: Do not attempt unavailable browser tools. Use MagicBrowse as page-control fallback controller, then keep `magicpay start-session` as the product workflow parent.
@@ -92,4 +92,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for MagicPay v0.1.41.
+This guide is for MagicPay v0.1.43.

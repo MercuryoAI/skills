@@ -3,45 +3,45 @@
   "displayName": "MagicPay",
   "description": "MagicPay helper for approved login, identity, checkout, donation, subscription, payment pages, and typed action approvals.",
   "boundary": "sensitive-page",
-  "releaseVersion": "0.1.41",
-  "releaseTag": "magicpay-v0.1.41",
-  "ownerPackage": "@mercuryo-ai/magicpay-cli",
+  "releaseVersion": "0.1.43",
+  "releaseTag": "magicpay-v0.1.43",
+  "ownerPackage": "@nuanu-ai/magicpay-cli",
   "ownerBin": "magicpay",
-  "installPackage": "@mercuryo-ai/magicpay-cli",
+  "installPackage": "@nuanu-ai/magicpay-cli",
   "npmPackages": [
     {
-      "name": "@mercuryo-ai/magicbrowse",
-      "version": "0.0.18",
+      "name": "@nuanu-ai/magicbrowse",
+      "version": "0.0.21",
       "manifestPath": "packages/magicbrowse/package.json"
     },
     {
-      "name": "@mercuryo-ai/magicsearch",
-      "version": "0.1.3",
+      "name": "@nuanu-ai/magicsearch",
+      "version": "0.2.2",
       "manifestPath": "packages/magicsearch/package.json"
     },
     {
-      "name": "@mercuryo-ai/captcha-solver",
-      "version": "0.1.4",
+      "name": "@nuanu-ai/captcha-solver",
+      "version": "0.1.5",
       "manifestPath": "packages/captcha-solver/package.json"
     },
     {
-      "name": "@mercuryo-ai/magicpay-sdk",
-      "version": "0.1.17",
+      "name": "@nuanu-ai/magicpay-sdk",
+      "version": "0.2.2",
       "manifestPath": "packages/magicpay-sdk/package.json"
     },
     {
-      "name": "@mercuryo-ai/magicpay-home",
-      "version": "0.1.18",
+      "name": "@nuanu-ai/magicpay-home",
+      "version": "0.1.19",
       "manifestPath": "packages/magicpay-home/package.json"
     },
     {
-      "name": "@mercuryo-ai/magicsearch-cli",
-      "version": "0.1.2",
+      "name": "@nuanu-ai/magicsearch-cli",
+      "version": "0.1.5",
       "manifestPath": "packages/magicsearch-cli/package.json"
     },
     {
-      "name": "@mercuryo-ai/magicpay-cli",
-      "version": "0.1.26",
+      "name": "@nuanu-ai/magicpay-cli",
+      "version": "0.1.28",
       "manifestPath": "packages/magicpay-cli/package.json"
     }
   ],
@@ -51,7 +51,7 @@
       "runtime": "claude",
       "runtimeDisplayName": "Claude Code",
       "directBundleDir": "direct/claude-skill/magicpay",
-      "directReleaseArchive": "magicpay-claude-code-v0.1.41.zip",
+      "directReleaseArchive": "magicpay-claude-code-v0.1.43.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "github-marketplace",
       "marketplaceEnabled": false,
@@ -63,7 +63,7 @@
       "runtime": "codex",
       "runtimeDisplayName": "Codex",
       "directBundleDir": "direct/codex-skill/magicpay",
-      "directReleaseArchive": "magicpay-codex-v0.1.41.zip",
+      "directReleaseArchive": "magicpay-codex-v0.1.43.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "repo-marketplace",
       "marketplaceEnabled": false,
@@ -75,7 +75,7 @@
       "runtime": "hermes",
       "runtimeDisplayName": "Hermes",
       "directBundleDir": "direct/hermes-skill/magicpay",
-      "directReleaseArchive": "magicpay-hermes-v0.1.41.zip",
+      "directReleaseArchive": "magicpay-hermes-v0.1.43.zip",
       "marketplacePayloadDir": "marketplace/hermes-github-hub/magicpay",
       "marketplaceKind": "hermes-github-hub",
       "marketplaceEnabled": true,
@@ -87,7 +87,7 @@
       "runtime": "openclaw",
       "runtimeDisplayName": "OpenClaw",
       "directBundleDir": "direct/openclaw-skill/magicpay",
-      "directReleaseArchive": "magicpay-openclaw-v0.1.41.zip",
+      "directReleaseArchive": "magicpay-openclaw-v0.1.43.zip",
       "marketplacePayloadDir": "marketplace/openclaw-clawhub/magicpay",
       "marketplaceKind": "clawhub",
       "marketplaceEnabled": true,
@@ -99,7 +99,7 @@
       "runtime": "skills-sh",
       "runtimeDisplayName": "General Agent",
       "directBundleDir": "direct/general-agent-skill/magicpay",
-      "directReleaseArchive": "magicpay-general-agent-v0.1.41.zip",
+      "directReleaseArchive": "magicpay-general-agent-v0.1.43.zip",
       "marketplacePayloadDir": "marketplace/skills-sh/magicpay",
       "marketplaceKind": "skills-sh",
       "marketplaceEnabled": true,

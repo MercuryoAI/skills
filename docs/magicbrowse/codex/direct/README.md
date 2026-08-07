@@ -14,10 +14,10 @@ MagicBrowse gives Codex a browser page-control fallback for real web pages: laun
 Copy this request into your agent session:
 
 ```text
-Install the `magicbrowse` skill in Codex from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.16 using `magicbrowse-codex-v0.1.16.zip`. Place the extracted `magicbrowse/` folder directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
+Install the `magicbrowse` skill in Codex from https://github.com/nuanu-ai/skills/releases/tag/magicbrowse-v0.1.18 using `magicbrowse-codex-v0.1.18.zip`. Place the extracted `magicbrowse/` folder directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
 Treat MagicBrowse as a page-control fallback controller. Use it only when the runtime's own page-control tool cannot reach a target page reliably.
 Ask me for my API key and run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
-If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
+If `magicbrowse` is missing, install or repair `@nuanu-ai/magicbrowse-cli`.
 Verify the setup with `magicbrowse doctor`. The primary workflow is `magicbrowse launch <url>` -> one or more `magicbrowse act "<goal>"` -> `magicbrowse close`.
 Use a fresh browser by default. Do not attach to an existing CDP endpoint, named profile, or user-data directory unless I explicitly approve that browser/session for this task.
 Stop at login, identity, checkout, donation, subscription, and payment pages and return a Memory fill handoff for the orchestrator. Also ask me before submitting, posting, sending, saving, deleting, booking, buying, ordering, paying, accepting terms, or changing account data/settings, unless a matching typed MagicPay approval already covers the unchanged page facts.
@@ -25,10 +25,10 @@ Stop at login, identity, checkout, donation, subscription, and payment pages and
 
 ## What your agent should do
 
-1. Download `magicbrowse-codex-v0.1.16.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.16.
+1. Download `magicbrowse-codex-v0.1.18.zip` from https://github.com/nuanu-ai/skills/releases/tag/magicbrowse-v0.1.18.
 2. Extract the archive so the top-level folder is `magicbrowse/`.
 3. Place `magicbrowse/` directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
-4. If `magicbrowse` is missing, install or repair `@mercuryo-ai/magicbrowse-cli`.
+4. If `magicbrowse` is missing, install or repair `@nuanu-ai/magicbrowse-cli`.
 5. Request your API key and run `magicbrowse init <your-api-key>`; omit `--api-url` unless you need a non-default gateway.
 6. Start a fresh Codex session if the current session does not pick up the installed skill.
 
@@ -53,9 +53,9 @@ Use MagicBrowse as a page-control fallback controller when the runtime's own pag
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicbrowse/` folder yourself instead of asking Codex to install it from https://github.com/MercuryoAI/skills/releases/tag/magicbrowse-v0.1.16 using `magicbrowse-codex-v0.1.16.zip`.
+Use this fallback only if you want to manage the `magicbrowse/` folder yourself instead of asking Codex to install it from https://github.com/nuanu-ai/skills/releases/tag/magicbrowse-v0.1.18 using `magicbrowse-codex-v0.1.18.zip`.
 
-1. Download `magicbrowse-codex-v0.1.16.zip`.
+1. Download `magicbrowse-codex-v0.1.18.zip`.
 2. Extract the archive. You should get a folder named `magicbrowse/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart Codex if you already had a session open.
@@ -70,7 +70,7 @@ Use this fallback only if you want to manage the `magicbrowse/` folder yourself 
 ## Troubleshooting
 
 - **Skill not recognized by Codex**: Make sure the folder sits directly inside `$CODEX_HOME/skills/` or `~/.codex/skills/`.
-- **`magicbrowse` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicbrowse-cli@latest`, then verify with `magicbrowse --version`.
+- **`magicbrowse` command not found**: Ask the agent to install or repair `@nuanu-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @nuanu-ai/magicbrowse-cli@latest`, then verify with `magicbrowse --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 - **`magicbrowse doctor` still fails after `magicbrowse init`**: Inspect the persisted gateway config for a malformed key or wrong gateway URL.
 - **Browser launch is unavailable**: Use an environment that allows Chrome startup, or explicitly approve a private CDP endpoint for this task before using attach.
@@ -83,4 +83,4 @@ Use this fallback only if you want to manage the `magicbrowse/` folder yourself 
 
 ---
 
-This guide is for MagicBrowse v0.1.16.
+This guide is for MagicBrowse v0.1.18.

@@ -1,4 +1,4 @@
-# Mercuryo Agent Skills
+# Nuanu AI Skills
 
 Installable skill bundles for MagicBrowse browser page-control fallback and MagicPay approved login, identity, checkout, donation, subscription, and payment pages in supported AI runtimes.
 
@@ -29,8 +29,8 @@ This repository is generated from the private release source. Use `manifests/<sk
 | GitHub Releases | Release assets on `magicbrowse-v*` and `magicpay-v*` tags | Direct zip installs for runtimes that load local skill folders. Use the runtime direct guide for the exact archive name and install path. |
 | Runtime install guides | `docs/<skill>/<runtime>/{direct,marketplace}/README.md` | Copy/paste prompts for your agent, including init, verification, and manual fallback steps. |
 | OpenClaw ClawHub | ClawHub plus `docs/<skill>/openclaw/marketplace/README.md` | Preferred OpenClaw install path; direct zip remains a fallback. |
-| Hermes GitHub hub/tap | `hermes/<skill>/SKILL.md` | Add the `MercuryoAI/skills` tap in Hermes, then install the skill from `MercuryoAI/skills/hermes/<skill>`. |
-| skills.sh / universal agents | `skills/<skill>/SKILL.md` in this repository | Install with `npx skills add MercuryoAI/skills --skill <skill> --yes --copy`; skills.sh URLs stay under `mercuryoai/skills/<skill>`. |
+| Hermes GitHub hub/tap | `hermes/<skill>/SKILL.md` | Add the `nuanu-ai/skills` tap in Hermes, then install the skill from `nuanu-ai/skills/hermes/<skill>`. |
+| skills.sh / universal agents | `skills/<skill>/SKILL.md` in this repository | Install with `npx skills add nuanu-ai/skills --skill <skill> --yes --copy`; skills.sh URLs stay under `nuanu-ai/skills/<skill>`. |
 
 ## Start with the right guide
 

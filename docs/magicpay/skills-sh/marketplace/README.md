@@ -13,10 +13,10 @@ MagicPay helps compatible AI agents handle approved login, identity, checkout, d
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill from skills.sh using `npx skills add MercuryoAI/skills --skill magicpay --yes --copy`.
+Install the `magicpay` skill from skills.sh using `npx skills add nuanu-ai/skills --skill magicpay --yes --copy`.
 Treat MagicPay as the helper for approved login, identity, checkout, donation, subscription, and payment workflows. The product workflow is the parent; browser work is a child resource when MagicPay needs browser-dependent execution.
 Ask me for my API key and run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
-If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
+If `magicpay` is missing, install or repair `@nuanu-ai/magicpay-cli`.
 Verify the setup with `magicpay status`. If it still fails after init, run `magicpay doctor`.
 As soon as the task is identified as a MagicPay product workflow, run `magicpay start-session` before browser preparation.
 For browser work, choose the browser process before page preparation: use the current agent's native page-control tool when it can drive the same private-CDP browser process that MagicPay will attach to; otherwise launch the MagicPay browser child first and drive that same browser process through an available controller such as MagicBrowse.
@@ -30,13 +30,13 @@ Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confir
 
 ## Install source
 
-- Preferred path: install the universal MagicPay skill through `npx skills add MercuryoAI/skills --skill magicpay --yes --copy`.
-- skills.sh source repository: `MercuryoAI/skills`
+- Preferred path: install the universal MagicPay skill through `npx skills add nuanu-ai/skills --skill magicpay --yes --copy`.
+- skills.sh source repository: `nuanu-ai/skills`
 - After install, ask the agent to request your API key and run `magicpay init <your-api-key>`.
 
 ## What your agent should do
 
-1. Install the `magicpay` skill with `npx skills add MercuryoAI/skills --skill magicpay --yes --copy`.
+1. Install the `magicpay` skill with `npx skills add nuanu-ai/skills --skill magicpay --yes --copy`.
 2. If the skills CLI asks for an agent target, choose the current agent or the universal `.agents/skills` path.
 3. Request your API key and run `magicpay init <your-api-key>`.
 4. Verify the install with `magicpay status`; MagicPay product workflows should start with `magicpay start-session`, and page preparation should use the current agent's native page-control only when it drives the same browser process MagicPay can attach to.
@@ -71,14 +71,14 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ## Update or reinstall
 
-1. Ask your agent to rerun `npx skills add MercuryoAI/skills --skill magicpay --yes --copy`, or use the skills CLI update command if the source is already tracked.
+1. Ask your agent to rerun `npx skills add nuanu-ai/skills --skill magicpay --yes --copy`, or use the skills CLI update command if the source is already tracked.
 2. If prompted, provide your API key again and rerun `magicpay init <your-api-key>`.
 3. Start a fresh agent session if the current session still does not see the updated skill.
 
 ## Troubleshooting
 
 - **Skill not recognized by General Agent**: Start a fresh General Agent session so the runtime can rescan installed skills.
-- **`magicpay` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicpay-cli@latest`, then verify with `magicpay --version`.
+- **`magicpay` command not found**: Ask the agent to install or repair `@nuanu-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @nuanu-ai/magicpay-cli@latest`, then verify with `magicpay --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 - **`magicpay status` still fails after init**: Run `magicpay doctor` to inspect the local config.
 - **`magicpay plan-fill` cannot produce a safe Memory plan**: Confirm the browser is still on the intended page, then rerun `magicpay plan-fill`.
@@ -89,4 +89,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for MagicPay v0.1.41.
+This guide is for MagicPay v0.1.43.

@@ -15,10 +15,10 @@ MagicPay helps OpenClaw handle approved login, identity, checkout, donation, sub
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill in OpenClaw from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.41 using `magicpay-openclaw-v0.1.41.zip`. Place the extracted `magicpay/` folder directly inside `skills/` or `~/.openclaw/skills/`.
+Install the `magicpay` skill in OpenClaw from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.43 using `magicpay-openclaw-v0.1.43.zip`. Place the extracted `magicpay/` folder directly inside `skills/` or `~/.openclaw/skills/`.
 Treat MagicPay as the helper for approved login, identity, checkout, donation, subscription, and payment workflows. The product workflow is the parent; browser work is a child resource when MagicPay needs browser-dependent execution.
 Ask me for my API key and run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
-If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
+If `magicpay` is missing, install or repair `@nuanu-ai/magicpay-cli`.
 Verify the setup with `magicpay status`. If it still fails after init, run `magicpay doctor`.
 As soon as the task is identified as a MagicPay product workflow, run `magicpay start-session` before browser preparation.
 For browser work in OpenClaw, choose the browser process before page preparation: use the built-in `browser` page-control tool when it can drive the same private-CDP browser process that MagicPay will attach to; otherwise launch the MagicPay browser child first and drive that same browser process through an available controller such as MagicBrowse.
@@ -31,10 +31,10 @@ Only call `magicpay solve-captcha [--timeout <s>]` when a real CAPTCHA is confir
 
 ## What your agent should do
 
-1. Download `magicpay-openclaw-v0.1.41.zip` from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.41.
+1. Download `magicpay-openclaw-v0.1.43.zip` from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.43.
 2. Extract the archive so the top-level folder is `magicpay/`.
 3. Place `magicpay/` directly inside `skills/` or `~/.openclaw/skills/`.
-4. If `magicpay` is missing, install or repair `@mercuryo-ai/magicpay-cli`.
+4. If `magicpay` is missing, install or repair `@nuanu-ai/magicpay-cli`.
 5. Request your API key and run `magicpay init <your-api-key>`; omit `--api-url` unless you need a non-default gateway.
 6. Start a fresh OpenClaw session if the current session does not pick up the installed skill.
 
@@ -64,9 +64,9 @@ Start with `magicpay status`, then `magicpay start-session` as soon as the task 
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking OpenClaw to install it from https://github.com/MercuryoAI/skills/releases/tag/magicpay-v0.1.41 using `magicpay-openclaw-v0.1.41.zip`.
+Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking OpenClaw to install it from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.43 using `magicpay-openclaw-v0.1.43.zip`.
 
-1. Download `magicpay-openclaw-v0.1.41.zip`.
+1. Download `magicpay-openclaw-v0.1.43.zip`.
 2. Extract the archive. You should get a folder named `magicpay/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart OpenClaw if you already had a session open.
@@ -81,7 +81,7 @@ Use this fallback only if you want to manage the `magicpay/` folder yourself ins
 ## Troubleshooting
 
 - **Skill not recognized by OpenClaw**: Make sure the folder sits directly inside `skills/` or `~/.openclaw/skills/`.
-- **`magicpay` command not found**: Ask the agent to install or repair `@mercuryo-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @mercuryo-ai/magicpay-cli@latest`, then verify with `magicpay --version`.
+- **`magicpay` command not found**: Ask the agent to install or repair `@nuanu-ai/magicpay-cli`. If you need the manual fallback, run `npm i -g @nuanu-ai/magicpay-cli@latest`, then verify with `magicpay --version`.
 - **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 - **`magicpay status` still fails after init**: Run `magicpay doctor` to inspect the local config.
 - **OpenClaw uses MagicBrowse too early**: Use the OpenClaw built-in page-control tool when it can drive the same attachable browser process; MagicBrowse is fallback page-control when it cannot.
@@ -93,4 +93,4 @@ Use this fallback only if you want to manage the `magicpay/` folder yourself ins
 
 ---
 
-This guide is for MagicPay v0.1.41.
+This guide is for MagicPay v0.1.43.
