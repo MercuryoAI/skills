@@ -6,7 +6,7 @@ MagicBrowse gives Claude Code a browser page-control fallback for real web pages
 
 - Node.js 18 or later is installed.
 - Claude Code is installed and working.
-- You have an API key for the magicbrowse gateway. Sign up at https://agents.mercuryo.io/signup if needed.
+- You have an API key for the magicbrowse gateway. Sign up at https://app.magiccard.ai/signup if needed.
 - The environment can launch a Chrome session. Use `magicbrowse attach` only for a private CDP endpoint explicitly approved for the current task.
 
 ## Ask your agent
@@ -14,7 +14,7 @@ MagicBrowse gives Claude Code a browser page-control fallback for real web pages
 Copy this request into your agent session:
 
 ```text
-Install the `magicbrowse` skill in Claude Code from https://github.com/nuanu-ai/skills/releases/tag/magicbrowse-v0.1.18 using `magicbrowse-claude-code-v0.1.18.zip`. Place the extracted `magicbrowse/` folder directly inside `.claude/skills/` or `~/.claude/skills/`.
+Install the `magicbrowse` skill in Claude Code from https://github.com/nuanu-ai/skills/releases/tag/magicbrowse-v0.1.19 using `magicbrowse-claude-code-v0.1.19.zip`. Place the extracted `magicbrowse/` folder directly inside `.claude/skills/` or `~/.claude/skills/`.
 Treat MagicBrowse as a page-control fallback controller. Use it only when the runtime's own page-control tool cannot reach a target page reliably.
 Ask me for my API key and run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 If `magicbrowse` is missing, install or repair `@nuanu-ai/magicbrowse-cli`.
@@ -25,7 +25,7 @@ Stop at login, identity, checkout, donation, subscription, and payment pages and
 
 ## What your agent should do
 
-1. Download `magicbrowse-claude-code-v0.1.18.zip` from https://github.com/nuanu-ai/skills/releases/tag/magicbrowse-v0.1.18.
+1. Download `magicbrowse-claude-code-v0.1.19.zip` from https://github.com/nuanu-ai/skills/releases/tag/magicbrowse-v0.1.19.
 2. Extract the archive so the top-level folder is `magicbrowse/`.
 3. Place `magicbrowse/` directly inside `.claude/skills/` or `~/.claude/skills/`.
 4. If `magicbrowse` is missing, install or repair `@nuanu-ai/magicbrowse-cli`.
@@ -53,9 +53,9 @@ Use MagicBrowse as a page-control fallback controller when the runtime's own pag
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicbrowse/` folder yourself instead of asking Claude Code to install it from https://github.com/nuanu-ai/skills/releases/tag/magicbrowse-v0.1.18 using `magicbrowse-claude-code-v0.1.18.zip`.
+Use this fallback only if you want to manage the `magicbrowse/` folder yourself instead of asking Claude Code to install it from https://github.com/nuanu-ai/skills/releases/tag/magicbrowse-v0.1.19 using `magicbrowse-claude-code-v0.1.19.zip`.
 
-1. Download `magicbrowse-claude-code-v0.1.18.zip`.
+1. Download `magicbrowse-claude-code-v0.1.19.zip`.
 2. Extract the archive. You should get a folder named `magicbrowse/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart Claude Code if you already had a session open.
@@ -71,7 +71,7 @@ Use this fallback only if you want to manage the `magicbrowse/` folder yourself 
 
 - **Skill not recognized by Claude Code**: Make sure the folder sits directly inside `.claude/skills/` or `~/.claude/skills/`.
 - **`magicbrowse` command not found**: Ask the agent to install or repair `@nuanu-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @nuanu-ai/magicbrowse-cli@latest`, then verify with `magicbrowse --version`.
-- **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
+- **Missing API key**: Sign up at https://app.magiccard.ai/signup, then ask the agent to run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 - **`magicbrowse doctor` still fails after `magicbrowse init`**: Inspect the persisted gateway config for a malformed key or wrong gateway URL.
 - **Browser launch is unavailable**: Use an environment that allows Chrome startup, or explicitly approve a private CDP endpoint for this task before using attach.
 - **`magicbrowse act` returns `status: needs_handoff`**: Surface the message to the user. If the result includes `handoff.kind: memory_fill`, pass it to the orchestrator's MagicPay Memory fill workflow, then resume MagicBrowse with `handoff.resumeObjective` after the fill is complete. For a confirmed real CAPTCHA, use an external solver or user action, then `magicbrowse mark-captcha-resolved` before the next MagicBrowse step.
@@ -83,4 +83,4 @@ Use this fallback only if you want to manage the `magicbrowse/` folder yourself 
 
 ---
 
-This guide is for MagicBrowse v0.1.18.
+This guide is for MagicBrowse v0.1.19.

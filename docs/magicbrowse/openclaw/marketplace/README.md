@@ -6,7 +6,7 @@ MagicBrowse gives OpenClaw a browser page-control fallback for real web pages: l
 
 - Node.js 18 or later is installed.
 - OpenClaw is installed and working.
-- You have an API key for the magicbrowse gateway. Sign up at https://agents.mercuryo.io/signup if needed.
+- You have an API key for the magicbrowse gateway. Sign up at https://app.magiccard.ai/signup if needed.
 - The environment can launch a Chrome session. Use `magicbrowse attach` only for a private CDP endpoint explicitly approved for the current task.
 
 ## Ask your agent
@@ -69,7 +69,7 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 - **Skill not recognized by OpenClaw**: Start a fresh OpenClaw session so the runtime can rescan installed skills.
 - **`magicbrowse` command not found**: Ask the agent to install or repair `@nuanu-ai/magicbrowse-cli`. If you need the manual fallback, run `npm i -g @nuanu-ai/magicbrowse-cli@latest`, then verify with `magicbrowse --version`.
-- **Missing API key**: Sign up at https://agents.mercuryo.io/signup, then ask the agent to run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
+- **Missing API key**: Sign up at https://app.magiccard.ai/signup, then ask the agent to run `magicbrowse init <your-api-key>`. The CLI uses the bundled default gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 - **`magicbrowse doctor` still fails after `magicbrowse init`**: Inspect the persisted gateway config for a malformed key or wrong gateway URL.
 - **Browser launch is unavailable**: Use an environment that allows Chrome startup, or explicitly approve a private CDP endpoint for this task before using attach.
 - **`magicbrowse act` returns `status: needs_handoff`**: Surface the message to the user. If the result includes `handoff.kind: memory_fill`, pass it to the orchestrator's MagicPay Memory fill workflow, then resume MagicBrowse with `handoff.resumeObjective` after the fill is complete. For a confirmed real CAPTCHA, use an external solver or user action, then `magicbrowse mark-captcha-resolved` before the next MagicBrowse step.
@@ -81,4 +81,4 @@ Use the manual path only if you want to manage the skill files yourself instead 
 
 ---
 
-This guide is for MagicBrowse v0.1.18.
+This guide is for MagicBrowse v0.1.19.

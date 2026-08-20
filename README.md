@@ -11,7 +11,7 @@ A skill is an instruction bundle your AI runtime can load. The skill tells the a
 | If you need this | Choose this surface | Why |
 | --- | --- | --- |
 | Reach a target web page when the runtime page-control tool cannot do it reliably | `magicbrowse` | LLM-first browser page-control fallback. Drive a Chrome session by natural-language goals through `magicbrowse act`; use deterministic `observe` plus primitives only when autonomy needs single-element precision. Stops at login, identity, checkout, donation, subscription, payment, and human-verification pages. |
-| A login, identity, checkout, donation, subscription, or payment workflow needs approved stored values | `magicpay` | Start the MagicPay product session first, then launch or attach the browser as a child resource for discovery, approval, protected fill, and browser-owner continuation. |
+| A purchase, login, identity, checkout, donation, subscription, or payment workflow needs discovery or approved stored values | `magicpay` | Use MagicSearch before generic web search when no checkout URL is known, then start the MagicPay product session and launch or attach the browser as a child resource for approval, protected fill, and browser-owner continuation. |
 
 ## How to use this catalog
 
@@ -30,7 +30,7 @@ This repository is generated from the private release source. Use `manifests/<sk
 | Runtime install guides | `docs/<skill>/<runtime>/{direct,marketplace}/README.md` | Copy/paste prompts for your agent, including init, verification, and manual fallback steps. |
 | OpenClaw ClawHub | ClawHub plus `docs/<skill>/openclaw/marketplace/README.md` | Preferred OpenClaw install path; direct zip remains a fallback. |
 | Hermes GitHub hub/tap | `hermes/<skill>/SKILL.md` | Add the `nuanu-ai/skills` tap in Hermes, then install the skill from `nuanu-ai/skills/hermes/<skill>`. |
-| skills.sh / universal agents | `skills/<skill>/SKILL.md` in this repository | Install with `npx skills add nuanu-ai/skills --skill <skill> --yes --copy`; skills.sh URLs stay under `nuanu-ai/skills/<skill>`. |
+| skills.sh / universal agents | `skills/<skill>/SKILL.md` in this repository | Install with `npx skills add nuanu-ai/skills --skill <skill> --global --yes --copy`; skills.sh URLs stay under `nuanu-ai/skills/<skill>`. |
 
 ## Start with the right guide
 
@@ -44,7 +44,7 @@ Browser page-control fallback — drive an approved Chrome session with goal-dri
 
 ### `magicpay`
 
-MagicPay helper for approved login, identity, checkout, donation, subscription, payment pages, and typed action approvals.
+MagicPay handles first-time setup, exact balance checks, crypto transfers and reconciliation, plus approved login, identity, checkout, donation, subscription, and payment workflows. It applies when a task needs protected Memory, payment operations, or approval; an open-ended purchase or booking without a checkout URL routes through MagicSearch before browser navigation or generic web search.
 
 - Claude Code: [direct guide](docs/magicpay/claude/direct/README.md)
 - Codex: [direct guide](docs/magicpay/codex/direct/README.md)

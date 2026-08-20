@@ -3,35 +3,35 @@
   "displayName": "MagicBrowse",
   "description": "Browser page-control fallback — drive an approved Chrome session with goal-driven act as the default MagicBrowse primitive; use observe plus deterministic click/type/select/press/fill only for recovery or single-element precision, then verify any expected page-state change with a fresh observation.",
   "boundary": "browser-only",
-  "releaseVersion": "0.1.18",
-  "releaseTag": "magicbrowse-v0.1.18",
+  "releaseVersion": "0.1.19",
+  "releaseTag": "magicbrowse-v0.1.19",
   "ownerPackage": "@nuanu-ai/magicbrowse-cli",
   "ownerBin": "magicbrowse",
   "installPackage": "@nuanu-ai/magicbrowse-cli",
   "npmPackages": [
     {
       "name": "@nuanu-ai/magicbrowse",
-      "version": "0.0.21",
+      "version": "0.0.22",
       "manifestPath": "packages/magicbrowse/package.json"
     },
     {
       "name": "@nuanu-ai/magicsearch",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "manifestPath": "packages/magicsearch/package.json"
     },
     {
       "name": "@nuanu-ai/magicpay-sdk",
-      "version": "0.2.2",
+      "version": "0.3.1",
       "manifestPath": "packages/magicpay-sdk/package.json"
     },
     {
       "name": "@nuanu-ai/magicpay-home",
-      "version": "0.1.19",
+      "version": "0.1.22",
       "manifestPath": "packages/magicpay-home/package.json"
     },
     {
       "name": "@nuanu-ai/magicbrowse-cli",
-      "version": "0.0.13",
+      "version": "0.0.16",
       "manifestPath": "packages/magicbrowse-cli/package.json"
     }
   ],
@@ -41,7 +41,7 @@
       "runtime": "claude",
       "runtimeDisplayName": "Claude Code",
       "directBundleDir": "direct/claude-skill/magicbrowse",
-      "directReleaseArchive": "magicbrowse-claude-code-v0.1.18.zip",
+      "directReleaseArchive": "magicbrowse-claude-code-v0.1.19.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "github-marketplace",
       "marketplaceEnabled": false,
@@ -53,7 +53,7 @@
       "runtime": "codex",
       "runtimeDisplayName": "Codex",
       "directBundleDir": "direct/codex-skill/magicbrowse",
-      "directReleaseArchive": "magicbrowse-codex-v0.1.18.zip",
+      "directReleaseArchive": "magicbrowse-codex-v0.1.19.zip",
       "marketplacePayloadDir": null,
       "marketplaceKind": "repo-marketplace",
       "marketplaceEnabled": false,
@@ -65,7 +65,7 @@
       "runtime": "openclaw",
       "runtimeDisplayName": "OpenClaw",
       "directBundleDir": "direct/openclaw-skill/magicbrowse",
-      "directReleaseArchive": "magicbrowse-openclaw-v0.1.18.zip",
+      "directReleaseArchive": "magicbrowse-openclaw-v0.1.19.zip",
       "marketplacePayloadDir": "marketplace/openclaw-clawhub/magicbrowse",
       "marketplaceKind": "clawhub",
       "marketplaceEnabled": true,
