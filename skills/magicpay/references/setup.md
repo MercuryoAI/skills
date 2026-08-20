@@ -103,17 +103,17 @@ skill.
    If `setup next` is still missing after repair, stop and report the CLI
    version and install source instead of guessing an alternate command.
 
-2. Ask `magicpay setup next` what to do next. Use the default production
-   gateway unless the current setup prompt or served `skill.md` explicitly
-   gives a branch API URL or local hosted-link origin:
+2. Ask `magicpay setup next` what to do next. For production setup, always bind
+   the command to the production profile and API explicitly so a previously
+   active local or development profile cannot redirect the flow:
 
    ```bash
-   magicpay setup next --intent landing --platform <runtime> --agent-name "<runtime> Agent"
+   magicpay setup next --intent landing --platform <runtime> --agent-name "<runtime> Agent" --api-url https://durcottggsiesxxqzvbb.supabase.co/functions/v1/api --env production
    ```
 
-   For local development only, use the complete profile command supplied by
-   the setup prompt. Do not omit `--env`, invent, reuse, or hardcode a preview
-   branch URL:
+   If the current setup prompt or served `skill.md` supplies a complete local
+   or development profile, use that complete command instead. Do not omit
+   `--env`, invent, reuse, or hardcode a preview branch URL:
 
    ```bash
    magicpay setup next --intent landing --platform <runtime> --agent-name "<runtime> Agent" --api-url <branch-api-url> --env local

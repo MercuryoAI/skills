@@ -55,13 +55,18 @@ bootstrap path. The result includes:
 
 - `instructions` — the text the agent should follow and/or say next;
 - `state` — a compact debug/test label, not a prompt mapping key;
-- `agent` and `gateway` metadata when a local connection already exists.
+- `agent` and `gateway` metadata when a matching connection already exists.
 
 Follow `instructions` directly. Do not maintain a separate `state` /
-`nextAction` mapping in the skill or prompt. Use the default production gateway
-unless the setup prompt or environment explicitly supplies a branch API URL.
-When testing against a branch backend, append only those explicit override
-values:
+`nextAction` mapping in the skill or prompt. Production setup must pass the
+production API and environment explicitly:
+
+```bash
+magicpay setup next --intent landing --platform codex --agent-name "Codex Agent" --api-url https://durcottggsiesxxqzvbb.supabase.co/functions/v1/api --env production
+```
+
+When a local or development setup prompt supplies a complete profile, use
+only those explicit override values instead:
 
 ```bash
 magicpay setup next --intent landing --platform codex --agent-name "Codex Agent" --api-url <branch-api-url> --env local

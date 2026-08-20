@@ -17,7 +17,7 @@ MagicPay helps OpenClaw handle approved login, identity, checkout, donation, sub
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill in OpenClaw from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.46 using `magicpay-openclaw-v0.1.46.zip`. Place the extracted `magicpay/` folder directly inside `skills/` or `~/.openclaw/skills/`.
+Install the `magicpay` skill in OpenClaw from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.47 using `magicpay-openclaw-v0.1.47.zip`. Place the extracted `magicpay/` folder directly inside `skills/` or `~/.openclaw/skills/`.
 Treat MagicPay as the helper for approved login, identity, checkout, donation, subscription, and payment workflows. The product workflow is the parent; browser work is a child resource when MagicPay needs browser-dependent execution.
 Ask me for my API key and run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 If `magicpay` is missing, install or repair `@nuanu-ai/magicpay-cli`.
@@ -40,7 +40,7 @@ When a real CAPTCHA is already visibly confirmed, run `magicpay solve-captcha [-
 
 ## What your agent should do
 
-1. Download `magicpay-openclaw-v0.1.46.zip` from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.46.
+1. Download `magicpay-openclaw-v0.1.47.zip` from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.47.
 2. Extract the archive so the top-level folder is `magicpay/`.
 3. Place `magicpay/` directly inside `skills/` or `~/.openclaw/skills/`.
 4. If `magicpay` is missing, install or repair `@nuanu-ai/magicpay-cli`.
@@ -102,9 +102,9 @@ For payment authorization, follow the installed skill's closed normal-checkout `
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking OpenClaw to install it from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.46 using `magicpay-openclaw-v0.1.46.zip`.
+Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking OpenClaw to install it from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.47 using `magicpay-openclaw-v0.1.47.zip`.
 
-1. Download `magicpay-openclaw-v0.1.46.zip`.
+1. Download `magicpay-openclaw-v0.1.47.zip`.
 2. Extract the archive. You should get a folder named `magicpay/`.
 3. Move that folder into one of the supported install locations below.
 4. Restart OpenClaw if you already had a session open.
@@ -133,4 +133,4 @@ Use this fallback only if you want to manage the `magicpay/` folder yourself ins
 
 ---
 
-This guide is for MagicPay v0.1.46.
+This guide is for MagicPay v0.1.47.
