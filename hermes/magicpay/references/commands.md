@@ -78,7 +78,7 @@ Complete first-time setup after the user provides the OTP. The command creates
 or reuses the user's MagicPay account, creates or reuses the agent, and stores
 the resulting gateway config locally.
 
-Every successful verification returns `nextAction: "card-balance"`, including
+Every successful verification returns `nextAction: "payment-balance"`, including
 `created`, `existing`, and backwards-compatible `unknown` account statuses.
 Continue with the balance-driven flow in the previously returned `setup next`
 instructions. Do not use `account.status` to decide whether the user needs a
@@ -110,8 +110,9 @@ setup flow requires `setup next` to appear in help output before continuing.
 ### `magicpay top-up-link`
 
 Generate a hosted card top-up link for the configured MagicPay agent. During
-landing setup, run this only after `magicpay card-balance` succeeds with a
-finite numeric `balance` exactly equal to zero and the `setup next`
+landing setup, run this only after `magicpay payment-balance` without asset
+flags returns the authoritative unified contract with an integer-string
+`available` exactly equal to `"0"` and the `setup next`
 instructions request it. This rule applies equally to new and returning
 accounts. It may also be used when the user explicitly asks to top up.
 Share the exact hosted URL and say, localized naturally: “Top up your MagicPay
@@ -127,9 +128,11 @@ one-command diagnostic override. For normal use, run plain
 
 ### `magicpay card-balance [--card-id <id>]`
 
-Check the current MagicCard balance through the configured agent API key. Use
-this when the user asks for their MagicCard/card/account balance. This is a
-read-only account lookup and does not require a product session or a
+Read the compatibility balance attached to one issued MagicCard through the
+configured agent API key. Do not use this as the customer's MagicPay balance,
+for setup completion, or for a payment spend check. Use parameterless
+`magicpay payment-balance` for those unified-balance decisions. This
+compatibility lookup is read-only and does not require a product session or a
 payment approval.
 
 If it fails with a missing API key, run `magicpay status`, then use

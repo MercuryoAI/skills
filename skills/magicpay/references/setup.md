@@ -30,9 +30,9 @@ email, OTP, API key, or other setup input only when the returned instructions
 request it. The only exception is an authenticated MagicPay UI prompt that
 includes a setup token; that path uses UI Connect Setup.
 
-For read-only account questions such as "what is my card balance?", do not ask
-for an email first. Run `magicpay status`. If status is healthy, answer with
-`magicpay card-balance` or the matching read-only account command. If status
+For read-only balance questions, do not ask for an email first. Run
+`magicpay status`. If status is healthy, answer with `magicpay payment-balance`
+without asset flags and use only its authoritative unified `available`. If status
 shows missing or invalid local setup, run `magicpay setup next` and follow its
 returned `instructions`. Ask for the user's email only when those instructions
 ask for it.
@@ -143,11 +143,14 @@ skill.
 6. Use one common completion flow after OTP verification or approved reuse,
    regardless of whether setup reports `account.status: "created"`,
    `account.status: "existing"`, or the backwards-compatible `unknown` status:
-   run `magicpay card-balance` first and follow the exact numeric branches in
-   the returned setup instructions. A positive balance gets the funded
-   handoff without a top-up link. An exactly zero numeric `balance` gets one
-   `magicpay top-up-link` call and the exact returned hosted URL. A failed or
-   malformed balance is not proof of zero and must not create a top-up link.
+   run `magicpay payment-balance` without asset flags first and follow the exact
+   integer-string branches in the returned setup instructions. Accept only the
+   `magicpay.total-balance/v1` contract with `authority:
+   "authoritative_unified"` and `outcome: "available"`. A positive `available`
+   gets the funded handoff without a top-up link. An `available` value exactly
+   equal to `"0"` gets one `magicpay top-up-link` call and the exact returned
+   hosted URL. A failed, unavailable, derived, or malformed balance is not
+   proof of zero and must not create a top-up link.
    If the confirmed balance is zero but link creation fails, report only that
    the link is temporarily unavailable; never expose the raw failure.
 7. For a successful install or setup handoff, return only the concise localized

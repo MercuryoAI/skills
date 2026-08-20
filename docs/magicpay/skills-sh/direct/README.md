@@ -16,7 +16,7 @@ MagicPay helps compatible AI agents set up MagicPay, connect local MagicPay conf
 Copy this request into your agent session:
 
 ```text
-Install the `magicpay` skill for a compatible AI agent from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.47 using `magicpay-general-agent-v0.1.47.zip`. Place the extracted `magicpay/` folder directly inside `.agents/skills/` or `~/.agents/skills/`.
+Install the `magicpay` skill for a compatible AI agent from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.48 using `magicpay-general-agent-v0.1.48.zip`. Place the extracted `magicpay/` folder directly inside `.agents/skills/` or `~/.agents/skills/`.
 Treat MagicPay as the helper for approved login, identity, checkout, donation, subscription, and payment workflows. The product workflow is the parent; browser work is a child resource when MagicPay needs browser-dependent execution.
 Ask me for my API key and run `magicpay init <your-api-key>`. The CLI uses the bundled default MagicPay gateway URL; pass `--api-url <url>` only for a non-default staging, self-hosted, or test gateway.
 If `magicpay` is missing, install or repair `@nuanu-ai/magicpay-cli`.
@@ -40,7 +40,7 @@ When a real CAPTCHA is already visibly confirmed, run `magicpay solve-captcha [-
 
 ## What your agent should do
 
-1. Download `magicpay-general-agent-v0.1.47.zip` from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.47.
+1. Download `magicpay-general-agent-v0.1.48.zip` from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.48.
 2. Extract the archive so the top-level folder is `magicpay/`.
 3. Place `magicpay/` directly inside `.agents/skills/` or `~/.agents/skills/`.
 4. If `magicpay` is missing, install or repair `@nuanu-ai/magicpay-cli`.
@@ -83,9 +83,9 @@ Start with `magicpay status`. A known x402 resource URL uses the native payment-
 
 ## Manual zip fallback
 
-Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking General Agent to install it from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.47 using `magicpay-general-agent-v0.1.47.zip`.
+Use this fallback only if you want to manage the `magicpay/` folder yourself instead of asking General Agent to install it from https://github.com/nuanu-ai/skills/releases/tag/magicpay-v0.1.48 using `magicpay-general-agent-v0.1.48.zip`.
 
-1. Download `magicpay-general-agent-v0.1.47.zip`.
+1. Download `magicpay-general-agent-v0.1.48.zip`.
 2. Extract the archive. You should get a folder named `magicpay/`.
 3. Move that folder into one of the supported install locations below.
 4. Start a fresh agent session if you already had one open.
@@ -107,4 +107,4 @@ Use this fallback only if you want to manage the `magicpay/` folder yourself ins
 
 ---
 
-This guide is for MagicPay v0.1.47.
+This guide is for MagicPay v0.1.48.
