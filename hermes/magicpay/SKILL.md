@@ -62,6 +62,10 @@ Open an extra reference only when it helps:
 
 For exact balances, funding, crypto sends, x402 resources, status, results, or reconciliation, follow [references/payment-operations.md](references/payment-operations.md). Keep one session, idempotency key, and operation; approval is permission, reservation is in flight, and only `completed` is settlement.
 
+Keep hosted links and direct addresses separate: generic top-up and link requests use only
+`magicpay top-up-link`; available direct methods use `magicpay top-up-address`, and one USDT/USDC address adds `--asset <symbol>`.
+Run both only when explicitly requested; presentation and retry rules are in the commands reference.
+
 ## Core Flow
 <!-- magicpay-continuation:v1 id=core-flow-plan-apply action=plan-apply -->
 After `magicpay plan-fill`, execute its exact returned `applyCommand`.

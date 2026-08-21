@@ -126,6 +126,27 @@ for local admin testing. Use `--hosted-base-url` only as an explicit
 one-command diagnostic override. For normal use, run plain
 `magicpay top-up-link`.
 
+### `magicpay top-up-address [--asset <symbol>]`
+
+Request direct crypto top-up addresses from MagicPay without creating a hosted
+top-up link. With no selector, return every method in the structured `methods`
+array. With `--asset USDT` or `--asset USDC`, return only that asset's method;
+do not ask the user to choose a network when the result contains one network.
+
+Present each exact `address` together with `asset`, `network`, and
+`networkLabel`, localized to the user's language. Tell the user to send only
+that asset on that network. Do not show `operationId`, `requestKey`, or internal
+retry fields unless troubleshooting requires them.
+
+If the result contains `unavailable`, do not hide it. Present successful
+methods, explain unavailable choices briefly, and use only the exact returned
+`retry.command` for a same-request retry. Never construct or change
+`--request-key` yourself. An address is not proof of a deposit; wait for the
+funding operation and unified Ledger settlement.
+
+This command is independent from `magicpay top-up-link`. Run both only when the
+user explicitly asks for both surfaces.
+
 ### `magicpay card-balance [--card-id <id>]`
 
 Read the compatibility balance attached to one issued MagicCard through the

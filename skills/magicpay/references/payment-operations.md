@@ -17,6 +17,11 @@ uses `authorize-payment` or `magicpay commit`.
 - `magicpay payment-balance` returns `magicpay.total-balance/v1` with
   `authority: authoritative_unified`. Its `available` quantity is the sole
   customer spend authority for x402, crypto transfers, and card payments.
+- Present the unified USD balance with exactly two decimal places. Convert the
+  integer-string `available` using `presentation.scale`, round half up to two
+  places without floating-point arithmetic, and append `presentation.assetId`.
+  For example, present `1000000` at scale `6` as `1.00 USD`. Keep comparisons
+  and authorization checks on the original integer string, never formatted text.
 - `magicpay payment-balance --asset-namespace <value> --asset-id <value>
   --network <value>` returns a diagnostic exact-asset projection. Never require
   that rail-specific balance to fund a customer payment; MagicPay selects and
@@ -32,6 +37,12 @@ uses `authorize-payment` or `magicpay commit`.
   intent. Present the exact returned address, asset, and network; reuse the same
   key and refresh the unified balance only after Ledger confirmation. It is not
   `magicpay top-up-link`.
+- `magicpay top-up-address [--asset <symbol>]` is the agent-facing wrapper. Use
+  it when the user asks for direct addresses: no selector returns every
+  configured method and `--asset` returns one. It discovers current methods
+  from MagicPay and creates no hosted link. For partial failure, preserve the
+  exact returned retry command so every successful or retried method stays on
+  its original funding operation.
 
 ## Direct-transfer contract
 
