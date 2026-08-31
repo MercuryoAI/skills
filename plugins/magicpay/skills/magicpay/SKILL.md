@@ -90,9 +90,12 @@ required facts that are actually missing. Its consequential decision belongs to
 the operation-owned MagicPay approval system: never ask “please confirm” in
 chat, create a generic substitute, or treat chat “confirm” as payment approval.
 
-Ask only for an ordinary value the exact request says is safe for chat. For
-`ordinary_field_required`, submit only its returned roles to that exact request
-and resume the same run. A live MagicPay approval request with
+Before a browser run exists, ask for a visibly ordinary checkout value in
+regular chat only when the live page needs it to reveal the actual
+payment-dispatch surface. Once an exact request exists, ask only for an ordinary
+value that request says is safe for chat. For `ordinary_field_required`, submit
+only its returned roles to that exact request and resume the same run. A live
+MagicPay approval request with
 `otp_available: true` is the narrow OTP exception: submit its fresh six digits
 immediately with `confirm_request_otp`. OAuth OTPs, passwords, protected payment
 input, private keys, seeds, and protected Memory stay in their secure surface.
@@ -121,10 +124,14 @@ On an explicit native non-retryable failure, automatically call
 `fail_checkout_session` once for the exact session. Never replay a click or
 replace an operation, and preserve unrelated reservations. A later, separately user-authorized
 fresh payment is allowed only when terminal closure
-explicitly returns `released_pre_submit`, failed or not-started settlement,
-`freshStartAllowed: true`, and `nextAction: none`. Any missing or unresolved
-fact forbids a fresh attempt. Use a new workflow identity and approval; never reuse
-old authority or identities.
+explicitly returns `released_pre_submit` or `released_after_failure`, failed or
+not-started settlement, `freshStartAllowed: true`, and `nextAction: none`.
+`released_pre_submit` proves the exact non-submitted authority or hold was
+released. `released_after_failure` proves the exact submitted native operation
+is definitively failed and its own Ledger release consequence was recorded.
+Neither disposition retries the old operation or releases unrelated
+reservations. Any missing or unresolved fact forbids a fresh attempt. Use a new workflow identity
+and approval; never reuse old authority or identities.
 
 ## Hard rules
 

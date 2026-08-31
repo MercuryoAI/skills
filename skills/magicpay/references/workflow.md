@@ -7,7 +7,8 @@ checkout -> host browser ordinary work -> remote approval
 approval -> same-run one-time card and ordinary values -> native browser fill
 fill -> one exact native browser click -> immediate value-free result record
 dispatch -> one fresh merchant result check
-merchant_confirmed -> complete_checkout_session -> terminal workflow
+fully projected composed result -> terminal workflow without a second closer
+legacy merchant_confirmed workflow -> complete_checkout_session -> terminal workflow
 terminal workflow error -> fail_checkout_session -> terminal workflow
 payment operation -> independent pending or settled reconciliation truth
 ```
@@ -21,7 +22,7 @@ only for legacy recovery:
 exact x402 facts + stable clientRequestId -> composed payment run
 exact crypto facts + stable clientRequestId -> composed payment run
 exact existing browser session + stable clientRequestId -> composed browser payment run
-run waiting_for_user -> exact operation-owned request -> same-run bounded wait
+native run waiting_for_user -> exact operation-owned request -> same-run bounded wait -> one approved/executing handoff -> same-run final wait
 browser run ready_for_browser -> native fill -> one final action -> fresh validation/submission observation -> record_browser_payment_result
 run completed -> durable transfer evidence or verified seller result
 exact legacy session + facts + stable key -> lower-level native operation
@@ -32,8 +33,16 @@ completed operation -> settlement truth (plus bounded result for x402)
 ```
 
 For a composed run, report the returned `request_url` and immediately call
-`wait_payment` once on the same `runId` and progress cursor. It polls every
-three seconds for up to 270 seconds. For an already-existing legacy operation,
+`wait_payment` on the same `runId` and progress cursor. It polls every three
+seconds for up to 270 seconds. A direct-transfer or x402 waiter may return once
+when it observes the new approved/executing handoff. Acknowledge receipt of the
+approval, then immediately call `wait_payment` again with the same `runId` and
+returned cursor so the already-approved operation continues in the same run.
+The cursor makes that acknowledgement one-time; terminal, action-required, and
+`external_pending` results take precedence. A composed browser run does not use
+this native-operation handoff: keep its long-lived waiter on the same browser
+run until it reaches its browser action, terminal, or action-required boundary.
+For an already-existing legacy operation,
 continue an operation-backed approval by reporting the `request_url` returned
 by the start tool and calling `wait_request` on the exact session plus the
 routable UUID `approval.runtimeRequestId`. Use `get_request` once only when the
@@ -75,13 +84,14 @@ After `record_browser_payment_result`, check the fresh merchant result once. An
 agent-direct result records activation of the actual payment-dispatch control
 and submission separately: a fresh visible merchant validation blocker is
 `clicked` plus `not_submitted`, while an unreadable post-dispatch state is
-`submission_unknown` and never replayable. An
-exact visible "merchant_confirmed" result closes the workflow with
-`complete_checkout_session` and structured `checkoutOutcome`; it does not make
-settlement successful. Keep the exact operation `pending` until provider or
-operation evidence changes it. For cancellation, consume the backend's
-`cleanupDisposition` and `freshStartAllowed`; do not infer cleanup or permission
-for a fresh attempt.
+`submission_unknown` and never replayable. An exact visible
+The merchant-confirmed outcome does not make settlement successful. Keep the exact
+operation `pending` until provider or operation evidence changes it. When the
+composed browser result is fully projected and returns `completed`, its session
+is already terminal; do not call `complete_checkout_session` as a second closer.
+Retain that tool for legacy and other non-composed workflow closure. For
+cancellation, consume the backend's `cleanupDisposition` and
+`freshStartAllowed`; do not infer cleanup or permission for a fresh attempt.
 
 For a terminal workflow failure, call `fail_checkout_session` once with the
 exact session, stable idempotency key, and observed failure reason. Consume its

@@ -9,10 +9,23 @@ result interpretation.
 ## Composed run
 
 Create the checkout session for the exact destination and keep its `sessionId`.
-Call `run_browser_payment` with that session, one stable `clientRequestId`, the
-approved amount and maximum debit, the observed payment facts, and the semantic
-ordinary-field roles the checkout needs. Do not add separate balance,
-capability, approval, or card-preparation calls around it.
+Before the first `run_browser_payment` call, use the built-in browser's normal
+visual understanding and ordinary interactions to reach the actual
+payment-dispatch surface without activating it. Complete ordinary and
+intermediate navigation that reveals later form sections, using ordinary values
+already available in the current task. If a missing ordinary value is needed to
+reveal the next pre-dispatch step, ask only for that ordinary value in regular
+chat. Re-observe after each material transition until the
+actual payment-dispatch surface and the complete page-derived semantic
+ordinary-field roles are known. This is natural form navigation, not a blanket
+required-field sweep; do not infer merchant-specific roles or prescribe
+selectors.
+
+Only then call `run_browser_payment` with that session, one stable
+`clientRequestId`, the approved amount and maximum debit, the observed payment
+facts, and the complete ordinary-field role set in sorted, unique, stable order.
+Do not create a run from an initial partial form and add roles later. Do not add
+separate balance, capability, approval, or card-preparation calls around it.
 
 Follow the returned state:
 
@@ -109,9 +122,11 @@ the normal browser flow instead. A visible merchant validation message can prove
 Once the actual payment-dispatch control may have been activated, `clicked` and
 `click_uncertain` are never replayable.
 
-When the result returns `completed`, call `complete_checkout_session` once for
-the same session with a stable idempotency key. Approval, card creation, form
-fill, click, and merchant visibility are not settlement by themselves.
+When the composed result returns `completed`, the same session is already fully
+projected and terminal. Stop there; do not call `complete_checkout_session` as
+a second closer. That tool remains available for legacy and other non-composed
+workflow closure. Approval, card creation, form fill, click, and merchant
+visibility are not settlement by themselves.
 
 Reuse the same `clientRequestId`, `runId`, execution attempt, and result identity
 for unchanged continuation. A timeout, lost response, approval pause, CAPTCHA,

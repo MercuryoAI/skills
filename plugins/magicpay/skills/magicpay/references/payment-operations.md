@@ -122,11 +122,16 @@ Retain the same `clientRequestId`, `runId`, `nextProgressCursor`, operation ID,
 stable operation-owned `approval.requestId`, and routable UUID
 `approval.runtimeRequestId`. When the run returns `waiting_for_user`, report
 its exact `request_url`, then immediately call `wait_payment` with the same
-`runId` and cursor at most one time in the ordinary approval path. That one
-call polls the same run every three seconds for up to 270 seconds while the
-user approves. Never ask or require the user to reply in chat after secure
+`runId` and cursor. That first call polls the same run every three seconds for
+up to 270 seconds while the user approves. When it returns the one-time
+approved/executing handoff as `running`, acknowledge that approval was received
+and immediately call `wait_payment` again with the same `runId` and returned
+cursor. The returned cursor prevents that acknowledgement handoff from repeating; the
+second call continues the already-approved operation rather than waiting for
+another decision. Never ask or require the user to reply in chat after secure
 approval, and never create a standalone confirmation or browser approval as a
-substitute.
+substitute. A terminal, action-required, or `external_pending` result takes
+precedence over the intermediate acknowledgement.
 
 On transport ambiguity, replay the unchanged `run_crypto_transfer` input with
 the same `clientRequestId`; the backend returns the bound run. On a bounded
@@ -209,10 +214,15 @@ Retain the same `clientRequestId`, `runId`, `nextProgressCursor`, operation ID,
 stable operation-owned `approval.requestId`, and routable UUID
 `approval.runtimeRequestId`. When the run returns `waiting_for_user`, report
 its exact `request_url`, then immediately call `wait_payment` with the same
-`runId` and cursor at most one time in the ordinary approval path. That one
-call polls the same run every three seconds for up to 270 seconds while the
-user approves, returning with margin before the host's five-minute tool deadline.
-Never ask or require the user to reply in chat after secure
+`runId` and cursor. That first call polls the same run every three seconds for
+up to 270 seconds while the user approves, returning with margin before the
+host's five-minute tool deadline. When it returns the one-time
+approved/executing handoff as `running`, acknowledge that approval was received
+and immediately call `wait_payment` again with the same `runId` and returned
+cursor. The cursor prevents a repeated acknowledgement; continue only that
+already-approved operation. A terminal, action-required, or `external_pending`
+result takes precedence over the intermediate acknowledgement. Never ask or
+require the user to reply in chat after secure
 approval. Do not call `run_x402_payment` with a new key and
 do not create a request. Use `confirm_request_otp` only when the exact request
 offers OTP, exactly as for a direct transfer. The user decides

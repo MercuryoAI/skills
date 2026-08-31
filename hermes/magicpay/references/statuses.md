@@ -46,8 +46,15 @@
 - `definitively_failed`: terminal for that operation attempt. Do not retry when
   `retry.allowed:false` or the failure is non-retryable. After the owning
   workflow is durably closed, a later explicit user request may create a wholly
-  new payment only when the closure also returns `released_pre_submit`, failed
-  or not-started settlement, `freshStartAllowed: true`, and `nextAction: none`.
+  new payment only when the closure also returns `released_pre_submit` or
+  `released_after_failure`, failed or not-started settlement,
+  `freshStartAllowed: true`, and `nextAction: none`.
+- `released_pre_submit`: the exact non-submitted operation authority or hold was
+  released. It does not retry or replace the old operation.
+- `released_after_failure`: the exact submitted native transfer or x402
+  operation is definitively failed and its own Ledger release consequence is
+  proven. It does not make the failed attempt retryable and does not release
+  unrelated reservations.
 - `canceled`: terminal for workflow authority immediately. A separately
   preserved dispatched or uncertain operation may still be nonterminal and
   require same-operation reconciliation; cancellation does not release its
