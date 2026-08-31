@@ -36,6 +36,19 @@ Then set the secure-input boundary:
 > I’ll open a secure MagicPay window. Enter your email and OTP there—not in
 > this chat. When it closes, I’ll verify the connection and continue.
 
+If the newly installed or connected MagicPay tools are not visible in the
+current task, do not claim that MagicPay is disconnected and do not repeat
+OAuth. Tell the user:
+
+> This task has not loaded MagicPay’s tools. That does not show that your
+> existing connection failed. Start one fresh task so the host can load the
+> plugin tools and reuse your connection; reconnect only if that fresh task
+> receives an authentication challenge.
+
+Stop setup in the stale task. Do not install a CLI, start a local MCP server,
+copy a token, or claim that the new task retained an unfinished request from
+the old task.
+
 Call `get_magicpay_capabilities`. Continue only when it reports
 `executionModes: ["client_browser"]`, `sessionAuthority: "remote_database"`, and
 `browserPaymentRun.executionMode: "agent_direct"`. Treat its `setupState`, `nextAction`, and
@@ -61,12 +74,44 @@ authenticated agent identity and account health. Treat a bounded unavailable
 status as an authentication or service-recovery stop; do not infer readiness
 from capability discovery alone.
 
-When it reports `setupState: "ready"`, follow the returned instruction. For an
-explicit setup request, the user-facing completion is:
+When capabilities and authenticated status are ready, silently call
+`get_payment_balance` without an asset selector. Do not call
+`show_payment_balance`, a retired card-balance tool, or any presentation tool
+for this setup read. Use the response's exact atomic `available` value,
+`presentation.scale`, and `presentation.assetId`; the tool's human-readable
+content is produced by the shared money formatter. Never use floating point or
+invent a currency.
 
-> MagicPay is connected. I can now check your balance and prepare payments;
-> spending still follows your approval rules.
+For an explicit setup request, present exactly one of these completion
+branches:
 
-Then continue the user's original task without asking them to repeat it. Start
-a fresh host session only if newly installed plugin tools are not visible; do
-not compensate by installing a local executable.
+- **Funded balance.** If all three payment rails are ready, say:
+
+  > **MagicPay is ready.**
+  >
+  > Your available balance is **{formatted balance}**.
+  >
+  > Your payment credentials stay protected and out of chat, and spending
+  > stays subject to your MagicPay approval rules.
+  >
+  > Give it a try—send USDT or USDC, pay with x402, or ask me to buy something
+  > online.
+
+  If only some rails are ready, keep the first three paragraphs unchanged and
+  offer only the actions whose rail-specific capabilities report `ready`.
+- **Exact zero balance.** Keep the same heading, exact formatted balance, and
+  credential/approval reassurance, then say: "Add funds to start using
+  MagicPay, or ask me to top up your MagicCard." Do not create a top-up link or
+  open a widget unless the user asks or the authoritative workflow returns
+  `funding_required`.
+- **Unavailable or malformed balance.** Say: "**MagicPay is ready.** I couldn't
+  read your available balance right now. Your payment credentials stay
+  protected and out of chat, and spending stays subject to your MagicPay
+  approval rules." Do not infer zero, manufacture an amount or currency, or
+  claim that the balance call succeeded.
+
+Then continue the user's original request without asking them to repeat it only
+when the host retained that request in this same task. In the supported fresh-task
+fallback, act on the fresh task's request without claiming that prior task
+context carried over. In later already-connected tasks, do not repeat setup
+onboarding; verify only the capabilities required by the requested action.

@@ -56,7 +56,7 @@ in the MagicPay approval system. Never ask for a chat confirmation, translate a
 plain chat “confirm” into `decide_request`, or create a generic confirmation as
 a substitute. Retain
 `approval.requestId` as the stable operation-owned identity, but never route with
-that mpr_ value. Browser approval belongs only to the composed direct browser
+that mpr\_ value. Browser approval belongs only to the composed direct browser
 run.
 
 Within one unchanged connected task, a successful authenticated setup,
@@ -84,8 +84,8 @@ After `record_browser_payment_result`, check the fresh merchant result once. An
 agent-direct result records activation of the actual payment-dispatch control
 and submission separately: a fresh visible merchant validation blocker is
 `clicked` plus `not_submitted`, while an unreadable post-dispatch state is
-`submission_unknown` and never replayable. An exact visible
-The merchant-confirmed outcome does not make settlement successful. Keep the exact
+`submission_unknown` and never replayable. The merchant-confirmed outcome does
+not make settlement successful. Keep the exact
 operation `pending` until provider or operation evidence changes it. When the
 composed browser result is fully projected and returns `completed`, its session
 is already terminal; do not call `complete_checkout_session` as a second closer.

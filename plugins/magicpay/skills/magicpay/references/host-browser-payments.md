@@ -116,6 +116,10 @@ Call `record_browser_payment_result` once for the exact run and operation:
 - `click_uncertain` only when payment dispatch may have been activated. This is
   never replayable.
 
+If the checkout submitted an ordinary receipt/contact email, pass that exact
+address in `checkoutEmail`. Keep it out of `valueFreeEvidence`; never include
+card or other protected payment fields.
+
 Do not call an intermediate interaction `clicked` or `click_uncertain`. Continue
 the normal browser flow instead. A visible merchant validation message can prove
 `not_submitted`; silence, loading, hidden state, or an unreadable page cannot.
@@ -127,6 +131,13 @@ projected and terminal. Stop there; do not call `complete_checkout_session` as
 a second closer. That tool remains available for legacy and other non-composed
 workflow closure. Approval, card creation, form fill, click, and merchant
 visibility are not settlement by themselves.
+
+Invoice handling is optional and never blocks or changes settlement. When the
+result says an external email received the invoice or receipt, tell the user
+where it was sent and that they can send the PDF in chat to attach it. If they
+do, call `attach_payment_invoice` with the exact returned operation and the
+user-provided PDF. AgentMail-addressed invoices are processed automatically;
+do not poll the inbox or delay the final payment response.
 
 Reuse the same `clientRequestId`, `runId`, execution attempt, and result identity
 for unchanged continuation. A timeout, lost response, approval pause, CAPTCHA,
