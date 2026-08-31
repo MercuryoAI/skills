@@ -1,0 +1,75 @@
+{
+  "skill": "magicpay",
+  "displayName": "MagicPay",
+  "description": "Use when an AI agent needs MagicPay for first-time setup, exact balance checks, crypto transfers and reconciliation, x402, protected Memory, approval, agent-direct browser payments, or supported login, identity, checkout, donation, subscription, booking, and payment workflows.",
+  "boundary": "sensitive-page",
+  "releaseVersion": "0.1.85",
+  "releaseTag": "magicpay-v0.1.85",
+  "pluginName": "magicpay",
+  "installMode": "host-native-plugin",
+  "mcpTransport": "remote-streamable-http",
+  "npmPackages": [],
+  "portableDir": "portable/magicpay",
+  "runtimes": [
+    {
+      "runtime": "claude",
+      "runtimeDisplayName": "Claude Code",
+      "directBundleDir": "direct/claude-skill/magicpay",
+      "directReleaseArchive": "magicpay-claude-code-v0.1.85.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "github-marketplace",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/magicpay/claude/direct/README.md",
+      "marketplaceDocPath": null
+    },
+    {
+      "runtime": "codex",
+      "runtimeDisplayName": "Codex",
+      "directBundleDir": "direct/codex-skill/magicpay",
+      "directReleaseArchive": "magicpay-codex-v0.1.85.zip",
+      "marketplacePayloadDir": null,
+      "marketplaceKind": "repo-marketplace",
+      "marketplaceEnabled": false,
+      "marketplaceInstallDocGenerated": false,
+      "directDocPath": "docs/magicpay/codex/direct/README.md",
+      "marketplaceDocPath": null
+    },
+    {
+      "runtime": "hermes",
+      "runtimeDisplayName": "Hermes",
+      "directBundleDir": "direct/hermes-skill/magicpay",
+      "directReleaseArchive": "magicpay-hermes-v0.1.85.zip",
+      "marketplacePayloadDir": "marketplace/hermes-github-hub/magicpay",
+      "marketplaceKind": "hermes-github-hub",
+      "marketplaceEnabled": true,
+      "marketplaceInstallDocGenerated": true,
+      "directDocPath": "docs/magicpay/hermes/direct/README.md",
+      "marketplaceDocPath": "docs/magicpay/hermes/marketplace/README.md"
+    },
+    {
+      "runtime": "openclaw",
+      "runtimeDisplayName": "OpenClaw",
+      "directBundleDir": "direct/openclaw-skill/magicpay",
+      "directReleaseArchive": "magicpay-openclaw-v0.1.85.zip",
+      "marketplacePayloadDir": "marketplace/openclaw-clawhub/magicpay",
+      "marketplaceKind": "clawhub",
+      "marketplaceEnabled": true,
+      "marketplaceInstallDocGenerated": true,
+      "directDocPath": "docs/magicpay/openclaw/direct/README.md",
+      "marketplaceDocPath": "docs/magicpay/openclaw/marketplace/README.md"
+    },
+    {
+      "runtime": "skills-sh",
+      "runtimeDisplayName": "General Agent",
+      "directBundleDir": "direct/general-agent-skill/magicpay",
+      "directReleaseArchive": "magicpay-general-agent-v0.1.85.zip",
+      "marketplacePayloadDir": "marketplace/skills-sh/magicpay",
+      "marketplaceKind": "skills-sh",
+      "marketplaceEnabled": true,
+      "marketplaceInstallDocGenerated": true,
+      "directDocPath": "docs/magicpay/skills-sh/direct/README.md",
+      "marketplaceDocPath": "docs/magicpay/skills-sh/marketplace/README.md"
+    }
+  ]
+}

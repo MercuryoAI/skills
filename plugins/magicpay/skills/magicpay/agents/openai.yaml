@@ -1,0 +1,7 @@
+interface:
+  display_name: MagicPay
+  short_description: Handle payments through remote MCP and the native browser
+  default_prompt: >-
+    Use $magicpay and the connected remote MagicPay MCP for this request. The remote session is the workflow identity.
+    Codex Browser owns navigation, page understanding, ordinary and payment field entry, one exact approved click,
+    and result interpretation. After approval, use the returned payment-scoped one-time card only for that exact checkout.

@@ -1,0 +1,76 @@
+{
+  "publicRepository": "nuanu-ai/skills",
+  "packageVersion": "0.1.0",
+  "publicSignupUrl": "https://app.magiccard.ai/signup",
+  "sourceExportManifest": "export-manifest.json",
+  "distributionMode": "host-plugin-plus-direct-fallback",
+  "primaryPlugin": "plugins/magicpay",
+  "skillReleaseManifests": "manifests/*.json",
+  "releaseEntries": [
+    {
+      "runtime": "claude",
+      "skill": "magicpay",
+      "archiveName": "magicpay-claude-code-v0.1.85.zip",
+      "archivePath": "releases/magicpay-claude-code-v0.1.85.zip",
+      "installRootInArchive": "magicpay/",
+      "docsPath": "docs/magicpay/claude/direct/README.md",
+      "releaseTag": "magicpay-v0.1.85",
+      "releaseVersion": "0.1.85",
+      "pluginName": "magicpay",
+      "installMode": "host-native-plugin",
+      "mcpTransport": "remote-streamable-http"
+    },
+    {
+      "runtime": "codex",
+      "skill": "magicpay",
+      "archiveName": "magicpay-codex-v0.1.85.zip",
+      "archivePath": "releases/magicpay-codex-v0.1.85.zip",
+      "installRootInArchive": "magicpay/",
+      "docsPath": "docs/magicpay/codex/direct/README.md",
+      "releaseTag": "magicpay-v0.1.85",
+      "releaseVersion": "0.1.85",
+      "pluginName": "magicpay",
+      "installMode": "host-native-plugin",
+      "mcpTransport": "remote-streamable-http"
+    },
+    {
+      "runtime": "hermes",
+      "skill": "magicpay",
+      "archiveName": "magicpay-hermes-v0.1.85.zip",
+      "archivePath": "releases/magicpay-hermes-v0.1.85.zip",
+      "installRootInArchive": "magicpay/",
+      "docsPath": "docs/magicpay/hermes/direct/README.md",
+      "releaseTag": "magicpay-v0.1.85",
+      "releaseVersion": "0.1.85",
+      "pluginName": "magicpay",
+      "installMode": "host-native-plugin",
+      "mcpTransport": "remote-streamable-http"
+    },
+    {
+      "runtime": "openclaw",
+      "skill": "magicpay",
+      "archiveName": "magicpay-openclaw-v0.1.85.zip",
+      "archivePath": "releases/magicpay-openclaw-v0.1.85.zip",
+      "installRootInArchive": "magicpay/",
+      "docsPath": "docs/magicpay/openclaw/direct/README.md",
+      "releaseTag": "magicpay-v0.1.85",
+      "releaseVersion": "0.1.85",
+      "pluginName": "magicpay",
+      "installMode": "host-native-plugin",
+      "mcpTransport": "remote-streamable-http"
+    },
+    {
+      "runtime": "skills-sh",
+      "skill": "magicpay",
+      "archiveName": "magicpay-general-agent-v0.1.85.zip",
+      "archivePath": "releases/magicpay-general-agent-v0.1.85.zip",
+      "installRootInArchive": "magicpay/",
+      "docsPath": "docs/magicpay/skills-sh/direct/README.md",
+      "releaseTag": "magicpay-v0.1.85",
+      "releaseVersion": "0.1.85",
+      "pluginName": "magicpay",
+      "installMode": "host-native-plugin",
+      "mcpTransport": "remote-streamable-http"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "MagicPay",
+  "repository": "nuanu-ai/skills",
+  "skills": [
+    {
+      "name": "magicpay",
+      "path": "skills/magicpay"
+    }
+  ]
+}

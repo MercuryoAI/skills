@@ -1,0 +1,21 @@
+{
+  "id": "magicpay",
+  "name": "MagicPay Development",
+  "version": "0.1.85-dev.1942173893ff",
+  "description": "Use MagicPay through its remote MCP while the host browser owns the complete direct browser flow.",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "skills": [
+    "./skills"
+  ],
+  "mcpServers": {
+    "magicpay": {
+      "transport": "streamable-http",
+      "url": "https://mercuryo-agent-pay-agent-dev.onrender.com/mcp",
+      "auth": "oauth"
+    }
+  }
+}

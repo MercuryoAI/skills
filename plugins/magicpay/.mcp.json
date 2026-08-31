@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "magicpay": {
+      "type": "http",
+      "url": "https://mercuryo-agent-pay-agent-dev.onrender.com/mcp",
+      "oauth_resource": "https://mercuryo-agent-pay-agent-dev.onrender.com/mcp"
+    }
+  }
+}
