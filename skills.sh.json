@@ -1,10 +1,13 @@
 {
-  "name": "MagicPay",
-  "repository": "nuanu-ai/skills",
-  "skills": [
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
     {
-      "name": "magicpay",
-      "path": "skills/magicpay"
+      "title": "Mercuryo",
+      "description": "Skills for Mercuryo MagicPay and related agent payment workflows.",
+      "skills": [
+        "magicpay"
+      ]
     }
   ]
 }
