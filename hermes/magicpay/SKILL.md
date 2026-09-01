@@ -65,8 +65,10 @@ preference changed.
   named by its current state or `nextAction`.
 - Payment status or ambiguity: use `get_payment_operation`, or
   `reconcile_payment_operation` only for that same operation when directed.
-- Memory: use the direct CRUD action matching the user's intent. Values remain
-  in the secure surface; MCP receives handles and metadata only.
+- Memory CRUD: use the direct action matching the user's intent. CRUD remains
+  value-free. For an ordinary browser form, use
+  `resolve_browser_form_values` before asking the user to type into the page;
+  its eligible values are intentionally model-visible for normal Browser fill.
 
 Load only the focused reference needed:
 
@@ -107,11 +109,15 @@ required facts that are actually missing. Its consequential decision belongs to
 the operation-owned MagicPay approval system: never ask “please confirm” in
 chat, create a generic substitute, or treat chat “confirm” as payment approval.
 
-Before a browser run exists, ask for a visibly ordinary checkout value in
-regular chat only when the live page needs it to reveal the actual
-payment-dispatch surface. Once an exact request exists, ask only for an ordinary
-value that request says is safe for chat. For `ordinary_field_required`, submit
-only its returned roles to that exact request and resume the same run. A live
+Before a browser run exists, resolve a visibly ordinary form through
+`resolve_browser_form_values`, including when it is needed to reveal the actual
+payment-dispatch surface. When it returns `request_required`, ask only for the
+returned ordinary fields in regular chat and continue that exact request.
+Offer manual entry in the merchant page only after `fallback_required` or when
+the user explicitly chooses it. Once an exact request exists, ask only for an
+ordinary value that request says is safe for chat. For
+`ordinary_field_required`, submit only its returned roles to that exact request
+and resume the same run. A live
 MagicPay approval request with
 `otp_available: true` is the narrow OTP exception: submit its fresh six digits
 immediately with `confirm_request_otp`. OAuth OTPs, passwords, protected payment
@@ -134,6 +140,10 @@ exact typed sensitive-fill actions for the approved browser tab, never in
 general script source or command arguments. A native screenshot of that exact
 tab may incidentally contain them before or after fill; keep it transient inside
 Browser reasoning and never attach, quote, OCR, log, persist, or reuse it.
+
+For non-payment forms, use the general form-value flow in the Memory reference.
+Fill only after `ready`, re-observe once, and never treat form fill as authority
+to submit, book, purchase, or pay.
 
 ## Cancellation and terminal recovery
 

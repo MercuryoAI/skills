@@ -33,11 +33,13 @@ continuation.
 ## Values and secure continuation
 
 Never put a stored Memory field value in chat, an MCP argument, a tool log, or
-normal conversation. The direct browser run may return approved ordinary
-checkout values such as email, name, address, country, phone, or postal code.
-When an ordinary value is unavailable, the same run may request it in regular
-chat. Passwords, OTPs, API keys, wallet secrets, private keys, seeds, and
-payment-card values never use that fallback.
+normal conversation. The narrow exception is eligible ordinary output from
+`resolve_browser_form_values`: its structured content may contain values for
+normal Browser filling in the exact session and page. Do not repeat those
+values in prose. The direct browser payment run may likewise return approved
+ordinary checkout values. Passwords, OTPs, API keys, wallet secrets, private
+keys, seeds, payment-card values, and provider-managed values never use either
+model-visible path.
 
 When a value is supplied to a value-free mutation, the MCP returns the
 secure_collection_required continuation with safe field metadata. Preserve
@@ -57,6 +59,40 @@ For choice or ordinary reply requests that already exist, use the exact generic
 request loop in [requests.md](requests.md). A choice or reply is authorization
 for that exact request only; it does not reveal or authorize reuse of a stored
 value.
+
+## General browser forms
+
+For an ordinary non-payment form, inspect the rendered page and call
+`get_memory_catalog`, then `resolve_browser_form_values` with generic field
+descriptions and value-free matches. Do this before offering manual page entry.
+
+- `ready`: fill the returned `model_visible_form` values through the normal
+  Browser, then re-observe once. Do not quote the values or submit the form.
+- `request_required`: ask for the returned fields or choice in chat and decide
+  that exact request. For a value request, append this exact sentence:
+
+  > If you'd like me to save these values for later, say “save this for later”
+  > and briefly describe what they are for.
+
+- `fallback_required`: explain the reason briefly and offer manual page entry.
+
+Saving is off unless the user explicitly says to save and supplies a semantic
+description. If they ask to save without a description, ask one short follow-up
+before deciding the request. Convert their description into one concise Memory
+`displayName`; do not forward the raw description, invent meaning, or add
+field-level hints. Submit `saveForFuture: true` with
+`saveAs: { displayName }`. An explicit no-save instruction wins.
+
+After the decision, notify the user only from `saveOutcome`. Say whether a
+Memory item was saved or updated, using its returned display name, site scope,
+and field labels without repeating values. `unchanged` means current-run use
+only. If the decision fails, say the values were not saved. Do not add another
+read, save attempt, or notification system.
+
+The resolver may use an existing claim-once current-run artifact. If that
+artifact is unavailable, accept `fallback_required`; do not create replay state
+or a sibling request. Browser owns selectors, control behavior, rerenders, and
+the page itself. The resolver never navigates or submits.
 
 ## Catalog, choice, and direct browser checkout
 
