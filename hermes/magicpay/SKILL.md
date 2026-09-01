@@ -63,6 +63,8 @@ preference changed.
   paying.
 - Existing request, run, session, or operation: continue only the exact tool
   named by its current state or `nextAction`.
+- A few closed-world items for the user to choose between: use `request_choice`
+  once inside the existing session, then follow the choice loop in the request reference.
 - Payment status or ambiguity: use `get_payment_operation`, or
   `reconcile_payment_operation` only for that same operation when directed.
 - Memory CRUD: use the direct action matching the user's intent. CRUD remains
