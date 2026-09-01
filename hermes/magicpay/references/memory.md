@@ -63,8 +63,12 @@ value.
 ## General browser forms
 
 For an ordinary non-payment form, inspect the rendered page and call
-`get_memory_catalog`, then `resolve_browser_form_values` with generic field
-descriptions and value-free matches. Do this before offering manual page entry.
+`begin_browser_form` once with its exact HTTPS URL. Preserve the returned
+workflow `sessionId`, then call `get_memory_catalog` and
+`resolve_browser_form_values` with that session ID, generic field descriptions,
+and value-free matches. Do this before offering manual page entry. Never use a
+Codex task ID, a caller-generated UUID, or a payment checkout session as the
+workflow identity.
 
 - `ready`: fill the returned `model_visible_form` values through the normal
   Browser, then re-observe once. Do not quote the values or submit the form.

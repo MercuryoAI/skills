@@ -53,6 +53,7 @@ preference changed.
   `reconcile_payment_operation` only for that same operation when directed.
 - Memory CRUD: use the direct action matching the user's intent. CRUD remains
   value-free. For an ordinary browser form, use
+  `begin_browser_form`, `get_memory_catalog`, then
   `resolve_browser_form_values` before asking the user to type into the page;
   its eligible values are intentionally model-visible for normal Browser fill.
 
@@ -95,10 +96,12 @@ required facts that are actually missing. Its consequential decision belongs to
 the operation-owned MagicPay approval system: never ask “please confirm” in
 chat, create a generic substitute, or treat chat “confirm” as payment approval.
 
-Before a browser run exists, resolve a visibly ordinary form through
-`resolve_browser_form_values`, including when it is needed to reveal the actual
-payment-dispatch surface. When it returns `request_required`, ask only for the
-returned ordinary fields in regular chat and continue that exact request.
+Before a browser run exists, call `begin_browser_form` once for the exact HTTPS
+page, preserve its returned workflow session ID, then use `get_memory_catalog`
+and `resolve_browser_form_values`. This includes an ordinary form needed to
+reveal the actual payment-dispatch surface. When the resolver returns
+`request_required`, ask only for the returned ordinary fields in regular chat
+and continue that exact request.
 Offer manual entry in the merchant page only after `fallback_required` or when
 the user explicitly chooses it. Once an exact request exists, ask only for an
 ordinary value that request says is safe for chat. For
