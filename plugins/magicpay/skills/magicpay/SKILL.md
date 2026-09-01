@@ -112,9 +112,11 @@ checkout, one monotonic set of allowed checkout contact/billing/receipt roles,
 the returned payment-scoped one-time card, and one exact final action. A newly
 rendered allowed role continues the same run and approval; it does not create a
 replacement payment. Continue without another chat or browser confirmation.
-Never quote, log, persist, expose, or reuse card values. They may appear only in
-the exact typed sensitive-fill parameter for the approved browser tab, never in
-general script source or command arguments.
+Never quote, log, persist, export, or reuse card values. Supply them only through
+exact typed sensitive-fill actions for the approved browser tab, never in
+general script source or command arguments. A native screenshot of that exact
+tab may incidentally contain them before or after fill; keep it transient inside
+Browser reasoning and never attach, quote, OCR, log, persist, or reuse it.
 
 ## Cancellation and terminal recovery
 

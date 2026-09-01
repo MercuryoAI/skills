@@ -7,8 +7,11 @@
 - A changed URL, document, frame, evidence, amount, currency, recipient,
   recurrence, country, or final control invalidates prior page authority.
 - Never expose payment-scoped one-time card details or opaque envelopes in logs,
-  chat, screenshots, source, or command arguments. Their structured tool output
-  may be used only for native fill of the exact approved checkout. The final
+  chat, source, command arguments, files, telemetry, or evidence. Their
+  structured tool output may be used only for native fill of the exact approved
+  checkout. A native screenshot of that exact tab may incidentally contain the
+  one-time card before or after fill; keep it transient inside Browser reasoning
+  and never export, attach, quote, OCR, log, persist, or reuse it. The final
   seller deliverable from a completed purchase is user-owned
   output, not protected input, even when a seller names it `credentials`,
   `token`, `key`, or `code`.

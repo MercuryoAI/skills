@@ -31,31 +31,64 @@ are outside this authority and require a safe user handoff.
 | `reconciliation_required` | Reconcile the exact operation; never replace it. |
 | `completed` | Report success only from the durable completed operation. |
 
-## Small Browser actions
+## Browser ownership and rendered state
+
+Give the built-in Browser the unchanged approved checkout and let it use the
+page's normal flow, normal visual understanding, and interaction capabilities.
+Do not prescribe selectors, button names, page geometry, a fixed field order,
+or a scripted interaction sequence. The Browser may inspect, scroll the page or
+a nested checkout container, focus, select, click, type, correct, revisit, and
+re-check ordinary or intermediate controls as the rendered page requires.
+
+Payment-method selectors, custom radio controls, accordions, next/continue
+controls, and buttons that reveal or advance a form are intermediate. A control
+labelled Donate, Support, Checkout, or Pay can still be a form opener. Activate
+and correct those controls naturally before protected fill.
+After each material transition, discard stale targets, re-observe the rendered
+page, and reacquire current targets. If the transition reveals an empty card
+form or a later dispatch control, the action that caused it was not payment
+commitment and must not be recorded as `clicked` or `click_uncertain`.
+
+Rendered visibility is required before protected fill.
+Hidden DOM or accessibility presence is not rendered visibility.
+A semantic label, Boolean value presence, an enabled hidden control, a click,
+or a content mutation does not prove that the actual payment-dispatch surface
+is rendered or that payment was submitted. When a custom payment-method
+control, collapsed payment panel, nested checkout, or material transition
+leaves the structured state ambiguous, take native screenshots as often as
+needed.
+Start taking screenshots before any returned card character is entered, then
+keep using them whenever visual understanding helps. Use them to confirm the
+selected method, rendered card form, currently rendered dispatch control, and
+visible amount, recurrence, and optional extras.
+If a screenshot and structured state disagree, the rendered page controls
+visibility; re-observe and reacquire instead of dispatching. A screenshot is
+perception input only; it never approves, submits, retries, or proves settlement.
 
 Keep navigation, ordinary fill, protected fill, validation, and dispatch as
-separate native Browser actions. The normal order is:
-
-A semantic label alone does not prove that a control dispatches payment; use
-the live page state and actual control meaning.
-
-1. Choose page-shaping controls such as payment method or country.
-2. Re-observe once after a material rerender and reacquire current targets.
-3. Fill remaining ordinary fields. The merchant's checkout email is
-   authoritative; an optional Stripe Link email is not a second required role.
-4. Fill card fields last with typed native sensitive-fill actions.
-5. Verify once from Boolean value presence, accessible merchant validation,
-   enabled final control, and visible amount/recurrence/extras.
-6. Invoke the actual final action in one isolated Browser call.
+separate native Browser actions. Fill the merchant's remaining ordinary fields;
+its checkout email is authoritative and an optional Stripe Link email is not a
+second required role. Fill card fields last with typed native sensitive-fill
+actions. Then verify value presence, accessible merchant validation, and the
+already identified rendered final control before invoking that exact control in
+one isolated Browser call. Boolean or accessibility state alone is insufficient
+to identify a hidden final control.
 
 After a rerender, refill only an allowed field with value-free evidence that it
 is empty. One targeted refill is enough; do not loop, sweep every `:invalid`
 element, or treat unreadable iframe formatting and optional fields as blockers.
 
-The returned card may appear only in the exact typed sensitive-fill parameter
-for this approved tab. Never place it in chat, general JavaScript source, shell
-or CLI arguments, files, events, logs, analytics, screenshots, evidence, or
-persisted browser state. Do not combine card fill with navigation or dispatch.
+Supply the returned card only through exact typed sensitive-fill actions for
+this approved tab.
+Native screenshots are allowed before and after protected fill.
+An incidental view of the payment fields or one-time card in that exact tab is
+allowed. Use screenshots freely whenever they improve rendered-page
+understanding; do not reduce visual inspection merely because protected fill
+already happened. Keep every screenshot transient inside Browser reasoning.
+Never export, attach, quote, OCR, log, persist, or reuse it, and never place card
+values in chat, general JavaScript source, shell or CLI arguments, files, events,
+logs, analytics, or evidence. Do not combine card fill with navigation or
+dispatch.
 
 ## Pre-dispatch Browser interruption
 
