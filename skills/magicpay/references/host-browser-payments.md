@@ -1,144 +1,106 @@
 # Direct Browser Payments
 
-This is the only browser-payment path. Use it when
-`browserPaymentRun.status: "ready"` and `executionMode: "agent_direct"`. The
-host's built-in browser owns the live page, including multi-step navigation,
-ordinary and payment fields, challenges, the one final commitment, and fresh
-result interpretation.
+Use this path when `browserPaymentRun.status: "ready"` and
+`executionMode: "agent_direct"`. The host's built-in Browser owns the live tab.
+MagicPay owns the exact approval, operation, payment-scoped card, result, and
+reconciliation state. Do not add a second browser controller.
 
-## Composed run
+## One run, one approval
 
-Create the checkout session for the exact destination and keep its `sessionId`.
-Before the first `run_browser_payment` call, use the built-in browser's normal
-visual understanding and ordinary interactions to reach the actual
-payment-dispatch surface without activating it. Complete ordinary and
-intermediate navigation that reveals later form sections, using ordinary values
-already available in the current task. If a missing ordinary value is needed to
-reveal the next pre-dispatch step, ask only for that ordinary value in regular
-chat. Re-observe after each material transition until the
-actual payment-dispatch surface and the complete page-derived semantic
-ordinary-field roles are known. This is natural form navigation, not a blanket
-required-field sweep; do not infer merchant-specific roles or prescribe
-selectors.
+Create the checkout session for the known destination. Use the Browser to reach
+the actual payment-dispatch surface without activating it, then observe the
+merchant/recipient, amount and maximum debit, currency, recurrence, payment
+type, actual final-action meaning, and the ordinary semantic roles visible now.
 
-Only then call `run_browser_payment` with that session, one stable
-`clientRequestId`, the approved amount and maximum debit, the observed payment
-facts, and the complete ordinary-field role set in sorted, unique, stable order.
-Do not create a run from an initial partial form and add roles later. Do not add
-separate balance, capability, approval, or card-preparation calls around it.
+Call `run_browser_payment` once with one stable `clientRequestId`. Do not wrap it
+in separate balance, capability, approval, or card-preparation calls. Approval
+creates one short checkout authority for the unchanged merchant and payment.
+If email, name, phone, country, billing address, city, region, or postal code
+appears later, add it to the sorted unique role union and replay the same run.
+Never remove a previously observed role. Passwords, OTPs, identity documents,
+tax identifiers, bank credentials, private keys, seeds, and unrelated secrets
+are outside this authority and require a safe user handoff.
 
-Follow the returned state:
+| Run state | Continue with |
+| --- | --- |
+| `waiting_for_user` | Present the exact approval URL; wait on the same `runId`. |
+| `ordinary_field_required` | Resolve only the returned roles and resume the same run; this is not a new payment approval. |
+| `preparing_browser` | Wait on the same run. |
+| `ready_for_browser` | Fill the unchanged checkout in the exact live tab. |
+| `external_pending` | Reconcile the same operation; never click again. |
+| `reconciliation_required` | Reconcile the exact operation; never replace it. |
+| `completed` | Report success only from the durable completed operation. |
 
-- `waiting_for_user`: present the exact approval URL and wait on the same
-  `runId` with `wait_payment`.
-- `ordinary_field_required`: use saved Memory first. If it is unavailable or
-  does not work, ask only for the returned ordinary roles in regular chat,
-  submit them to that exact request, and continue the same run. This is not a
-  payment failure and creates no replacement checkout.
-- `preparing_browser`: keep waiting on the same run.
-- `ready_for_browser`: give the unchanged approved checkout to the built-in
-  browser with the returned ordinary values and payment-scoped one-time card.
-- `external_pending`: the submission is recorded; reconcile the same operation
-  and never retry the checkout.
-- `completed`: report success only from the returned durable completed
-  operation evidence.
-- `reconciliation_required`: reconcile the exact operation; never replace it.
+## Small Browser actions
 
-Approval is the user's authorization for the unchanged payment facts, approved
-ordinary-data transmission, returned one-time card, and one final commitment.
-Do not ask for another payment or data-sharing confirmation.
+Keep navigation, ordinary fill, protected fill, validation, and dispatch as
+separate native Browser actions. The normal order is:
 
-## Browser handoff
+A semantic label alone does not prove that a control dispatches payment; use
+the live page state and actual control meaning.
 
-Give the built-in browser the unchanged approved outcome and let it use the
-page's normal flow, its normal visual understanding, and its normal interaction
-capabilities. Do not prescribe
-selectors, button names, page geometry, a fixed field order, or a scripted
-interaction sequence. Forms may be multi-step, embedded, redirected, dynamic,
-or use custom controls; the browser may inspect, scroll, focus, select, click,
-type, correct, revisit, and re-check ordinary or intermediate controls as often
-as the live page requires.
+1. Choose page-shaping controls such as payment method or country.
+2. Re-observe once after a material rerender and reacquire current targets.
+3. Fill remaining ordinary fields. The merchant's checkout email is
+   authoritative; an optional Stripe Link email is not a second required role.
+4. Fill card fields last with typed native sensitive-fill actions.
+5. Verify once from Boolean value presence, accessible merchant validation,
+   enabled final control, and visible amount/recurrence/extras.
+6. Invoke the actual final action in one isolated Browser call.
 
-Intermediate interactions are not payment commitments. Payment-method tabs,
-radio-like custom controls, accordions, next/continue controls, address
-selectors, validation controls, and buttons that merely reveal another form may
-be activated and corrected naturally. The one-shot boundary begins only at the
-actual merchant control that may dispatch the approved payment. A semantic
-label, DOM click, content mutation, busy state, or newly revealed payment form
-alone does not prove that boundary was reached or that payment was submitted.
+After a rerender, refill only an allowed field with value-free evidence that it
+is empty. One targeted refill is enough; do not loop, sweep every `:invalid`
+element, or treat unreadable iframe formatting and optional fields as blockers.
 
-Before transmitting payment-card values, resolve page choices that affect the
-approved facts. The browser remains free to revisit those choices if the page
-changes later. Before the actual payment-dispatch control, use fresh visual understanding to
-preserve the approved amount, recurrence, and optional extras and to confirm
-that dynamic page changes did not clear required ordinary fields or deactivate
-the chosen payment method. This is an outcome check, not a fixed checklist or
-interaction recipe.
+The returned card may appear only in the exact typed sensitive-fill parameter
+for this approved tab. Never place it in chat, general JavaScript source, shell
+or CLI arguments, files, events, logs, analytics, screenshots, evidence, or
+persisted browser state. Do not combine card fill with navigation or dispatch.
 
-If the browser cannot confidently understand or reach the actual dispatch
-control, preserve the exact tab and hand it to the user before attempting that
-control. Explain the page-specific reason, say that MagicPay is working to
-improve these interactions, and state that security remains the top priority.
-Do not describe the handoff as a payment failure or ask for another MagicPay
-approval. When submission is definitely still pre-dispatch, the user may review
-the unchanged checkout and perform the remaining final action. After a possible
-dispatch, the handoff is observation-only and must not invite another click.
+## Pre-dispatch Browser interruption
 
-Screenshots and visual inspection are allowed. Screenshot hardening can be
-added later after the direct flow is stable.
+A tab binding can become stale without invalidating the Browser binding. When a
+fill/navigation call is definitely before the isolated final action, do not
+call `record_browser_payment_result`, fail, cancel, release, or create another
+run. Perform at most one recovery cycle:
 
-The returned payment-card values stay in structured tool context and may be
-used only in this exact approved checkout. Never quote them in chat, logs,
-source, or command arguments.
+1. discard only the stale tab binding;
+2. reacquire the exact live tab from the existing Browser binding, or reopen
+   the same approved HTTPS checkout when that tab no longer exists;
+3. replay the same `clientRequestId` and `runId`;
+4. re-observe and refill only missing allowed fields; and
+5. continue with the same execution-attempt ID.
 
-## CAPTCHA
+Only an explicit Browser-disconnected error invalidates the Browser binding.
+If one recovery cycle cannot restore the unchanged pre-dispatch checkout, hand
+the exact checkout to the user without replacing the payment.
 
-A CAPTCHA is action required, not an error, payment failure, or settlement
-evidence. Let the built-in browser solve it first under its normal capabilities.
-If it cannot, hand the same tab to the user in the host's normal way. Preserve
-the same run and unchanged approved facts, then continue only after a fresh
-observation shows the challenge is cleared. Do not ask for another MagicPay
-confirmation. Do not fail, cancel, release, replace, or record non-submission
-merely because a CAPTCHA appeared.
+If the interruption overlaps the isolated final-action call, record
+`click_uncertain` and reconcile the same operation. Never reopen for another
+click. A timeout or missing output is not permission to retry dispatch.
 
-If a challenge appears after possible payment dispatch or the dispatch is uncertain,
-do not click again. Record the observed uncertainty and reconcile the same
-operation.
+## Challenges and unusual states
 
-## Result
+Load detailed recovery guidance only when the matching state occurs. The
+Browser may try to solve a CAPTCHA once before dispatch, then hand the same tab
+to the user if needed. A CAPTCHA before dispatch does not fail or replace the
+payment. Invoice handling is optional and
+never blocks settlement. A merchant validation blocker permits correction in
+the same run. After any possible dispatch, observation is read-only and the
+same operation must be reconciled.
 
-Call `record_browser_payment_result` once for the exact run and operation:
+## Record the result once
 
-- `not_clicked` only when the payment-dispatch control definitely was not
-  activated;
-- `clicked` when the payment-dispatch control was activated, with separately
-  observed submission and merchant outcome;
-- `click_uncertain` only when payment dispatch may have been activated. This is
-  never replayable.
+Call `record_browser_payment_result` once for the exact run and execution
+attempt:
 
-If the checkout submitted an ordinary receipt/contact email, pass that exact
-address in `checkoutEmail`. Keep it out of `valueFreeEvidence`; never include
-card or other protected payment fields.
+- `not_clicked` only when the isolated payment-dispatch control definitely was
+  not activated;
+- `clicked` when it was activated, with the separately observed submission and
+  merchant outcome; or
+- `click_uncertain` when activation may have occurred.
 
-Do not call an intermediate interaction `clicked` or `click_uncertain`. Continue
-the normal browser flow instead. A visible merchant validation message can prove
-`not_submitted`; silence, loading, hidden state, or an unreadable page cannot.
-Once the actual payment-dispatch control may have been activated, `clicked` and
-`click_uncertain` are never replayable.
-
-When the composed result returns `completed`, the same session is already fully
-projected and terminal. Stop there; do not call `complete_checkout_session` as
-a second closer. That tool remains available for legacy and other non-composed
-workflow closure. Approval, card creation, form fill, click, and merchant
-visibility are not settlement by themselves.
-
-Invoice handling is optional and never blocks or changes settlement. When the
-result says an external email received the invoice or receipt, tell the user
-where it was sent and that they can send the PDF in chat to attach it. If they
-do, call `attach_payment_invoice` with the exact returned operation and the
-user-provided PDF. AgentMail-addressed invoices are processed automatically;
-do not poll the inbox or delay the final payment response.
-
-Reuse the same `clientRequestId`, `runId`, execution attempt, and result identity
-for unchanged continuation. A timeout, lost response, approval pause, CAPTCHA,
-or missing observation never authorizes a replacement run or second click.
+Pass an ordinary receipt address only in `checkoutEmail`, never in
+`valueFreeEvidence`. Approval, card materialization, field fill, click, and
+merchant visibility are not settlement. When the composed result is
+`completed`, stop; do not call a second checkout closer.
