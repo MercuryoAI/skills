@@ -9,8 +9,39 @@ reconciliation state. Do not add a second browser controller.
 
 Create the checkout session for the known destination. Use the Browser to reach
 the actual payment-dispatch surface without activating it, then observe the
-merchant/recipient, amount and maximum debit, currency, recurrence, payment
+merchant/recipient, exact merchant amount and currency, recurrence, payment
 type, actual final-action meaning, and the ordinary semantic roles visible now.
+
+## Fixed USD price for non-USD checkouts
+
+For a USD checkout, pass the exact merchant money unchanged as both `amount`
+and `maximumDebit`. For another merchant currency, preserve that exact local
+money in `amount` and form one fixed USD `maximumDebit` before the first
+`run_browser_payment` call:
+
+1. Fetch only the direct Frankfurter pair
+   `https://api.frankfurter.dev/v2/rate/{MERCHANT_CURRENCY}/USD`, replacing the
+   placeholder with the observed uppercase ISO currency. Require a successful
+   JSON response whose `base` is that merchant currency, whose `quote` is
+   `USD`, and whose `rate` is positive. Do not use a search result, a broad rate
+   table, an inverted pair, or a model-generated rate.
+2. Treat the returned rate as USD per one merchant-currency unit. Apply the
+   fixed 5% beta FX allowance and round upward exactly once to a USD cent:
+   `usdCents = ceil(merchantMajorAmount × rate × 1.05 × 100)`.
+3. Set `maximumDebit` to `{ quantity: String(usdCents), scale: 2, currency:
+   "USD" }`. Never relabel the local amount as USD or compare the two atomic
+   quantities.
+4. Show the user the exact merchant money, the Frankfurter pair/date/rate, the
+   fixed 5% allowance, and the resulting fixed USD price. If the direct fetch,
+   pair validation, or calculation fails, stop before creating a payment run.
+
+The first run call binds that fixed USD price. Reuse the same `maximumDebit`,
+`clientRequestId`, and `runId` throughout approval, waits, ordinary-field
+resolution, browser preparation, and exact-operation recovery. Never refetch
+or reprice the same run. A decline, possible submission, uncertain click, or
+reconciliation requirement never permits a replacement run or another final
+click. A fresh run may use a fresh rate only when the prior exact checkout has
+durably returned fresh-start authority under the normal recovery rules.
 
 Call `run_browser_payment` once with one stable `clientRequestId`. Do not wrap it
 in separate balance, capability, approval, or card-preparation calls. Approval

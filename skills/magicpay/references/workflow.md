@@ -1,8 +1,11 @@
 # Remote Workflow
 
 ```text
-known URL -> create_checkout_session
-unknown URL -> remote purchase intent -> remote run/choice -> atomic checkout
+known checkout URL -> create_checkout_session -> host built-in browser
+known raw x402 resource -> run_x402_payment -> MagicPay payment run
+unknown target -> MagicSearch provider selection -> durable run/revision
+               -> execute_commerce_option -> MagicPay payment run
+unknown browser target -> remote purchase intent -> remote run/choice -> atomic checkout
 checkout -> host browser ordinary work -> remote approval
 approval -> same-run one-time card and ordinary values -> native browser fill
 fill -> one exact native browser click -> immediate value-free result record
@@ -13,13 +16,18 @@ terminal workflow error -> fail_checkout_session -> terminal workflow
 payment operation -> independent pending or settled reconciliation truth
 ```
 
-Native operations do not create browser checkout approval. New x402 work uses
-`run_x402_payment`; new crypto work uses `run_crypto_transfer`. Both use the
-same composed `wait_payment` continuation. The lower-level sequence remains
-only for legacy recovery:
+Native operations do not create browser checkout approval. A known raw x402
+resource uses `run_x402_payment`; paid discovery selected by MagicSearch uses
+`execute_commerce_option` with only its durable run identity, revision, stable
+client request ID, and commerce type. The remote workflow freezes typed provider
+data and keeps the private execution capability out of model output, prompts,
+examples, logs, and persisted acceptance state. New crypto work uses
+`run_crypto_transfer`. All three use the same composed `wait_payment`
+continuation. The lower-level sequence remains only for legacy recovery:
 
 ```text
 exact x402 facts + stable clientRequestId -> composed payment run
+durable MagicSearch run/revision + stable clientRequestId -> execute_commerce_option -> composed payment run
 exact crypto facts + stable clientRequestId -> composed payment run
 exact existing browser session + stable clientRequestId -> composed browser payment run
 native run waiting_for_user -> exact operation-owned request -> same-run bounded wait -> one approved/executing handoff -> same-run final wait

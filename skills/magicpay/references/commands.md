@@ -15,9 +15,10 @@ Use opaque IDs exactly as returned.
 | Generic top-up | `show_topup` |
 | Funding methods, link, or addresses | Use the exact funding action requested |
 | New crypto transfer | `run_crypto_transfer` |
-| New x402 purchase | `run_x402_payment` |
+| Known raw x402 resource | `run_x402_payment` |
 | Known checkout destination | `create_checkout_session` |
-| Product or provider discovery | `create_purchase_intent` |
+| Unknown product or provider | `create_purchase_intent` |
+| Selected paid x402 discovery | `execute_commerce_option` with durable `runId`, `runRevision`, `clientRequestId`, and `type` |
 | Existing payment status | `get_payment_operation` |
 | Memory | Use the direct CRUD action matching the intent |
 | Existing request, session, or operation | Use only its returned `nextAction` |
@@ -58,8 +59,11 @@ ambiguous-submission errors are not funding requests.
   `decide_request`, or `confirm_request_otp` using its exact request identity.
 - Continue a checkout with its exact session lifecycle tools. Cancellation or
   failure closure never proves settlement.
-- Continue discovery through the exact purchase-intent and search identities,
-  select only an offered opaque option, and create checkout from that selection.
+- Continue unknown-provider discovery through its exact purchase-intent and run
+  identities. A selected paid x402 method continues only with
+  `execute_commerce_option` and its durable run/revision/key/type; browser
+  methods use the returned checkout continuation. Never derive a raw request,
+  debit cap, or private selection handle from a guide or discovery output.
 - Continue Memory collection or correction only through the exact returned
   request and value-free field handles.
 
