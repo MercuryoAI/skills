@@ -36,25 +36,29 @@ Then set the secure-input boundary:
 > I’ll open a secure MagicPay window. Enter your email and OTP there—not in
 > this chat. When it closes, I’ll verify the connection and continue.
 
-Installing the plugin is not authentication. Before asking for a fresh task,
-inspect the exact installed `magicpay` connection and start its host-native
-Connect action when it is logged out. In Codex, if no model-visible Connect
-action is available but the bundled `magicpay` MCP registration exists, run the
-host's built-in `codex mcp login magicpay` command. This is Codex connection
-management, not a MagicPay CLI or a second account login. It must open the same
-secure browser OAuth flow described above. Never request or handle its email,
-OTP, authorization code, or tokens in chat or shell arguments.
+Installing the plugin is not authentication. Before asking for a fresh task or
+session, inspect the exact installed `magicpay` connection and start its
+host-native Connect action when it is logged out. The exact install, connect,
+login, manual-handoff, and catalog-refresh actions for this host are listed in
+[references/runtime-setup.md](references/runtime-setup.md), which every runtime
+bundle provides for its own host; the canonical instructions never name a host.
+The Connect action must open the same secure browser OAuth flow described
+above. Never request or handle its email, OTP, authorization code, or tokens in
+chat or shell arguments.
 
-Do not tell the user that a fresh task will open OAuth. If the host-native
-connection action cannot be initiated, give only the immediate manual handoff
-**Plugins → MagicPay → Connect** and stop until it completes.
+Do not tell the user that a fresh task or session will open OAuth. If the
+host-native connection action cannot be initiated, give only the immediate
+manual handoff named in the runtime setup reference and stop until it
+completes.
 
 Only after OAuth completes, if the current task still does not expose MagicPay
-tools, tell the user to click **New task** in the Codex sidebar so the host can
-load the plugin tools and reuse the completed connection. Make clear that a
-reply in the current task is not a new task. Do not repeat OAuth, install a
-MagicPay CLI, start a local MCP server, copy a token, or claim that the new task
-retained an unfinished request from the old task.
+tools, say that this task's tool catalog is stale and that this does not
+disprove the connection, then give the catalog-refresh action from the runtime
+setup reference so the host can load the plugin tools and
+reuse the completed connection. Make clear that a reply in the current task is
+not a refresh. Do not repeat OAuth, install a MagicPay CLI, start a local MCP
+server, copy a token, or claim that the refreshed task retained an unfinished
+request from the old task.
 
 Call `get_magicpay_capabilities`. Continue only when it reports
 `executionModes: ["client_browser"]`, `sessionAuthority: "remote_database"`, and

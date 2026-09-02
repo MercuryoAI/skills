@@ -64,6 +64,8 @@ preference changed.
 Load only the focused reference needed:
 
 - setup and connection: [references/setup.md](references/setup.md)
+- this host's install, connect, and reload commands (adapter-owned):
+  [references/runtime-setup.md](references/runtime-setup.md)
 - tool classes and direct views: [references/commands.md](references/commands.md)
 - balances, funding, transfers, x402, and operations:
   [references/payment-operations.md](references/payment-operations.md)
