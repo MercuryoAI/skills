@@ -17,8 +17,7 @@ Use opaque IDs exactly as returned.
 | New crypto transfer | `run_crypto_transfer` |
 | Known raw x402 resource | `run_x402_payment` |
 | Known checkout destination | `create_checkout_session` |
-| Unknown product or provider | `create_purchase_intent` |
-| Selected paid x402 discovery | `execute_commerce_option` with durable `runId`, `runRevision`, `clientRequestId`, and `type` |
+| Unknown product or provider method | `search_provider_methods` |
 | Existing payment status | `get_payment_operation` |
 | Manage saved Memory | Use the direct value-free CRUD action matching the intent |
 | Use Memory in an active session | `get_memory_footprint`, then exact `materialize_memory_items` or v3 `resolve_browser_form_values` |
@@ -60,11 +59,10 @@ ambiguous-submission errors are not funding requests.
   `decide_request`, or `confirm_request_otp` using its exact request identity.
 - Continue a checkout with its exact session lifecycle tools. Cancellation or
   failure closure never proves settlement.
-- Continue unknown-provider discovery through its exact purchase-intent and run
-  identities. A selected paid x402 method continues only with
-  `execute_commerce_option` and its durable run/revision/key/type; browser
-  methods use the returned checkout continuation. Never derive a raw request,
-  debit cap, or private selection handle from a guide or discovery output.
+- MagicSearch has no continuation state. Read a relevant provider-method
+  result, verify current documentation, and execute with an available agent
+  capability. If that work is paid, begin a separate exact MagicPay operation;
+  never take a debit ceiling or payment authority from registry prose.
 - Continue a Memory choice with `decide_request` using `choose_candidate` and
   its exact `selectedChoiceId`. Continue approval or collection through the
   exact returned request, then re-run the same materialization/resolver call.

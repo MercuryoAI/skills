@@ -23,6 +23,10 @@ file names Hermes commands; the canonical instructions stay host-neutral.
 
 - `/reload-mcp` in the running session reloads MCP tools; `/reload-skills`
   reloads an updated skill. Neither repeats OAuth.
+- Treat the refreshed catalog as choice-ready only when `request_choice`,
+  `decide_request`, and `wait_request` are callable. Follow the exact loop in
+  [requests.md](requests.md): present `structuredContent.chatMessage` once,
+  preserve the stored opaque option IDs, and continue the same request.
 
 ## Verify and disconnect
 

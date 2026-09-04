@@ -22,6 +22,10 @@ terms.
 ## Catalog refresh
 
 - Reload the host's MCP servers or start a new session. Neither repeats OAuth.
+- Treat the refreshed catalog as choice-ready only when `request_choice`,
+  `decide_request`, and `wait_request` are callable. Follow the exact loop in
+  [requests.md](requests.md): present `structuredContent.chatMessage` once,
+  preserve the stored opaque option IDs, and continue the same request.
 
 ## Verify and disconnect
 

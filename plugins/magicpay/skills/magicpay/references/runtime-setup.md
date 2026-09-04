@@ -32,6 +32,10 @@ file names Codex commands; the canonical instructions stay host-neutral.
 - Tell the user to click **New task** in the Codex sidebar so the host can load
   the plugin tools and reuse the completed connection. A reply in the current
   task is not a new task, and a new task is not the action that opens OAuth.
+- Treat the refreshed catalog as choice-ready only when `request_choice`,
+  `decide_request`, and `wait_request` are callable. Follow the exact loop in
+  [requests.md](requests.md): present `structuredContent.chatMessage` once,
+  preserve the stored opaque option IDs, and continue the same request.
 
 ### Verify and disconnect
 
@@ -72,6 +76,35 @@ file names Claude Code commands; the canonical instructions stay host-neutral.
   authenticated does not see the MagicPay tools until the user runs
   `/reload-plugins` or starts a new session. Neither action repeats OAuth, and
   neither is the action that opens OAuth.
+- Treat the refreshed catalog as choice-ready only when `request_choice`,
+  `decide_request`, and `wait_request` are callable. Use them with the exact
+  choice loop in [requests.md](requests.md).
+
+### Native choice presentation
+
+- In an interactive parent session where `AskUserQuestion` is available, a new
+  `waiting_user` result with two to four stored options may use one
+  `AskUserQuestion` single-select picker instead of echoing
+  `structuredContent.chatMessage`. Use the exact returned
+  `request.spec.prompt`, preserve the stored option order, and build labels and
+  descriptions only from returned `request.spec.options`; never use the
+  caller-local input. If the exact stored titles cannot be represented
+  unambiguously within the host's option-label limits, use the unchanged
+  `chatMessage` fallback.
+- `AskUserQuestion` is presentation-only. Keep an exact label-to-opaque-ID map,
+  show either the picker or `chatMessage`, never both, and do not create a
+  second MagicPay request. After a valid selection, call `decide_request` with
+  `decision: 'confirmed'` and that exact `selectedChoiceId` on the same
+  `sessionId` and `requestId`, then call `wait_request` on those same IDs.
+- Before presenting anything, use the canonical chat fallback for five to eight
+  options, an unavailable native picker, a subagent, or an option set the native
+  control cannot represent unambiguously.
+- After `AskUserQuestion` has shown the active choice, an explicit cancel or
+  denial entered through host-added **Other** is submitted as `decision:
+  'denied'` on the same MagicPay request and followed by `wait_request`. Any
+  other unmapped, free-text, or **Other** answer never switches to `chatMessage`;
+  correct it by presenting the same stored options through `AskUserQuestion`
+  again. Do not mutate the request or create a sibling request.
 
 ### Verify and disconnect
 
@@ -103,6 +136,10 @@ file names OpenClaw commands; the canonical instructions stay host-neutral.
 - `openclaw mcp reload`. If tools still do not appear, publish the Gateway
   configuration or restart the process that owns the MCP clients. Neither
   repeats OAuth.
+- Treat the refreshed catalog as choice-ready only when `request_choice`,
+  `decide_request`, and `wait_request` are callable. Follow the exact loop in
+  [requests.md](requests.md): present `structuredContent.chatMessage` once,
+  preserve the stored opaque option IDs, and continue the same request.
 
 ### Verify and disconnect
 

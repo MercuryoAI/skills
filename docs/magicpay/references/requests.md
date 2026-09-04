@@ -28,28 +28,42 @@ because a response, link, or waiter output was lost.
 
 `request_choice` stores one durable request. Existing MagicPay request surfaces
 present it, while a new `waiting_user` request returns the same stored options as
-one numbered `structuredContent.chatMessage`. Echo that `chatMessage` once as
-the assistant reply and yield. Do not copy the numbered list into a separate
-tool-call message or compose another list from caller-local options. If an
-idempotent replay finds the exact request already terminal, `chatMessage` is
-omitted: do not present the choices again; claim that same request with
+one numbered `structuredContent.chatMessage`. By default, echo that `chatMessage`
+once as the assistant reply and yield. A runtime adapter may explicitly replace
+that echo with one host-native single-select picker built only from the returned
+stored `request.spec.prompt` and `request.spec.options`. The picker is merely the
+chat presentation of the same durable MagicPay request: never show both it and
+`chatMessage`, never create a sibling request, and never treat the host picker as
+the decision authority. If the adapter cannot represent the exact stored option
+set, fall back to the unchanged `chatMessage`. Do not copy the numbered list into
+a separate tool-call message or compose another list from caller-local options.
+Choose that presentation mode before showing any option. Once a native picker
+has been shown for an active request, keep that same native presentation until
+the user makes a valid stored selection, explicitly cancels or denies the
+choice, or the request becomes terminal. Submit an explicit cancel or denial as
+`decision: 'denied'` on the same request and then call `wait_request`; any other
+unmapped, free-text, or host-added answer must be corrected through the same
+picker and must never switch to `chatMessage`.
+If an idempotent replay finds the exact request already terminal, `chatMessage`
+is omitted: do not present the choices again; claim that same request with
 `wait_request` and continue from its stored artifact.
 
 On the next turn, map only an in-range ordinal, the exact opaque ID, or one
-unambiguous exact title to the stored option ID. For any other or ambiguous
-reply, do not mutate the request and do not create a sibling; ask the user to
-answer with a number or exact title from the same list. Submit the matched ID to
-the same request, then call `wait_request` with the same IDs to claim its stored
-artifact and continue once:
+unambiguous exact title to the stored option ID. Submit an explicit cancel or
+denial as `decision: 'denied'` on the same request and then call `wait_request`.
+For any other or ambiguous reply, do not mutate the request and do not create a
+sibling; ask the user to answer with a number or exact title from the same list.
+Submit the matched ID to the same request, then call `wait_request` with the same
+IDs to claim its stored artifact and continue once:
 
-~~~text
+```text
 decide_request({
   sessionId,
   requestId,
   decision: 'confirmed',
   selectedChoiceId
 })
-~~~
+```
 
 The request surface and chat race on that one request. The first durable
 decision wins; reconcile any late or transport-ambiguous result against the same
