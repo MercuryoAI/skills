@@ -20,7 +20,8 @@ Use opaque IDs exactly as returned.
 | Unknown product or provider | `create_purchase_intent` |
 | Selected paid x402 discovery | `execute_commerce_option` with durable `runId`, `runRevision`, `clientRequestId`, and `type` |
 | Existing payment status | `get_payment_operation` |
-| Memory | Use the direct CRUD action matching the intent |
+| Manage saved Memory | Use the direct value-free CRUD action matching the intent |
+| Use Memory in an active session | `get_memory_footprint`, then exact `materialize_memory_items` or v3 `resolve_browser_form_values` |
 | Existing request, session, or operation | Use only its returned `nextAction` |
 
 Do not use autonomous `start_session` for a normal host-browser checkout. A
@@ -64,8 +65,9 @@ ambiguous-submission errors are not funding requests.
   `execute_commerce_option` and its durable run/revision/key/type; browser
   methods use the returned checkout continuation. Never derive a raw request,
   debit cap, or private selection handle from a guide or discovery output.
-- Continue Memory collection or correction only through the exact returned
-  request and value-free field handles.
+- Continue a Memory choice with `decide_request` using `choose_candidate` and
+  its exact `selectedChoiceId`. Continue approval or collection through the
+  exact returned request, then re-run the same materialization/resolver call.
 
 ## Compatibility and internal tools
 

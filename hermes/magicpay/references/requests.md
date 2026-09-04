@@ -80,17 +80,20 @@ artifacts, not settlement and not proof that the requested external action ran.
 - Submit `confirmed` or `denied` only from the user's explicit decision.
 - For a generic choice created by `request_choice`, submit `confirmed` with the
   exact `selectedChoiceId` as described above. Never infer or rewrite it.
-- The choose_candidate decision and `selectedItemRef` belong only to an existing Memory
-  candidate-conflict request. Never use that Memory vocabulary for a generic
-  choice.
+- A Memory candidate-conflict request also uses the exact opaque
+  `selectedChoiceId`, but its decision is `choose_candidate`. Never substitute
+  an item ID or infer a candidate from labels.
 - Submit `provided` values only for ordinary fields the user safely supplied in
   chat. Passwords, protected payment fields, private keys, seeds, and other
   protected values must use the secure request surface, not `values`.
-- For a general browser-form value request, saving stays off unless the user
-  explicitly asks to save and describes the intended reuse. Polish that
-  description into one `saveAs.displayName`, submit it with
-  `saveForFuture: true`, and report persistence only from the returned
-  `saveOutcome`. Never forward the raw description or repeat submitted values.
+- For a typed Memory collection, saving stays off unless the user's reply to
+  that exact request includes **Save** and describes what the values are and
+  when to reuse them. Submit `save: true` with one typed `saveGroups` entry per
+  group, including its exact `groupRef`, template version, field mappings,
+  `templateKey`, `displayLabel`, and semantic `description`. Omit `entity` to
+  use the default Me entity; include an exact existing or explicit new entity
+  only when the user identified it. Report persistence only from the returned
+  `saveOutcome`, and never repeat submitted values.
 - A MagicPay approval OTP is intentionally accepted in chat only when the exact
   request says `otp_available: true`. Submit that fresh six-digit OTP only with
   `confirm_request_otp` on the same request; never place it in `values` or reuse

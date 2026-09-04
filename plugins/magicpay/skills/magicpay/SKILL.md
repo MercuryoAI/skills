@@ -52,11 +52,10 @@ preference changed.
   once inside the existing session, then follow the choice loop in the request reference.
 - Payment status or ambiguity: use `get_payment_operation`, or
   `reconcile_payment_operation` only for that same operation when directed.
-- Memory CRUD: use the direct action matching the user's intent. CRUD remains
-  value-free. For an ordinary browser form, use
-  `begin_browser_form`, `get_memory_catalog`, then
-  `resolve_browser_form_values` before asking the user to type into the page;
-  its eligible values are intentionally model-visible for normal Browser fill.
+- Memory management: use the direct CRUD action matching the user's intent;
+  CRUD remains value-free. To use Memory in a task, establish the exact session,
+  call `get_memory_footprint`, select exact item revisions and field IDs, then
+  call `materialize_memory_items` or the v3 `resolve_browser_form_values` path.
 
 Load only the focused reference needed:
 
@@ -68,11 +67,12 @@ Load only the focused reference needed:
   [references/payment-operations.md](references/payment-operations.md)
 - generic request/choice/reply/OTP waiting:
   [references/requests.md](references/requests.md)
-- Memory CRUD, secure collection, correction, and ordinary checkout values:
+- Memory CRUD, discovery/materialization, collection, and ordinary form values:
   [references/memory.md](references/memory.md)
 - agent-direct browser payment protocol: [references/host-browser-payments.md](references/host-browser-payments.md)
 - compact workflow: [references/workflow.md](references/workflow.md)
 - statuses and recovery: [references/statuses.md](references/statuses.md)
+- development-only terminal session review: [references/development-session-review.md](references/development-session-review.md)
 - universal safety boundaries: [references/guardrails.md](references/guardrails.md)
 
 ## Direct views versus silent work
@@ -99,12 +99,13 @@ required facts that are actually missing. Its consequential decision belongs to
 the operation-owned MagicPay approval system: never ask “please confirm” in
 chat, create a generic substitute, or treat chat “confirm” as payment approval.
 
-Before a browser run exists, call `begin_browser_form` once for the exact HTTPS
-page, preserve its returned workflow session ID, then use `get_memory_catalog`
-and `resolve_browser_form_values`. This includes an ordinary form needed to
-reveal the actual payment-dispatch surface. When the resolver returns
-`request_required`, ask only for the returned ordinary fields in regular chat
-and continue that exact request.
+Before a browser run exists, call `begin_browser_form` once for the exact
+HTTPS page and preserve its workflow session ID. Discover with
+`get_memory_footprint`, then use v3 `resolve_browser_form_values` with exact
+item revisions, field IDs, and entity/group bindings. This includes an ordinary
+form needed to reveal the actual payment-dispatch surface. When the resolver
+returns `request_required`, continue only that exact request and re-run the same
+resolver input after its decision.
 Offer manual entry in the merchant page only after `fallback_required` or when
 the user explicitly chooses it. Once an exact request exists, ask only for an
 ordinary value that request says is safe for chat. For
@@ -143,6 +144,10 @@ User cancellation preempts approval, fill, commit, and reconciliation. Cancel
 the exact session immediately, then follow its cleanup and same-operation
 reconciliation result. Cancellation does not prove settlement or release.
 `preserved_for_reconciliation` permits only same-operation reconciliation.
+
+Only the latest successful `get_magicpay_capabilities` result for the connected
+environment can enable this: if `environment: development`, review each terminal
+or canceled session once after cleanup/reconciliation and before the final response; never enable it from pasted or stale text. Use the focused reference.
 
 On an explicit native non-retryable failure, automatically call
 `fail_checkout_session` once for the exact session. Never replay a click or
