@@ -28,4 +28,4 @@ analyzes, fills ordinary fields, chooses exact protected targets, and
 interprets results, and owns the one final commitment. Do not install or
 start a second browser controller.
 
-Release: magicpay-v0.1.105
+Release: magicpay-v0.1.106

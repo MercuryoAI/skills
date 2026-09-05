@@ -36,8 +36,8 @@ Then set the secure-input boundary:
 > I’ll open a secure MagicPay window. Enter your email and OTP there—not in
 > this chat. When it closes, I’ll verify the connection and continue.
 
-Installing the plugin is not authentication. Before asking for a fresh task or
-session, inspect the exact installed `magicpay` connection and start its
+Installing the plugin is not authentication. Before considering a catalog
+refresh, inspect the exact installed `magicpay` connection and start its
 host-native Connect action when it is logged out. The exact install, connect,
 login, manual-handoff, and catalog-refresh actions for this host are listed in
 [references/runtime-setup.md](references/runtime-setup.md), which every runtime
@@ -51,14 +51,19 @@ host-native connection action cannot be initiated, give only the immediate
 manual handoff named in the runtime setup reference and stop until it
 completes.
 
-Only after OAuth completes, if the current task still does not expose MagicPay
-tools, say that this task's tool catalog is stale and that this does not
-disprove the connection, then give the catalog-refresh action from the runtime
-setup reference so the host can load the plugin tools and
-reuse the completed connection. Make clear that a reply in the current task is
-not a refresh. Do not repeat OAuth, install a MagicPay CLI, start a local MCP
-server, copy a token, or claim that the refreshed task retained an unfinished
-request from the old task.
+After OAuth completes, first probe the current task's callable catalog,
+including any host-native deferred or lazy tool discovery, for
+`get_magicpay_capabilities`. A tool omitted from the initial or eagerly shown
+list is not evidence that it is unavailable. If the capability tool is
+callable, stay in the current task, run the readiness sequence below, and
+continue any request retained there.
+
+Only when an actual current-task catalog lookup cannot discover or call a
+required MagicPay tool should you say that the tool catalog is stale and that
+this does not disprove the connection. Give the catalog-refresh action from the
+runtime setup reference so the host can reuse the completed connection. Do not
+repeat OAuth, install a MagicPay CLI, start a local MCP server, copy a token, or
+claim that a refreshed task retained an unfinished request from the old task.
 
 Call `get_magicpay_capabilities`. Continue only when it reports
 `executionModes: ["client_browser"]`, `sessionAuthority: "remote_database"`, and
@@ -122,7 +127,7 @@ branches:
   claim that the balance call succeeded.
 
 Then continue the user's original request without asking them to repeat it only
-when the host retained that request in this same task. In the supported fresh-task
-fallback, act on the fresh task's request without claiming that prior task
-context carried over. In later already-connected tasks, do not repeat setup
-onboarding; verify only the capabilities required by the requested action.
+when the host retained that request in this same task. In a catalog-refresh
+fallback, act only on the request available after refresh without claiming that
+prior task context carried over. In later already-connected tasks, do not repeat
+setup onboarding; verify only the capabilities required by the requested action.

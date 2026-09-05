@@ -8,7 +8,7 @@ The host plugin bundles this skill and the remote MCP declaration, so no archive
 
 - Development channel: `codex plugin marketplace add nuanu-ai/skills --ref staging`, then `codex plugin add magicpay@nuanu-skills-staging`.
 - Production channel, after promotion: the `nuanu-ai/skills` marketplace at its stable ref, then `codex plugin add magicpay@nuanu-skills`.
-- Connect through the plugin Connect action or `codex mcp login magicpay`, then start a new task to load the tools.
+- Connect through the plugin Connect action or `codex mcp login magicpay`, then probe the current task through deferred tool discovery and continue there when `get_magicpay_capabilities` is callable. Start a new task only if an actual lookup cannot find the required tools.
 
 ## Direct skill archive
 
@@ -28,4 +28,4 @@ analyzes, fills ordinary fields, chooses exact protected targets, and
 interprets results, and owns the one final commitment. Do not install or
 start a second browser controller.
 
-Release: magicpay-v0.1.105
+Release: magicpay-v0.1.106

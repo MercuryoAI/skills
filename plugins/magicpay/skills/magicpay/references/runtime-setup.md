@@ -29,13 +29,20 @@ file names Codex commands; the canonical instructions stay host-neutral.
 
 ### Catalog refresh
 
-- Tell the user to click **New task** in the Codex sidebar so the host can load
-  the plugin tools and reuse the completed connection. A reply in the current
-  task is not a new task, and a new task is not the action that opens OAuth.
-- Treat the refreshed catalog as choice-ready only when `request_choice`,
-  `decide_request`, and `wait_request` are callable. Follow the exact loop in
-  [requests.md](requests.md): present `structuredContent.chatMessage` once,
-  preserve the stored opaque option IDs, and continue the same request.
+- After OAuth, first use Codex's current-task deferred tool discovery to find
+  and call `get_magicpay_capabilities`. Continue setup and any retained request
+  in this task when the call succeeds. A tool omitted from the initial visible
+  list is not evidence that it is unavailable, and a successful MagicPay call
+  must not be followed by a **New task** instruction.
+- Only when an actual current-task lookup cannot discover or call a required
+  MagicPay tool should you tell the user to click **New task** in the Codex
+  sidebar. The new task reuses completed OAuth; it is a catalog fallback, not
+  the action that opens OAuth.
+- Treat the current or refreshed catalog as choice-ready only when
+  `request_choice`, `decide_request`, and `wait_request` are callable. Follow
+  the exact loop in [requests.md](requests.md): present
+  `structuredContent.chatMessage` once, preserve the stored opaque option IDs,
+  and continue the same request.
 
 ### Verify and disconnect
 
