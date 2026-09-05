@@ -12,10 +12,19 @@ continuation.
   filter; never silently widen a URL lookup.
 - Use `show_memory_items` only when the user asks to see Memory. Otherwise keep
   management reads silent with `list_memory_items` or `get_memory_item`.
-- Direct CRUD is value-free. Create or update typed item and field metadata with
-  `create_memory_item`, `update_memory_item`, `add_memory_field`,
-  `update_memory_field`, and `delete_memory_field`; archive an exact item with
-  `delete_memory_item`.
+- Direct CRUD is value-free. Use `create_memory_item` for a typed item under
+  an exact entity and versioned template, `update_memory_item` for item
+  metadata, and `delete_memory_item` to archive an exact item. Updates and
+  archival require its current content revision.
+- Creation supplies `entityId`, `templateKey`, and known `fieldKeys`, with
+  optional template version, display label, description and resource scope.
+  Update and archive supply the exact `itemId` and `expectedRevision`.
+- Before creating an item, use `list_memory_items` with `includeTemplates: true`
+  and the intended management scope to discover current templates and fields.
+  Use that returned definition; a template need not already have a saved item.
+- Templates own field keys, labels, types, and sensitivity. Declare only known
+  template fields through the item contract; do not invent field definitions
+  or use old field-mutator tools. Values use the collection flow below.
 - Treat entity IDs, item IDs, field IDs, and content revisions as opaque exact
   references. Supply the current revision whenever required. On conflict, read
   the same item, re-evaluate the requested change, and never overwrite a
@@ -101,12 +110,11 @@ execution continuation when one is returned. Otherwise accept
 `fallback_required`; never expose a partial ordinary batch or create replay
 state.
 
-For a direct CRUD mutation that returns `secure_collection_required`, preserve
-its exact operation and item identity. Call `request_memory_values` only with
-the returned safe field metadata, give the user the exact request URL, and wait
-with `wait_memory_request` on the same request ID. Use
-`correct_memory_field` only after the host selected an exact live target.
-Denied, expired, failed, or canceled is terminal for that request.
+Metadata CRUD does not accept stored values. Use the authorized Memory editor
+for user-directed value changes. During a task, collect values only through
+the exact request returned by the resolver below; never create a separate
+collection as a workaround. Denied, expired, failed, or canceled is terminal
+for that request.
 
 ## Missing ordinary values and Save
 

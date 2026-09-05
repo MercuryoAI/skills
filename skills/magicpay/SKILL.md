@@ -61,9 +61,9 @@ preference changed.
 - Ordinary non-payment form: begin with `begin_browser_form`, then the exact
   footprint/resolver flow. Collect only its missing fields through the returned
   request and settings.
-- Secure Memory collection returned by a direct CRUD action: use
-  `request_memory_values` with its safe field metadata, then
-  `wait_memory_request` on the same request. See the Memory reference.
+- Stored Memory value changes: use the authorized Memory editor. During a
+  task, follow only the exact collection request returned by its resolver;
+  metadata CRUD does not accept values. See the Memory reference.
 
 Load only the focused reference needed:
 
