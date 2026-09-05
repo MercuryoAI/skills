@@ -65,8 +65,9 @@ preference changed.
   MagicPay policy rather than from registry prose or examples.
 - Existing request, run, session, or operation: continue only the exact tool
   named by its current state or `nextAction`.
-- A few closed-world items for the user to choose between: use `request_choice`
-  once inside the existing session, then follow the choice loop in the request reference.
+- A few closed-world items with a material user preference: use an existing
+  session or `begin_request_session`, then `request_choice` once. Follow the
+  normalization and omnichannel loop in the choice reference.
 - Payment status or ambiguity: use `get_payment_operation`, or
   `reconcile_payment_operation` only for that same operation when directed.
 - Memory management: use the direct CRUD action matching the user's intent;
@@ -82,8 +83,8 @@ Load only the focused reference needed:
 - tool classes and direct views: [references/commands.md](references/commands.md)
 - balances, funding, transfers, x402, and operations:
   [references/payment-operations.md](references/payment-operations.md)
-- generic request/choice/reply/OTP waiting:
-  [references/requests.md](references/requests.md); for choices, also load the adapter-owned setup above
+- generic request/reply/OTP waiting: [references/requests.md](references/requests.md); normalized optional choices across chat and MagicPay channels:
+  [references/choices.md](references/choices.md); also load the adapter-owned setup above
 - Memory CRUD, discovery/materialization, collection, and ordinary form values:
   [references/memory.md](references/memory.md)
 - agent-direct browser payment protocol: [references/host-browser-payments.md](references/host-browser-payments.md)

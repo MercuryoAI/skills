@@ -18,6 +18,7 @@ Use opaque IDs exactly as returned.
 | Known raw x402 resource | `run_x402_payment` |
 | Known checkout destination | `create_checkout_session` |
 | Unknown product or provider method | `search_provider_methods` |
+| Optional choice without an existing session | `begin_request_session`, then `request_choice` |
 | Existing payment status | `get_payment_operation` |
 | Manage saved Memory | Use the direct value-free CRUD action matching the intent |
 | Use Memory in an active session | `get_memory_footprint`, then exact `materialize_memory_items` or v3 `resolve_browser_form_values` |
@@ -57,6 +58,8 @@ ambiguous-submission errors are not funding requests.
   state directs reconciliation.
 - Continue a runtime request with `get_request`, `wait_request`,
   `decide_request`, or `confirm_request_otp` using its exact request identity.
+- Continue a generic choice with `decide_request` using `confirmed` and its
+  exact opaque `selectedChoiceId`, then `wait_request` on the same IDs.
 - Continue a checkout with its exact session lifecycle tools. Cancellation or
   failure closure never proves settlement.
 - MagicSearch has no continuation state. Read a relevant provider-method

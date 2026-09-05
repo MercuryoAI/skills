@@ -4,6 +4,8 @@
 known checkout URL -> create_checkout_session -> host built-in browser
 known raw x402 resource -> run_x402_payment -> MagicPay payment run
 unknown target -> search_provider_methods -> agent verifies docs and executes
+material shortlist -> existing or general session -> one normalized choice request
+choice answer in any channel -> same exact request result -> selected branch only
 paid provider method -> exact current request -> MagicPay payment run
 checkout -> host browser ordinary work -> remote approval
 approval -> same-run one-time card and ordinary values -> native browser fill

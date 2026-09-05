@@ -22,10 +22,9 @@ terms.
 ## Catalog refresh
 
 - Reload the host's MCP servers or start a new session. Neither repeats OAuth.
-- Treat the refreshed catalog as choice-ready only when `request_choice`,
-  `decide_request`, and `wait_request` are callable. Follow the exact loop in
-  [requests.md](requests.md): present `structuredContent.chatMessage` once,
-  preserve the stored opaque option IDs, and continue the same request.
+- Treat the refreshed catalog as choice-ready only when `begin_request_session`,
+  `request_choice`, `decide_request`, and `wait_request` are callable. Follow
+  [choices.md](choices.md), including both chat and the MagicPay link/widget.
 
 ## Verify and disconnect
 
