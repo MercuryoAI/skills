@@ -10,6 +10,8 @@ the same word is not a universal workflow transition.
   [choices.md](choices.md); payment approval is not a chat choice.
 - Request `fulfilled`: consume only the stored artifact and exact continuation.
   For a choice, report the recorded selected ID, never a local draft.
+  For protected Memory, resume the original materializer/resolver; generic
+  request reads, waits, and claims never release the collected values.
 - Request `denied`, `expired`, `canceled`, or `failed`: stop that request; do
   not fabricate a selection or present its options as a new pending prompt.
 - Memory `ready`: use only the returned values for the approved current scope.

@@ -57,9 +57,9 @@ preference changed.
   CRUD remains value-free. To use Memory in a task, establish the exact session,
   call `get_memory_footprint`, select exact item revisions and field IDs, then
   call `materialize_memory_items` or the v3 `resolve_browser_form_values` path.
-- Ordinary non-payment form: begin with `begin_browser_form`, then the exact
-  footprint/resolver flow. Collect only its missing fields through the returned
-  request and settings.
+- Browser form needing saved Memory or collection: use `begin_browser_form`,
+  then the exact footprint/resolver flow. Already-known ordinary fields can be
+  filled directly by the host browser without a MagicPay request.
 - Stored Memory value changes: use the authorized Memory editor. During a
   task, follow only the exact collection request returned by its resolver;
   metadata CRUD does not accept values. See the Memory reference.
@@ -74,7 +74,7 @@ Load only the focused reference needed:
   [references/payment-operations.md](references/payment-operations.md)
 - generic request/reply/OTP waiting: [references/requests.md](references/requests.md); normalized optional choices across chat and MagicPay channels:
   [references/choices.md](references/choices.md); also load the adapter-owned setup above
-- Memory CRUD, discovery/materialization, collection, and ordinary form values:
+- Memory CRUD, ordinary/protected materialization, and hosted collection:
   [references/memory.md](references/memory.md)
 - agent-direct browser payment protocol: [references/host-browser-payments.md](references/host-browser-payments.md)
 - compact workflow: [references/workflow.md](references/workflow.md)
@@ -106,44 +106,29 @@ required facts that are actually missing. Its consequential decision belongs to
 the operation-owned MagicPay approval system: never ask “please confirm” in
 chat, create a generic substitute, or treat chat “confirm” as payment approval.
 
-Before a browser run exists, call `begin_browser_form` once for the exact
-HTTPS page and preserve its workflow session ID. Discover with
-`get_memory_footprint`, then use v3 `resolve_browser_form_values` with exact
-item revisions, field IDs, and entity/group bindings. This includes an ordinary
-form needed to reveal the actual payment-dispatch surface. When the resolver
-returns `request_required`, continue only that exact request and re-run the same
-resolver input after its decision.
-Offer manual entry in the merchant page only after `fallback_required` or when
-the user explicitly chooses it. Once an exact request exists, ask only for an
-ordinary value that request says is safe for chat. For
-`ordinary_field_required`, submit only its returned roles to that exact request
-and resume the same run. A live
-MagicPay approval request with
-`otp_available: true` is the narrow OTP exception: submit its fresh six digits
-immediately with `confirm_request_otp`. OAuth OTPs, passwords, protected payment
-input, private keys, seeds, and protected Memory stay in their secure surface.
+For Memory, follow the focused reference: discover exact metadata, resolve the
+whole batch, continue any returned request, then re-run the unchanged resolver
+input. Missing protected values belong in the returned hosted collection, not
+chat. Generic request reads never release protected Memory values. OAuth and third-party OTPs,
+private keys, and seeds stay outside this flow. The narrow MagicPay approval
+OTP exception is defined in the request reference.
 
 ## Browser checkout
 
-The host browser owns page understanding, exact-tab navigation, ordinary form
-input, challenges, the one authorized final action, and merchant-result
-observation. Use only the composed sequence in the focused browser-payment
-reference linked above.
+The host browser owns navigation, page understanding, ordinary/protected input,
+challenges, authorized submission, and result observation. MagicPay supplies
+authorization and materialized values, not another browser. Use the browser
+payment reference for payments and the Memory reference for non-payment forms.
+Respect the host's actual APIs, permissions, and required confirmations. If it
+cannot perform the required input, report that limitation; do not invent a
+secret sink or silently switch browser controllers.
 
-Finalized MagicPay approval is the action-time authorization for the unchanged
-checkout, one monotonic set of allowed checkout contact/billing/receipt roles,
-the returned payment-scoped one-time card, and one exact final action. A newly
-rendered allowed role continues the same run and approval; it does not create a
-replacement payment. Continue without another chat or browser confirmation.
-Never quote, log, persist, export, or reuse card values. Supply them only through
-exact typed sensitive-fill actions for the approved browser tab, never in
-general script source or command arguments. A native screenshot of that exact
-tab may incidentally contain them before or after fill; keep it transient inside
-Browser reasoning and never attach, quote, OCR, log, persist, or reuse it.
-
-For non-payment forms, use the general form-value flow in the Memory reference.
-Fill only after `ready`, re-observe once, and never treat form fill as authority
-to submit, book, purchase, or pay.
+V1 materialized Memory and one-time card values are visible to the model and
+host. Use them only for the authorized task through host-supported input
+arguments, including a host REPL wrapper when that is its documented interface.
+This is not transcript isolation. Do not quote values in replies or deliberately
+copy them into helper scripts, files, logs, or exported evidence. Do not inject
+credentials with arbitrary page-evaluation code. See the guardrails reference.
 
 ## Cancellation and terminal recovery
 

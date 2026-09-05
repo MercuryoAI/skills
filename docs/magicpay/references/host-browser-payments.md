@@ -4,6 +4,9 @@ Use this path when `browserPaymentRun.status: "ready"` and
 `executionMode: "agent_direct"`. The host's built-in Browser owns the live tab.
 MagicPay owns the exact approval, operation, payment-scoped card, result, and
 reconciliation state. Do not add a second browser controller.
+If the host cannot inspect and fill the required live targets, report the
+unsupported capability. Shared guidance is not proof of another host's live
+browser support.
 
 ## One run, one approval
 
@@ -45,12 +48,15 @@ durably returned fresh-start authority under the normal recovery rules.
 
 Call `run_browser_payment` once with one stable `clientRequestId`. Do not wrap it
 in separate balance, capability, approval, or card-preparation calls. Approval
-creates one short checkout authority for the unchanged merchant and payment.
+creates checkout authority for the unchanged merchant and payment. Honor the
+returned expiry and host-required confirmations; MagicPay adds no redundant
+confirmation of the same approved facts.
 If email, name, phone, country, billing address, city, region, or postal code
 appears later, add it to the sorted unique role union and replay the same run.
 Never remove a previously observed role. Passwords, OTPs, identity documents,
 tax identifiers, bank credentials, private keys, seeds, and unrelated secrets
-are outside this authority and require a safe user handoff.
+are outside this payment authority. A separately authorized non-payment Memory
+task follows [memory.md](memory.md); otherwise hand off safely.
 
 | Run state | Continue with |
 | --- | --- |
@@ -64,69 +70,39 @@ are outside this authority and require a safe user handoff.
 
 ## Browser ownership and rendered state
 
-Give the built-in Browser the unchanged approved checkout and let it use the
-page's normal flow, normal visual understanding, and interaction capabilities.
-Do not prescribe selectors, button names, page geometry, a fixed field order,
-or a scripted interaction sequence. The Browser may inspect, scroll the page or
-a nested checkout container, focus, select, click, type, correct, revisit, and
-re-check ordinary or intermediate controls as the rendered page requires.
+Use the host's normal visual and interaction capabilities for the unchanged
+approved checkout. Inspect the intended visible fields and final control; a
+hidden DOM entry or accessibility presence alone does not prove visibility.
+Use screenshots when they help resolve ambiguity, without a prescribed count
+or field order. After a page transition, discard stale targets and reacquire
+current controls. Stop if the bound payment facts changed.
 
-Payment-method selectors, custom radio controls, accordions, next/continue
-controls, and buttons that reveal or advance a form are intermediate. A control
-labelled Donate, Support, Checkout, or Pay can still be a form opener. Activate
-and correct those controls naturally before protected fill.
-After each material transition, discard stale targets, re-observe the rendered
-page, and reacquire current targets. If the transition reveals an empty card
-form or a later dispatch control, the action that caused it was not payment
-commitment and must not be recorded as `clicked` or `click_uncertain`.
+Payment-method selectors, accordions, and next/continue controls may reveal a
+form without submitting payment. Determine the actual action from the rendered
+page, not its label. Do not record these intermediate interactions as payment
+dispatch. Correct merchant validation in the same run; refill only allowed
+fields that current evidence shows need correction, without unbounded loops.
 
-Rendered visibility is required before protected fill.
-Hidden DOM or accessibility presence is not rendered visibility.
-A semantic label, Boolean value presence, an enabled hidden control, a click,
-or a content mutation does not prove that the actual payment-dispatch surface
-is rendered or that payment was submitted. When a custom payment-method
-control, collapsed payment panel, nested checkout, or material transition
-leaves the structured state ambiguous, take native screenshots as often as
-needed.
-Start taking screenshots before any returned card character is entered, then
-keep using them whenever visual understanding helps. Use them to confirm the
-selected method, rendered card form, currently rendered dispatch control, and
-visible amount, recurrence, and optional extras.
-If a screenshot and structured state disagree, the rendered page controls
-visibility; re-observe and reacquire instead of dispatching. A screenshot is
-perception input only; it never approves, submits, retries, or proves settlement.
+Fill returned values using host-supported browser input for the exact approved
+tab, including documented host REPL calls where applicable. Do not invent a
+generic sensitive-fill API or inject credentials with arbitrary page-evaluation
+code. Verify value presence and merchant validation without reading values back.
+Keep final dispatch separate from fill and navigation: invoke the identified
+payment control once in an isolated host action.
 
-Keep navigation, ordinary fill, protected fill, validation, and dispatch as
-separate native Browser actions. Fill the merchant's remaining ordinary fields;
-its checkout email is authoritative and an optional Stripe Link email is not a
-second required role. Fill card fields last with typed native sensitive-fill
-actions. Then verify value presence, accessible merchant validation, and the
-already identified rendered final control before invoking that exact control in
-one isolated Browser call. Boolean or accessibility state alone is insufficient
-to identify a hidden final control.
-
-After a rerender, refill only an allowed field with value-free evidence that it
-is empty. One targeted refill is enough; do not loop, sweep every `:invalid`
-element, or treat unreadable iframe formatting and optional fields as blockers.
-
-Supply the returned card only through exact typed sensitive-fill actions for
-this approved tab.
-Native screenshots are allowed before and after protected fill.
-An incidental view of the payment fields or one-time card in that exact tab is
-allowed. Use screenshots freely whenever they improve rendered-page
-understanding; do not reduce visual inspection merely because protected fill
-already happened. Keep every screenshot transient inside Browser reasoning.
-Never export, attach, quote, OCR, log, persist, or reuse it, and never place card
-values in chat, general JavaScript source, shell or CLI arguments, files, events,
-logs, analytics, or evidence. Do not combine card fill with navigation or
-dispatch.
+Native screenshots may incidentally contain payment fields before or after
+fill. Keep them within host reasoning; never export them as evidence or extract
+card values from them. The V1 visibility boundary is defined in the skill router;
+neither a screenshot nor a successful fill authorizes submission or proves
+settlement.
 
 ## Pre-dispatch Browser interruption
 
 A tab binding can become stale without invalidating the Browser binding. When a
 fill/navigation call is definitely before the isolated final action, do not
 call `record_browser_payment_result`, fail, cancel, release, or create another
-run. Perform at most one recovery cycle:
+run merely because of the interruption. Recover within the host's documented
+capabilities:
 
 1. discard only the stale tab binding;
 2. reacquire the exact live tab from the existing Browser binding, or reopen
@@ -135,9 +111,9 @@ run. Perform at most one recovery cycle:
 4. re-observe and refill only missing allowed fields; and
 5. continue with the same execution-attempt ID.
 
-Only an explicit Browser-disconnected error invalidates the Browser binding.
-If one recovery cycle cannot restore the unchanged pre-dispatch checkout, hand
-the exact checkout to the user without replacing the payment.
+If bounded recovery cannot restore the unchanged pre-dispatch checkout, hand
+the exact checkout to the user without replacing the payment. Do not infer that
+a tab or browser can be reopened after possible dispatch.
 
 If the interruption overlaps the isolated final-action call, record
 `click_uncertain` and reconcile the same operation. Never reopen for another
@@ -145,18 +121,16 @@ click. A timeout or missing output is not permission to retry dispatch.
 
 ## Challenges and unusual states
 
-Load detailed recovery guidance only when the matching state occurs. The
-Browser may try to solve a CAPTCHA once before dispatch, then hand the same tab
-to the user if needed. A CAPTCHA before dispatch does not fail or replace the
-payment. Invoice handling is optional and
-never blocks settlement. A merchant validation blocker permits correction in
-the same run. After any possible dispatch, observation is read-only and the
-same operation must be reconciled.
+Handle challenges under the host's capabilities and policy; hand the same tab
+to the user when needed. A pre-dispatch challenge does not fail or replace the
+payment. After any possible dispatch, observation is read-only and recovery
+stays with the same operation.
 
 ## Record the result once
 
-Call `record_browser_payment_result` once for the exact run and execution
-attempt:
+After the final action, make a bounded fresh observation and call
+`record_browser_payment_result` for the exact run and execution attempt.
+Observation failure is not permission to click again:
 
 - `not_clicked` only when the isolated payment-dispatch control definitely was
   not activated;

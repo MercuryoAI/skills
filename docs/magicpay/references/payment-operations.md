@@ -219,8 +219,8 @@ stable operation-owned `approval.requestId`, and routable UUID
 composed run returns `waiting_for_user`, report its exact
 `request_url`, then immediately call `wait_payment` with the same `runId` and
 cursor. That first call polls the same run every three seconds for up to 270
-seconds while the user approves, returning with margin before the host's
-five-minute tool deadline. When it returns the one-time approved/executing
+seconds while the user approves. Respect the current host's own tool deadline
+and cancellation rather than assuming a universal timeout. When it returns the one-time approved/executing
 handoff as `running`, acknowledge that approval was received and immediately
 call `wait_payment` again with the same `runId` and returned cursor. The cursor
 prevents a repeated acknowledgement; continue only that already-approved

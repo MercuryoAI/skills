@@ -1,18 +1,16 @@
 # Guardrails
 
 - The host browser is the only page-control owner.
-- Direct-browser values appear only after finalized approval and must be used
-  only in the exact native-browser checkout.
+- One-time card values appear only after finalized payment approval; Memory
+  values follow their own exact resolver and approval policy. Neither grants
+  authority for a different task or target.
 - Durable state is remote. Keep no second local workflow record.
-- A changed URL, document, frame, evidence, amount, currency, recipient,
-  recurrence, country, or final control invalidates prior page authority.
-- Never expose payment-scoped one-time card details or opaque envelopes in logs,
-  chat, source, command arguments, files, telemetry, or evidence. Their
-  structured tool output may be used only for native fill of the exact approved
-  checkout. A native screenshot of that exact tab may incidentally contain the
-  one-time card before or after fill; keep it transient inside Browser reasoning
-  and never export, attach, quote, OCR, log, persist, or reuse it. The final
-  seller deliverable from a completed purchase is user-owned
+- Changed payment facts require current authority. A document or frame rerender
+  requires fresh target inspection, not automatically a replacement approval.
+- Use materialized values only through the authorized host input path. Keep
+  values and screenshots containing them out of replies, helper files, logs,
+  telemetry, and exported evidence. The final seller deliverable from a
+  completed purchase is user-owned
   output, not protected input, even when a seller names it `credentials`,
   `token`, `key`, or `code`.
 - Keep an explicitly seller-declared continuation capability out of the final
@@ -23,9 +21,9 @@
 - Let the host browser use its normal visual and interaction capabilities for
   ordinary and intermediate page controls. Do not turn payment-method selection,
   form revelation, navigation, validation, or correction into a payment result.
-- After the actual payment-dispatch control may have been activated, call
-  `record_browser_payment_result` immediately. From that boundary, `clicked` and
-  `click_uncertain` are never replayable.
+- After possible payment dispatch, take a bounded fresh observation and record
+  the exact result. `clicked` and `click_uncertain` are never replayable, even
+  when observation fails.
 - Bind native approval to the exact intent session, operation ID, stable
   operation-owned `approval.requestId`, and routable UUID
   `approval.runtimeRequestId`. Continue only through the composed run and its

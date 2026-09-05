@@ -58,10 +58,11 @@ When `otp_available` is true, explicitly tell the user they may send the fresh
 six-digit approval OTP in chat for this exact request. When it is false or
 absent, do not mention or request an OTP. For non-choice requests, use a
 presentation widget only when the user asks to see that exact request.
-For non-choice requests, immediately call `wait_request` with the same IDs. If the bounded wait returns pending or aborted, call
-`wait_request` again immediately in the same turn with those exact IDs; do not
-return control to the user while the approval is still active. Use
-`get_request` only to recover a lost snapshot or its exact hosted review link.
+For non-choice requests, call `wait_request` with the same IDs. Continue bounded
+waiting while it is actively pending, respecting the host's cancellation and
+tool limits. An aborted wait returns control to the host/user; it is not an
+instruction to loop immediately or proof the remote request was canceled. Use
+`get_request` to recover that same request or its exact hosted review link.
 
 Approval, confirmation, choice, OTP, and signature creation are authority or
 artifacts, not settlement and not proof that the requested external action ran.
@@ -93,10 +94,12 @@ artifacts, not settlement and not proof that the requested external action ran.
   `confirm_request_otp` on the same request; never place it in `values` or reuse
   it. OAuth and third-party OTPs remain outside chat.
 
-On fulfilled, resume only the exact backend continuation. On denied, expired,
-failed, canceled, session stop, identity mismatch, or protected-value request,
-stop or follow the exact recovery returned by the backend. A signing result may
-contain a signature artifact, but never private key material.
+On fulfilled, resume only the exact backend continuation. A protected Memory
+collection uses the hosted surface and then the original resolver; generic
+request reads/waits/claims remain protected-value-free. On denied, expired, failed,
+canceled, session stop, or identity mismatch, stop or follow exact returned
+recovery. A signing result may contain a signature artifact, never private key
+material.
 
 Browser payment approval and waiting belong only to `run_browser_payment` and
 `wait_payment`; follow [host-browser-payments.md](host-browser-payments.md).

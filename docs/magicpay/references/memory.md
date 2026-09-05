@@ -52,7 +52,7 @@ Use one exact active session for both stages:
    section names.
 3. For non-form use, call `materialize_memory_items` with the footprint
    revision, page/purpose context, exact selections, and entity bindings. For
-   an ordinary browser form, call the v3 `resolve_browser_form_values` with the
+   a browser form, call the v3 `resolve_browser_form_values` with the
    same footprint revision plus exact fields, candidate assemblies, target
    bindings, and any collection groups.
 4. If the result requires a choice or approval, continue the exact request. A
@@ -95,20 +95,19 @@ from the same footprint; this example grants no approval and contains no values:
 }
 ```
 
-## Values and protected fallback
+## Ordinary and protected V1 values
 
-Never place a saved Memory value in chat, an MCP argument, a tool log, or
-normal prose. Eligible ordinary values returned by a successful
-`materialize_memory_items` or v3 `resolve_browser_form_values` call are the
-narrow model-visible exception for the exact current session and purpose. Do
-not repeat them in prose.
+Use only a successful whole-batch `ready` result for the exact session, page,
+purpose, selection, and entity bindings. V1 can return approved canonical
+passport/national-ID fields, site-bound login passwords, and site-bound API
+credentials as `model_visible_form`, alongside ordinary fields. Preserve exact
+returned bytes; do not trim or normalize protected values. Protected selection
+requires the returned approval even when ordinary reuse is automatic.
 
-Passwords, OTPs, API keys, wallet secrets, private keys, seed phrases, payment
-card data, protected values, provider-managed values, and unknown sensitivity
-never use the model-visible path. Follow an exact hosted collection or host
-execution continuation when one is returned. Otherwise accept
-`fallback_required`; never expose a partial ordinary batch or create replay
-state.
+Payment cards use their separate payment run. Wallet secrets, private keys,
+seed phrases, OTPs, provider-managed values, unknown sensitivity, and unsupported
+templates are not enabled by this Memory contract. Honor `fallback_required`;
+never fill a partial batch or create another intent to bypass a denial.
 
 Metadata CRUD does not accept stored values. Use the authorized Memory editor
 for user-directed value changes. During a task, collect values only through
@@ -116,27 +115,42 @@ the exact request returned by the resolver below; never create a separate
 collection as a workaround. Denied, expired, failed, or canceled is terminal
 for that request.
 
-## Missing ordinary values and Save
+## Browser collection, Use once, and Save
 
-For an ordinary non-payment form, inspect the rendered page and call
+When a browser form needs saved Memory or collection, inspect the page and call
 `begin_browser_form` once with its exact HTTPS URL. Preserve the returned
 workflow `sessionId`, discover with `get_memory_footprint`, then run the exact
 v3 resolver before offering manual entry. Never use a host task ID, a
 caller-generated UUID, or a payment checkout session as the workflow identity.
 
-- `ready`: fill only the returned `model_visible_form` values through the
-  normal Browser, then re-observe once. Do not quote the values or submit the
-  form.
+- `ready`: fill only the returned fields with the host browser and verify the
+  resulting form without reading values back. Materialization permits filling,
+  not a new submit, booking, purchase, or payment authority.
 - `request_required`: continue the exact choice, approval, or collection
-  request. Ask only for ordinary fields explicitly returned as chat-safe. When
-  the result says those fields are persistable, end the request sentence with:
-
-  > If you’d like me to save these for later, include “Save” with your reply and briefly describe what they are and when I should use them.
-
+  request. Use `get_request` with its exact IDs to obtain the real hosted link,
+  then follow [requests.md](requests.md). Missing protected values must be entered
+  in that hosted surface. After fulfillment, resume the original resolver input
+  and `clientRequestId`; request reads, waits, and claims are not release paths.
+  Ask in chat only for ordinary fields explicitly marked chat-safe; when saving
+  is supported, explain that Save is optional and needs a reuse description.
 - `fallback_required`: explain the reason briefly and offer manual page entry.
 
-Saving is off by default. Only a reply to that exact collection request which
-explicitly includes **Save** and a semantic reuse description authorizes it. If
+- `stale_footprint`: rediscover and re-evaluate the changed selection. Do not
+  reuse released values or assume an old approval covers new facts.
+
+If no saved item fits, use the returned templates and exact collection groups;
+an empty saved assembly can still describe a valid missing-value collection.
+Keep the discovered URL and purpose unchanged. Do not invent a placeholder item
+or change purpose to make the resolver accept a request.
+
+Hosted **Use once** releases the completed batch for this current run without
+saving a Memory item. Hosted **Save** follows the same resolver continuation and
+reports persistence through `saveOutcome`. A mixed saved/missing batch remains
+atomic; do not fill its saved subset while collection is pending.
+
+For chat-safe collection, saving is off by default. Only a reply to that exact
+request which explicitly includes **Save** and a semantic reuse description
+authorizes it. If
 Save lacks the description, ask one short follow-up on the same request. An
 explicit no-save instruction wins. You may polish the description's grammar,
 but never add values, URLs, page selectors, instructions, or a purpose the user
@@ -164,4 +178,4 @@ only the exact run-owned request and continue the same run. Do not create a
 separate Memory collection, another payment run, or a replacement checkout.
 Chat-provided ordinary values remain current-run data unless the user explicitly
 chooses Save with the required description. Protected payment values remain in
-their dedicated host path.
+the dedicated payment run; a Memory grant does not authorize payment.

@@ -46,6 +46,16 @@ file names Codex commands; the canonical instructions stay host-neutral.
 
 ### Verify and disconnect
 
+- Browser work uses Codex's available native browser API and its documented
+  input calls, including a host REPL wrapper where exposed. Keep the exact tab
+  and MagicPay continuation identities; do not assume a generic sensitive-fill
+  method exists. If the required native capability is unavailable, report it
+  as blocked rather than switching to a MagicPay-owned browser.
+- A source build or plugin reinstall does not prove this task loaded the new
+  skill and tool descriptions. Verify catalog/build provenance after refresh;
+  use a fresh task for clean installed-guidance acceptance when needed. Reuse
+  completed OAuth rather than repeating setup.
+
 - `codex mcp list` shows the `magicpay` connection and its auth status.
 - Disconnect: `codex mcp logout magicpay`. Remove:
   `codex plugin remove magicpay@<marketplace>`. Both are host-local and revoke
