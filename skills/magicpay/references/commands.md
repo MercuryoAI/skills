@@ -10,6 +10,7 @@ Use opaque IDs exactly as returned.
 | --- | --- |
 | Connect or recover | `get_magicpay_capabilities`, then `get_magicpay_status` |
 | Account readiness | `account_status` |
+| Identity-verification help | `help_identity_verification` |
 | Recent user activity | `list_recent_transactions` |
 | Balance | `get_payment_balance` |
 | Generic top-up | `show_topup` |
@@ -24,8 +25,7 @@ Use opaque IDs exactly as returned.
 | Use Memory in an active session | `get_memory_footprint`, then exact `materialize_memory_items` or v3 `resolve_browser_form_values` |
 | Existing request, session, or operation | Use only its returned `nextAction` |
 
-Do not use autonomous `start_session` for a normal host-browser checkout. A
-request that already names a merchant, recipient, or site does not require
+A request that already names a merchant, recipient, or site does not require
 provider discovery: find its official destination in the host browser, then
 create the checkout session.
 
@@ -45,9 +45,15 @@ explicit request to see that exact surface:
 - `show_sessions`
 - `show_subscriptions`
 
-The only automatic presentation is `show_topup` when the authoritative unified
-balance returns `funding_required`. Service, policy, approval, card-pool, and
-ambiguous-submission errors are not funding requests.
+There are two automatic presentation cases:
+
+- Authoritative unified balance returns `funding_required`: call `show_topup`
+  once. Service, policy, approval, card-pool, and ambiguous-submission errors
+  are not funding requests.
+- A new `request_choice` returns `waiting_user`: show its widget or returned
+  `request_url` and one chat presentation, either unchanged `chatMessage` or a
+  faithful host-native picker. Do not invoke another view tool or repeat the
+  prompt for a terminal replay. See [choices.md](choices.md).
 
 ## Exact continuations
 
@@ -70,22 +76,9 @@ ambiguous-submission errors are not funding requests.
   its exact `selectedChoiceId`. Continue approval or collection through the
   exact returned request, then re-run the same materialization/resolver call.
 
-## Compatibility and internal tools
+## Internal tools
 
-Fresh transfers and x402 payments use the composed run tools. Lower-level
-`start_direct_transfer`, `start_x402_purchase`, and
-`get_x402_purchase_result` remain available only for an already-existing legacy
-operation; do not use them to compose new work.
-
-Historical browser-reconciliation tools may inspect or close an already-created
-historical attempt. They cannot start or continue a new browser payment.
-
-Widget-internal tools are app-only in MCP visibility. Development tools remain
-behind `DEV_MODE`. Neither class is a model route. Public payment instruments
-are internal infrastructure: inventory, provider-card details, compatibility
-balances, and provider-card history remain intentionally unavailable.
+Widget-internal tools are app-only in MCP visibility, not model routes.
+Payment instruments are internal infrastructure: inventory, provider-card
+details, diagnostic balances, and provider-card history remain unavailable.
 Route every user balance request through the unified payment-balance tools.
-
-General help and hosted autonomous-session tools remain compatibility routes for
-supported older skills. Prefer the operational starting route above when it can
-answer the user's current intent.

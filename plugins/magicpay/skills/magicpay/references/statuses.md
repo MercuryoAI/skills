@@ -1,13 +1,24 @@
 # Status Meanings
 
-- `clarification_required`: ask only the returned safe fields.
-- `ready`: start the exact remote discovery revision.
-- `choice_required`: select only an offered opaque choice ID.
-- `resolved`: atomically create the checkout session.
-- `in_progress` / `waiting_for_user`: keep the same session.
-- `envelope_issued`: apply once in the same prepared host session.
-- `filled`: finalize the value-free proof.
-- `staged`: the consequential click has not yet been durably classified.
+Interpret a status within its returned request, run, session, or operation;
+the same word is not a universal workflow transition.
+
+## Requests and Memory
+
+- Request `waiting_user`: preserve the exact request and follow
+  [requests.md](requests.md). A generic choice also follows
+  [choices.md](choices.md); payment approval is not a chat choice.
+- Request `fulfilled`: consume only the stored artifact and exact continuation.
+  For a choice, report the recorded selected ID, never a local draft.
+- Request `denied`, `expired`, `canceled`, or `failed`: stop that request; do
+  not fabricate a selection or present its options as a new pending prompt.
+- Memory `ready`: use only the returned values for the approved current scope.
+- Memory `request_required`: resolve the exact returned request, then rerun
+  the same materialization or resolver input.
+- Memory `fallback_required`: follow its safe fallback, without partial fill.
+
+## Browser and payment runs
+
 - `clicked`: dispatch occurred; settlement remains unknown.
 - `click_uncertain`: dispatch may have occurred; reconcile and never replay.
 - "merchant_confirmed": the merchant visibly confirmed the submitted checkout.
@@ -44,17 +55,8 @@
 - `reconciliation_required`: reconcile the same operation only.
 - `completed`: terminal only when the operation/provider evidence agrees.
 - `definitively_failed`: terminal for that operation attempt. Do not retry when
-  `retry.allowed:false` or the failure is non-retryable. After the owning
-  workflow is durably closed, a later explicit user request may create a wholly
-  new payment only when the closure also returns `released_pre_submit` or
-  `released_after_failure`, failed or not-started settlement,
-  `freshStartAllowed: true`, and `nextAction: none`.
-- `released_pre_submit`: the exact non-submitted operation authority or hold was
-  released. It does not retry or replace the old operation.
-- `released_after_failure`: the exact submitted native transfer or x402
-  operation is definitively failed and its own Ledger release consequence is
-  proven. It does not make the failed attempt retryable and does not release
-  unrelated reservations.
+  `retry.allowed:false` or the failure is non-retryable. Failure alone does not
+  prove release; follow the terminal closure rules below.
 - `canceled`: terminal for workflow authority immediately. A separately
   preserved dispatched or uncertain operation may still be nonterminal and
   require same-operation reconciliation; cancellation does not release its
@@ -67,11 +69,29 @@
   failure code and stable idempotency key. A separately unresolved or possibly
   dispatched operation remains bound to the returned same-operation
   reconciliation action; failure alone does not release it or authorize a new
-  payment. Only the complete safe fresh-start disposition above plus a later
+  payment. Only the complete safe fresh-start disposition below plus a later
   explicit user request creates new authority, with all-new identities.
+
+## Terminal release and a later payment
+
+A later, separately user-authorized payment may start only after the owning
+workflow is durably closed and its current result explicitly returns all of:
+
+- `cleanupDisposition`: `released_pre_submit` or `released_after_failure`;
+- `settlementStatus`: `failed` or `not_started`;
+- `freshStartAllowed: true`; and
+- `nextAction: none`.
+
+`released_pre_submit` proves the exact non-submitted operation authority or
+hold was released. `released_after_failure` proves the exact submitted native
+operation is definitively failed and its own Ledger release consequence was
+recorded. Neither disposition makes the old attempt retryable or releases
+unrelated reservations. Missing or unresolved evidence forbids a fresh start.
+Use new workflow, request, approval, operation, reservation, run and idempotency
+identities; never reuse old authority.
 
 Status, cancellation, and reconciliation reads remain silent supporting calls.
 An error, hard stop, separately pending reconciliation, or required user action does not
 request a widget; report it in normal conversation unless the user separately
-asks for the corresponding view. The sole exception is normalized
-funding_required from authoritative unified user-balance insufficiency.
+asks for the corresponding view. For automatic funding and new-choice
+presentation, follow [commands.md](commands.md).

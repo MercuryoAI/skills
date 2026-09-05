@@ -24,6 +24,12 @@ because a response, link, or waiter output was lost.
   `request_action_confirmation` or any standalone browser approval to replace a
   native approval.
 
+For operation-owned request inspection or recovery, use `get_request` or
+`wait_request` with the exact session and routable UUID
+`approval.runtimeRequestId`. Preserve the separate stable operation-owned
+`approval.requestId`; that identity is not the request-routing UUID. Normal
+composed payment waiting stays with the same `runId` and `wait_payment`.
+
 ## One choice request, two presentations
 
 `request_choice` stores one durable request. Present one chat form (the unchanged
@@ -50,9 +56,9 @@ result against the same request instead of overwriting it or creating another.
 Report a returned `request_url` in normal conversation when review is needed.
 When `otp_available` is true, explicitly tell the user they may send the fresh
 six-digit approval OTP in chat for this exact request. When it is false or
-absent, do not mention or request an OTP. Use a presentation widget only when
-the user directly asks to see the exact request. For non-choice requests,
-immediately call `wait_request` with the same IDs. If the bounded wait returns pending or aborted, call
+absent, do not mention or request an OTP. For non-choice requests, use a
+presentation widget only when the user asks to see that exact request.
+For non-choice requests, immediately call `wait_request` with the same IDs. If the bounded wait returns pending or aborted, call
 `wait_request` again immediately in the same turn with those exact IDs; do not
 return control to the user while the approval is still active. Use
 `get_request` only to recover a lost snapshot or its exact hosted review link.

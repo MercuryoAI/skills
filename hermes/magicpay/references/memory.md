@@ -57,6 +57,35 @@ whole batch is authoritative: never fill from a partial result. A stale
 footprint or item revision requires fresh discovery and re-evaluation, not a
 blind retry.
 
+Example `materialize_memory_items` input for Profile plus Passport (synthetic
+identifiers only). In a real call every identity, revision and field key comes
+from the same footprint; this example grants no approval and contains no values:
+
+```json
+{
+  "sessionId": "11111111-1111-4111-8111-111111111111",
+  "clientRequestId": "travel-identity-01",
+  "footprintRevision": "footprint-example-7",
+  "url": "https://example.com/travel",
+  "purpose": "Use the selected traveler's Profile and Passport for this trip",
+  "selections": [
+    {
+      "itemId": "22222222-2222-4222-8222-222222222222",
+      "expectedRevision": "profile-example-3",
+      "groupRef": "traveler-1",
+      "requestedFields": [{"fieldId": "33333333-3333-4333-8333-333333333333", "fieldKey": "full_name"}]
+    },
+    {
+      "itemId": "44444444-4444-4444-8444-444444444444",
+      "expectedRevision": "passport-example-2",
+      "groupRef": "traveler-1",
+      "requestedFields": [{"fieldId": "55555555-5555-4555-8555-555555555555", "fieldKey": "passport_number"}]
+    }
+  ],
+  "entityBindings": [{"groupRef": "traveler-1", "entityId": "66666666-6666-4666-8666-666666666666"}]
+}
+```
+
 ## Values and protected fallback
 
 Never place a saved Memory value in chat, an MCP argument, a tool log, or

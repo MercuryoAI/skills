@@ -12,7 +12,6 @@ approval -> same-run one-time card and ordinary values -> native browser fill
 fill -> one exact native browser click -> immediate value-free result record
 dispatch -> one fresh merchant result check
 fully projected composed result -> terminal workflow without a second closer
-legacy merchant_confirmed workflow -> complete_checkout_session -> terminal workflow
 terminal workflow error -> fail_checkout_session -> terminal workflow
 payment operation -> independent pending or settled reconciliation truth
 ```
@@ -23,7 +22,7 @@ provider method through MagicSearch. Registry prose is not payment authority:
 the agent verifies current documentation and supplies the exact current request
 under current user authority or MagicPay policy. New crypto work uses
 `run_crypto_transfer`. All three use the same composed `wait_payment`
-continuation. The lower-level sequence remains only for legacy recovery:
+continuation:
 
 ```text
 exact x402 facts + stable clientRequestId -> composed payment run
@@ -32,7 +31,6 @@ exact existing browser session + stable clientRequestId -> composed browser paym
 native run waiting_for_user -> exact operation-owned request -> same-run bounded wait -> one approved/executing handoff -> same-run final wait
 browser run ready_for_browser -> native fill -> one final action -> fresh validation/submission observation -> record_browser_payment_result
 run completed -> durable transfer evidence or verified seller result
-exact legacy session + facts + stable key -> lower-level native operation
 operation awaiting approval -> exact operation-owned request continuation
 approved operation -> same-operation execution or reconciliation
 external_pending direct transfer -> successful submission -> background confirmation -> callback notification
@@ -49,22 +47,10 @@ The cursor makes that acknowledgement one-time; terminal, action-required, and
 `external_pending` results take precedence. A composed browser run does not use
 this native-operation handoff: keep its long-lived waiter on the same browser
 run until it reaches its browser action, terminal, or action-required boundary.
-For an already-existing legacy operation,
-continue an operation-backed approval by reporting the `request_url` returned
-by the start tool and calling `wait_request` on the exact session plus the
-routable UUID `approval.runtimeRequestId`. Use `get_request` once only when the
-legacy start response lacks the link and that exact hosted review link must be
-recovered. Use
-`confirm_request_otp` only when that exact request offers OTP, and explicitly
-tell the user that fresh six-digit approval OTP may be sent in chat. Repeat
-`wait_request` immediately in the same turn after any pending or aborted bounded
-wait. The user decides
-in the MagicPay approval system. Never ask for a chat confirmation, translate a
-plain chat “confirm” into `decide_request`, or create a generic confirmation as
-a substitute. Retain
-`approval.requestId` as the stable operation-owned identity, but never route with
-that mpr\_ value. Browser approval belongs only to the composed direct browser
-run.
+For generic request inspection or recovery, follow [requests.md](requests.md).
+The user decides payment approval in the MagicPay approval system; a plain
+chat confirmation cannot substitute for it. Browser approval belongs only to
+the composed direct browser run.
 
 Within one unchanged connected task, a successful authenticated setup,
 capability, or payment call establishes readiness. The unscoped balance call
@@ -96,7 +82,7 @@ not make settlement successful. Keep the exact
 operation `pending` until provider or operation evidence changes it. When the
 composed browser result is fully projected and returns `completed`, its session
 is already terminal; do not call `complete_checkout_session` as a second closer.
-Retain that tool for legacy and other non-composed workflow closure. For
+Use that tool only when an exact current continuation directs closure. For
 cancellation, consume the backend's `cleanupDisposition` and
 `freshStartAllowed`; do not infer cleanup or permission for a fresh attempt.
 

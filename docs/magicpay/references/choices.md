@@ -20,7 +20,8 @@ small stable `request_choice` shape:
   Keep zero and false values. Include units and qualification in the value.
 - `price`: display text with currency, billing interval, per-unit/total, and tax
   qualification where the source supplies them.
-- `images`: source image/logo URLs with useful alt text.
+- `images`: objects with `url`, explicit `kind: image` or `kind: logo`, and
+  optional `alt`. Preserve source order; a text-only option may omit images.
 - `url`: the exact source/detail page. Opening it never selects the option.
 
 Use actual current source facts. Do not convert payment-network alternatives
@@ -66,3 +67,54 @@ tradeoff remains; pick one product variant from current browser results.
 
 Do not use a choice for a factual lookup, a single matching result, free-form
 requirements, payment confirmation, or a saved Memory candidate conflict.
+
+## Input example
+
+Example `request_choice` input (synthetic data, not current commercial claims).
+In a real call, use the returned session ID and observed source facts:
+
+```json
+{
+  "sessionId": "11111111-1111-4111-8111-111111111111",
+  "idempotencyKey": "compare-plans-01",
+  "prompt": "Which plan fits your preference?",
+  "options": [
+    {
+      "id": "plan-starter",
+      "type": "plan",
+      "title": "Starter",
+      "subtitle": "Example provider",
+      "description": "Lower cost, no included support",
+      "price": "USD 5/month, taxes excluded",
+      "attributes": [
+        {"key": "setup_fee", "label": "Setup fee (USD)", "value": 0},
+        {"key": "support", "label": "Included support", "value": false}
+      ],
+      "images": [
+        {"url": "https://example.com/starter.png", "kind": "image", "alt": "Starter plan overview"},
+        {"url": "https://example.com/logo.png", "kind": "logo", "alt": "Example provider"}
+      ],
+      "url": "https://example.com/starter"
+    },
+    {
+      "id": "plan-assisted",
+      "type": "plan",
+      "title": "Assisted",
+      "description": "Includes support; source does not list a price",
+      "attributes": [{"key": "support", "label": "Included support", "value": true}],
+      "url": "https://example.com/assisted"
+    }
+  ]
+}
+```
+
+## Continuation examples
+
+| Observation | Next action |
+| --- | --- |
+| One factual answer, no material tradeoff | Answer directly; do not create a choice. |
+| Two useful plans differ in price or service | Create one choice, relay chat/native options and the returned widget/link. |
+| Reply could mean two options | Ask which stored option the user means; do not decide or create a sibling. |
+| Another channel selected a different option | Read/wait on the same request; use its recorded winner. |
+| Request expired or was denied/canceled | Report that outcome; no fabricated selection or repeated pending prompt. |
+| Browser is unavailable | Choices still work through MCP; a later browser payment needs the actual host capability. |

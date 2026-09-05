@@ -79,9 +79,9 @@ file names Claude Code commands; the canonical instructions stay host-neutral.
 
 ### Catalog refresh
 
-- A session that was already running when the plugin was installed or
-  authenticated does not see the MagicPay tools until the user runs
-  `/reload-plugins` or starts a new session. Neither action repeats OAuth, and
+- After OAuth, discover and call `get_magicpay_capabilities` in this session
+  first. If it succeeds, continue here. If the needed tools remain unavailable,
+  run `/reload-plugins` or start a new session. Neither repeats OAuth, and
   neither is the action that opens OAuth.
 - Treat the refreshed catalog as choice-ready only when `begin_request_session`,
   `request_choice`, `decide_request`, and `wait_request` are callable. Use them

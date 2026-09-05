@@ -5,9 +5,8 @@ balance state lives remotely.
 
 ## Balance
 
-For lower-level legacy payment starts, call `get_payment_balance` without asset
-selectors immediately before authorization. The composed x402 and crypto runs
-perform that check internally, so do not preflight them.
+Use `get_payment_balance` for a balance question. The composed x402 and crypto
+runs check balance internally, so do not add a separate preflight.
 The unified `available` value is the customer spend authority. Preserve atomic
 quantities as strings, use the returned scale for display, show at least two
 fractional digits, and never use floating point for comparisons.
@@ -99,7 +98,7 @@ Before the first fresh crypto transfer in a newly connected task, use the
 current `get_magicpay_capabilities` result only when
 `cryptoPaymentRun.status` is `ready`, its contract is
 `magicpay.payment-run/v1` schema `1.1`, and `minimumPluginVersion` is
-`0.1.66`. Keep the returned `selectedAgentId`; the run revalidates ownership.
+`0.2.0`. Keep the returned `selectedAgentId`; the run revalidates ownership.
 If any field is blocked or incompatible, stop before payment state and follow
 only its safe `nextAction`.
 
@@ -114,9 +113,8 @@ Call `run_crypto_transfer` once with those exact facts, the selected agent, and
 one caller-generated stable `clientRequestId`. The composed call creates or
 reuses the exact workflow session, checks policy, unified balance, previous
 operation binding, and approval eligibility, then starts the exact transfer
-when authorized. Do not preflight `get_payment_balance`, create a session, or
-call `start_direct_transfer` first. The lower-level start tool is only for an
-already-existing legacy session or operation.
+when authorized. Do not preflight `get_payment_balance` or create a separate
+session first.
 
 Retain the same `clientRequestId`, `runId`, `nextProgressCursor`, operation ID,
 stable operation-owned `approval.requestId`, and routable UUID
@@ -157,7 +155,7 @@ MagicPay will notify you when it settles.”
 Before the first fresh x402 purchase in a newly connected task, use the current
 `get_magicpay_capabilities` result only when `x402PaymentRun.status` is `ready`,
 its contract is `magicpay.payment-run/v1` schema `1.1`, and
-`minimumPluginVersion` is `0.1.65`. Keep the returned `selectedAgentId`; the run
+`minimumPluginVersion` is `0.2.0`. Keep the returned `selectedAgentId`; the run
 revalidates ownership. If any field is blocked or incompatible, stop before
 payment state and follow only its safe `nextAction`.
 
@@ -185,7 +183,7 @@ logical call before any valid run exists.
 The composed call creates or reuses the exact workflow session, checks policy,
 unified balance, previous operation binding, and approval eligibility, then
 executes and waits up to its bounded timeout. Do not preflight
-`get_payment_balance`, create a session, or call `start_x402_purchase` first.
+`get_payment_balance` or create a separate session first.
 Preserve the seller request contract exactly: GET has no body; POST carries the
 exact JSON body string supplied for that resource. Do not change method,
 reorder or reconstruct a signed body, add fields, or turn a direct URL into
@@ -243,7 +241,7 @@ operation. Never create a replacement purchase. Only a terminal composed
 result.
 Reconciliation of the same operation may use exact matching on-chain transfer
 evidence to establish financial settlement without resubmitting the seller
-request. Financial settlement can be complete while a legacy result artifact is missing or unavailable;
+request. Financial settlement can be complete while a result artifact is missing or unavailable;
 report that fulfillment loss explicitly and never buy the resource again to
 compensate.
 
@@ -252,24 +250,19 @@ compensate.
 Branch on `code`, `action`, `operationCreated`, `runId`, `operationId`,
 `fallbackAllowed`, and `nextAction`; do not infer failure from elapsed time or
 replace the run. `fallbackAllowed: false` forbids session creation, balance
-preflight, `start_x402_purchase`, `start_direct_transfer`, and any other
-compatibility fallback:
+preflight, and substituting another payment route:
 
 - If the connector returns `kind: invalid_payment_run_failure`, the upstream
   error did not satisfy the payment-run contract. Treat durable state as
-  unknown, repair or refresh the MagicPay connection, and never fall back to
-  legacy primitives.
-- `UPGRADE_MAGICPAY_WORKFLOW` from a legacy x402 start means the installed
-  workflow is stale. Follow `upgrade_magicpay`; an exact operation already
-  bound to the session is the only legacy OAuth request that may be replayed.
+  unknown, repair or refresh the MagicPay connection, and preserve the exact run.
 
 - `fix_authentication`: repair the host OAuth connection, then replay only the
   unchanged client request when instructed.
 - `select_owned_agent`: choose an active agent owned by this OAuth user; never
   supply or expose an agent API key.
 - `upgrade_magicpay`: install or refresh at least the returned
-  `minimumPluginVersion`, start a fresh host task, and recheck capabilities
-  before payment.
+  `minimumPluginVersion`, then discover and call current capabilities in the
+  same task. Follow [setup.md](setup.md) only if tools remain unavailable.
 - `fund_account`: apply funding_required; automatically call `show_topup`, then
   wait for durable settlement and continue only the same run.
 - `wait_same_run`: call `wait_payment` on the returned `runId` and cursor.
@@ -311,9 +304,8 @@ the authenticated owner. Its integrity-verified delivery is already decoded:
 - return `deliverable.text` as bounded UTF-8 text; and
 - return a binary `deliverable.attachment` as the owner-accessible attachment.
 
-Never manually copy or decode Base64 from a composed result. For an
-already-existing legacy operation only, use `get_x402_purchase_result` and its
-same verified deliverable shape:
+Never manually copy or decode Base64 from a composed result. Preserve the
+verified deliverable shape:
 
 1. Use the returned validated `mediaType`, `byteLength`, `sha256`, deliverable,
    and `expiresAt`. Keep the bounded response and its integrity values together;
@@ -360,7 +352,8 @@ do not purchase again.
   pre-submit authority. It cannot resume, be reused, or materialize an
   operation.
 - `completed`: terminal settlement.
-- `definitively_failed`: terminal release for that attempt.
+- `definitively_failed`: terminal failure for that attempt; release still needs
+  the exact cleanup evidence.
 
 For a native direct-transfer or x402 `definitively_failed` result, or another
 explicit non-retryable terminal operation failure, close the owning workflow
@@ -371,13 +364,10 @@ guessing: release only the failed operation's own hold when that release is
 proven, preserve unrelated reservations, and retain any same-operation
 reconciliation it returns. Never retry or replace that payment.
 
-If closure returns the complete safe disposition—`workflowStatus: failed`,
-`cleanupDisposition: released_pre_submit`, `settlementStatus: failed` or
-`not_started`, `freshStartAllowed: true`, and `nextAction: none`—the old
-operation is still permanently non-retryable, but a later explicit user request
-may start a separate payment. Use a new workflow, request, approval, operation,
-reservation, run, and idempotency key. Never infer this authority from provider
-non-submission, the failure reason, or `retry.allowed:false` alone.
+A later separately user-authorized payment requires the complete terminal
+release evidence in [statuses.md](statuses.md). The old operation remains
+non-retryable. Never infer new authority from provider non-submission, the
+failure reason, or `retry.allowed:false` alone.
 
 An expired consent or approval request does not release a held reservation. A
 cancel request or canceled session also does not prove release. Cancellation

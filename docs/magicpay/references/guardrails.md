@@ -49,8 +49,6 @@
   reconcile that exact operation separately and never replay it.
 - `retry.allowed:false`, non-retryable failure, and terminal remediation are
   hard stops for that exact operation. Do not retry it, replace it, submit it to
-  a provider, or click a merchant control to bypass the stop. A separately
-  user-authorized new intent is permitted only after terminal failure closure
-  explicitly returns `released_pre_submit`, failed or not-started settlement,
-  `freshStartAllowed: true`, and `nextAction: none`; never reuse any old
-  identity or authority.
+  a provider, or click a merchant control to bypass the stop. A later separately
+  user-authorized payment requires the complete terminal release evidence in
+  [statuses.md](statuses.md); never reuse any old identity or authority.

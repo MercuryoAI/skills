@@ -1,11 +1,11 @@
 ---
 name: magicpay
-description: Use when an AI agent needs MagicPay remote sessions, funding, discovery, approval, agent-direct browser payments, payment submission, Memory, or reconciliation.
+description: Use for MagicPay payments, funding, Memory, account readiness, optional choices and human input, or payment recovery through remote MCP.
 ---
 
 # MagicPay
 
-MagicPay is the remote payment, approval, protected-value, Memory, and
+MagicPay is the remote payment, approval, optional-choice, Memory, and
 reconciliation layer. MagicCard is MagicPay's omnipayment tool. The host agent
 remains the orchestrator. MagicCard has one unified balance across its supported
 payment methods.
@@ -38,7 +38,7 @@ preference changed.
 - Known raw x402 resource: use `run_x402_payment` only with the exact resource
   the user already supplied.
 - Known checkout URL: use `create_checkout_session`, then the direct-browser
-  sequence below. Do not call autonomous `start_session`.
+  sequence below.
 - Product or provider discovery: use `search_provider_methods` when the
   destination or method is unknown. Pick a relevant result, read its official
   docs, and execute with available capabilities. MagicSearch creates no state.
@@ -57,6 +57,12 @@ preference changed.
   CRUD remains value-free. To use Memory in a task, establish the exact session,
   call `get_memory_footprint`, select exact item revisions and field IDs, then
   call `materialize_memory_items` or the v3 `resolve_browser_form_values` path.
+- Ordinary non-payment form: begin with `begin_browser_form`, then the exact
+  footprint/resolver flow. Collect only its missing fields through the returned
+  request and settings.
+- Secure Memory collection returned by a direct CRUD action: use
+  `request_memory_values` with its safe field metadata, then
+  `wait_memory_request` on the same request. See the Memory reference.
 
 Load only the focused reference needed:
 
@@ -78,10 +84,10 @@ Load only the focused reference needed:
 
 ## Direct views versus silent work
 
-Render a MagicPay widget only when the user asks to see that exact view. The
-only automatic exception is authoritative unified-balance `funding_required`:
-call `show_topup` once. Presentation tools are `show_account_status`,
-`show_memory_items`, `show_subscriptions`, `show_payment_balance`, `show_payment_operation`, `show_topup`, `show_session`, `show_session_request`, and `show_sessions`.
+Render an explicit view when the user asks to see it. Two automatic cases are
+authoritative unified-balance `funding_required` (call `show_topup` once) and a
+new `request_choice` result (its widget/link plus chat or a faithful native
+picker). The commands reference owns the presentation policy and view tools.
 
 Preflight, approval, waiting, operation reads, reconciliation, refreshes, and
 calls inside a broader task stay silent. A prior view request never carries
@@ -152,24 +158,17 @@ or canceled session once after cleanup/reconciliation and before the final respo
 
 On an explicit native non-retryable failure, automatically call
 `fail_checkout_session` once for the exact session. Never replay a click or
-replace an operation, and preserve unrelated reservations. A later, separately user-authorized
-fresh payment is allowed only when terminal closure
-explicitly returns `released_pre_submit` or `released_after_failure`, failed or
-not-started settlement, `freshStartAllowed: true`, and `nextAction: none`.
-`released_pre_submit` proves the exact non-submitted authority or hold was
-released. `released_after_failure` proves the exact submitted native operation
-is definitively failed and its own Ledger release consequence was recorded.
-Neither disposition retries the old operation or releases unrelated
-reservations. Any missing or unresolved fact forbids a fresh attempt. Use a new workflow identity
-and approval; never reuse old authority or identities.
+replace an operation, and preserve unrelated reservations. A later, separately
+user-authorized payment needs the complete terminal release evidence defined
+in the statuses reference. Never reuse old authority or identities.
 
 ## Hard rules
 
 - A verified seller deliverable from a completed purchase is user-owned output,
   not protected input. Present it privately by provenance and purpose; keep any
   explicit seller continuation capability private.
-- Never start or continue a legacy approval/fill/commit browser path.
 - Pending, held, submitted, ambiguous, non-retryable, or click-uncertain work is
   never replayed. Timeout or missing output permits only same-operation status
   and reconciliation.
-- For fresh x402, use only the eligible composed run; when `fallbackAllowed` is false, never create a checkout session or call the legacy x402 start primitive.
+- For fresh x402, use only the eligible composed run; `fallbackAllowed: false`
+  forbids creating a checkout session or substituting another payment route.

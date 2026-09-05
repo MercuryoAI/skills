@@ -79,9 +79,9 @@ capability: `x402PaymentRun.status: "ready"` for x402,
 browser payment. The
 x402 and crypto workflow contract is `magicpay.payment-run/v1` schema `1.1`;
 the browser contract is `magicpay.browser-payment/v1` schema `1.0`.
-x402 requires minimum plugin version `0.1.65`.
-Crypto requires minimum plugin version `0.1.66`.
-Agent-direct browser payment requires `0.1.77`. Preserve the
+x402 requires minimum plugin version `0.2.0`.
+Crypto requires minimum plugin version `0.2.0`.
+Agent-direct browser payment requires `0.2.0`. Preserve the
 selected rail's `selectedAgentId`. A blocked result is a pre-payment stop; do
 not create a session or fall back to another browser-payment tool.
 
