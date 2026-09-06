@@ -1,6 +1,6 @@
 {
   "name": "magicpay",
-  "version": "0.4.0-dev.d5c2299fb35a",
+  "version": "0.4.0-dev.b8667e878941",
   "description": "Use MagicPay through its remote MCP while the host browser owns the complete direct browser flow.",
   "author": {
     "name": "Nuanu",
