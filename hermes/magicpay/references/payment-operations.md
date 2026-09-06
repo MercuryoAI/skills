@@ -102,6 +102,11 @@ current `get_magicpay_capabilities` result only when
 If any field is blocked or incompatible, stop before payment state and follow
 only its safe `nextAction`.
 
+For a named recipient without a complete destination, such as "send $3 to
+Albert", first use the [named-recipient Memory flow](memory.md#named-payment-recipients).
+Do not ask for an address before checking saved Memory. Keep that lookup and
+its possible approval separate from payment execution; it creates no transfer.
+
 Resolve the exact asset namespace, asset ID, network, destination, principal,
 and maximum debit from the complete instruction and authoritative supported
 method data. Ask only for a required payment fact that is actually missing;
@@ -114,7 +119,9 @@ one caller-generated stable `clientRequestId`. The composed call creates or
 reuses the exact workflow session, checks policy, unified balance, previous
 operation binding, and approval eligibility, then starts the exact transfer
 when authorized. Do not preflight `get_payment_balance` or create a separate
-session first.
+payment session first. A request session used only for the named-recipient
+Memory lookup above is distinct; never substitute it for the run's returned
+payment session.
 
 Retain the same `clientRequestId`, `runId`, `nextProgressCursor`, operation ID,
 stable operation-owned `approval.requestId`, and routable UUID

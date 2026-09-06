@@ -35,7 +35,10 @@ preference changed.
 - Balance or funding: start with `get_payment_balance` or the exact funding
   action requested. Generic "top up" opens `show_topup`; a link or direct
   address request uses its distinct funding tool.
-- Crypto transfer: use `run_crypto_transfer`.
+- Crypto transfer: use `run_crypto_transfer` once the destination is resolved.
+  For a named recipient such as "send $3 to Albert", check Memory first rather
+  than immediately asking for an address: follow the named-recipient flow in
+  the Memory reference, then the transfer reference.
 - Known raw x402 resource: use `run_x402_payment` only with the exact generic
   HTTP envelope or documented legacy request the user already supplied.
 - Known checkout URL: use `create_checkout_session`, then the direct-browser

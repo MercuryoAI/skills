@@ -46,7 +46,9 @@ Use one exact active session for both stages:
    `item.id` to `itemId`, `item.contentRevision` to `expectedRevision`, and each
    `field.id` / `field.key` to `fieldId` / `fieldKey`; never rebuild any of
    them. A normal single-subject selection may omit a group binding and use the
-   default Me entity. For repeated people or organizations, declare stable
+   default Me entity. A named non-default recipient also needs an explicit
+   `groupRef` and its exact entity binding; never resolve Albert as Me.
+   For repeated people or organizations, declare stable
    `groupRef` values and bind each group to the exact entity. If a multi-person
    binding is ambiguous, ask the user to choose; never infer a person from page
    section names.
@@ -94,6 +96,34 @@ from the same footprint; this example grants no approval and contains no values:
   "entityBindings": [{"groupRef": "traveler-1", "entityId": "66666666-6666-4666-8666-666666666666"}]
 }
 ```
+
+## Named payment recipients
+
+For instructions such as "send $3 to Albert", consult Memory before asking the
+user to repeat a destination. Reuse an appropriate active request session or
+start one with `begin_request_session` for this non-payment lookup; use the
+two-stage flow above with a stable HTTPS context URL and the same clear purpose.
+
+- Discover the named person or organization and its recipient item from the
+  footprint's semantic metadata. This is not product/provider search. A complete
+  explicit address/asset/network instruction does not require a Memory lookup.
+- Prefer the discovered `address.crypto` template. Materialize its `address`,
+  `network` and `asset` together, plus `recipient_name` when present, using the
+  exact item revision and an explicit named-entity binding. Descriptions help
+  select an item; do not extract a payment destination from description text.
+- If several people, destinations or networks fit, ask the user which one with
+  safe labels, using `request_choice` when useful. Do not silently pick the
+  default entity or the first wallet. If none fits or a required field is
+  missing, ask only for the missing fact through the applicable input flow.
+- Honor a returned Memory approval and replay its unchanged materialization
+  input after fulfillment. Use only the complete `ready` tuple. Preserve the
+  address exactly and map its saved asset/network to current supported method
+  identifiers; ask if they conflict with the user's explicit instruction.
+- Then follow [payment-operations.md](payment-operations.md#direct-transfer) to
+  start one exact transfer. The amount and debit ceiling come from the user's
+  instruction or applicable payment policy, not Memory. A saved recipient or
+  Memory approval is not payment approval. Do not infer blanket permission to
+  send again or save/update a recipient merely because its values were provided.
 
 ## Ordinary and protected V1 values
 
