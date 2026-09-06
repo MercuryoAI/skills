@@ -173,7 +173,13 @@ save attempt, or notification path.
 ## Direct browser checkout
 
 For agent-direct checkout, send semantic `ordinaryFieldRoles` in the composed
-run. It tries saved Memory first. If it returns `ordinary_field_required`, use
+run. Role discovery covers legacy saved fields and ready agent defaults; it
+does not select typed Memory items. For a user-selected typed billing entity,
+use `get_memory_footprint` in the exact session/page context, then pass its exact
+item ID as `itemRef`, `contentRevision`, and field ID as `fieldRef`, with the
+semantic `role`, in the composed run's `ordinaryFields`. Keep these selections
+when adding late roles or resuming the same run; do not add a separate Memory
+approval for ordinary reuse. If it returns `ordinary_field_required`, use
 only the exact run-owned request and continue the same run. Do not create a
 separate Memory collection, another payment run, or a replacement checkout.
 Chat-provided ordinary values remain current-run data unless the user explicitly

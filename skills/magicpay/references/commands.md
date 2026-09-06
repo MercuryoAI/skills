@@ -21,6 +21,8 @@ Use opaque IDs exactly as returned.
 | Unknown product or provider method | `search_provider_methods` |
 | Optional choice without an existing session | `begin_request_session`, then `request_choice` |
 | Existing payment status | `get_payment_operation` |
+| Invoice or original-document status | `get_payment_operation` for the exact operation; see [invoices.md](invoices.md) |
+| Attach a later user-provided PDF | `attach_payment_invoice` with the exact operation and supported host file input; see [invoices.md](invoices.md) |
 | Manage saved Memory | Use the direct value-free CRUD action matching the intent |
 | Use Memory in an active session | `get_memory_footprint`, then exact `materialize_memory_items` or v3 `resolve_browser_form_values` |
 | Existing request, session, or operation | Use only its returned `nextAction` |

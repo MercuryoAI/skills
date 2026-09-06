@@ -53,6 +53,8 @@ returned expiry and host-required confirmations; MagicPay adds no redundant
 confirmation of the same approved facts.
 If email, name, phone, country, billing address, city, region, or postal code
 appears later, add it to the sorted unique role union and replay the same run.
+For receipt email precedence and an inbox that is not ready yet, follow
+[invoices.md](invoices.md); inbox provisioning must not delay this run.
 Never remove a previously observed role. Passwords, OTPs, identity documents,
 tax identifiers, bank credentials, private keys, seeds, and unrelated secrets
 are outside this payment authority. A separately authorized non-payment Memory
@@ -142,3 +144,5 @@ Pass an ordinary receipt address only in `checkoutEmail`, never in
 `valueFreeEvidence`. Approval, card materialization, field fill, click, and
 merchant visibility are not settlement. When the composed result is
 `completed`, stop; do not call a second checkout closer.
+Handle returned `invoiceFollowUp` and later original-document processing through
+[invoices.md](invoices.md), without waiting for mail or AI before the payment reply.

@@ -68,6 +68,8 @@ preference changed.
   normalization and omnichannel loop in the choice reference.
 - Payment status or ambiguity: use `get_payment_operation`, or
   `reconcile_payment_operation` only for that same operation when directed.
+- Invoice status or a later receipt attachment: read the exact operation or use
+  `attach_payment_invoice`; follow the invoice reference without reopening payment.
 - Memory management: use the direct CRUD action matching the user's intent;
   CRUD remains value-free. To use Memory in a task, establish the exact session,
   call `get_memory_footprint`, select exact item revisions and field IDs, then
@@ -92,6 +94,7 @@ Load only the focused reference needed:
 - Memory CRUD, ordinary/protected materialization, and hosted collection:
   [references/memory.md](references/memory.md)
 - agent-direct browser payment protocol: [references/host-browser-payments.md](references/host-browser-payments.md)
+- receipt email, original documents, and later invoice processing: [references/invoices.md](references/invoices.md)
 - compact workflow: [references/workflow.md](references/workflow.md)
 - statuses and recovery: [references/statuses.md](references/statuses.md)
 - development-only terminal session review: [references/development-session-review.md](references/development-session-review.md)
