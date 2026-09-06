@@ -50,8 +50,8 @@ preference changed.
   action requested. Generic "top up" opens `show_topup`; a link or direct
   address request uses its distinct funding tool.
 - Crypto transfer: use `run_crypto_transfer`.
-- Known raw x402 resource: use `run_x402_payment` only with the exact resource
-  the user already supplied.
+- Known raw x402 resource: use `run_x402_payment` only with the exact generic
+  HTTP envelope or documented legacy request the user already supplied.
 - Known checkout URL: use `create_checkout_session`, then the direct-browser
   sequence below.
 - Product or provider discovery: use `search_provider_methods` when the

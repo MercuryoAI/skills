@@ -160,22 +160,49 @@ revalidates ownership. If any field is blocked or incompatible, stop before
 payment state and follow only its safe `nextAction`.
 
 For a known resource URL, skip MagicSearch and call `run_x402_payment` with the
-exact URL, maximum debit, and one caller-generated stable `clientRequestId`.
-Use the tool's exact direct-resource field names: `maximumDebit` is the atomic
-integer string for the unified USD scale (for example, `"7000"` is `$0.007`),
-`resourceUrl` is the exact HTTPS seller URL, `resourceMethod` is `GET` or `POST`,
-and `resourceBody` is the exact JSON string for `POST` and is omitted for `GET`.
-For example:
+exact HTTP request, maximum debit, and one caller-generated stable
+`clientRequestId`. `maximumDebit` is the atomic integer string for the unified
+USD scale (for example, `"7000"` is `$0.007`). For a new call, use `httpRequest`
+with every field present: `requestVersion: 1`, the exact HTTPS `url`, an
+uppercase `method`, a `headers` object, and `body`. Use `body: null` when the
+request has no body. A present body is `{ "encoding": "base64", "content":
+"..." }`; the empty string is a present zero-byte body. For example:
 
 ```json
 {
   "clientRequestId": "exa-search-01",
   "maximumDebit": "7000",
-  "resourceUrl": "https://api.exa.ai/search",
-  "resourceMethod": "POST",
-  "resourceBody": "{\"query\":\"how does quantum tunneling work\"}"
+  "httpRequest": {
+    "requestVersion": 1,
+    "url": "https://api.exa.ai/search",
+    "method": "POST",
+    "headers": { "content-type": "application/json" },
+    "body": {
+      "encoding": "base64",
+      "content": "eyJxdWVyeSI6ImhvdyBkb2VzIHF1YW50dW0gdHVubmVsaW5nIHdvcmsifQ=="
+    }
+  }
 }
 ```
+
+The URL must have no credentials or fragment. The method must be a 1-32
+character uppercase HTTP token; `CONNECT` and `TRACE` are forbidden, and
+`GET`/`HEAD` require `body: null`. Body base64 must be canonical and decode to
+at most 8192 bytes. Header names are lowercased after validation; case-variant
+duplicates are rejected. Values may contain only visible ASCII characters and
+must have no leading or trailing whitespace. MagicPay injects no application
+headers for `httpRequest`, so include each required seller header explicitly.
+
+Do not send the following header names: `host`, `content-length`,
+`transfer-encoding`, `connection`, `keep-alive`, `te`, `trailer`, `upgrade`,
+`expect`, `proxy-connection`, `authorization`, `proxy-authorization`, `cookie`,
+`set-cookie`, `x-api-key`, `api-key`, `x-auth-token`, `forwarded`,
+`payment-required`, `payment-signature`, `payment-response`, `x-payment`,
+`x-payment-response`, or `x-payment-required`. Names beginning with `proxy-`,
+`sec-`, `x-forwarded-`, `x-magicpay-`, or `x-agentpay-` are also forbidden.
+The documented legacy `resourceUrl` / `resourceMethod` / `resourceBody` shape
+remains accepted for existing GET and non-empty JSON POST callers, but it is
+mutually exclusive with `httpRequest`.
 
 Do not probe the tool with invented fields, empty arguments, invalid URLs, or a
 decimal display amount. Schema errors create no payment state; correct the same
@@ -184,10 +211,9 @@ The composed call creates or reuses the exact workflow session, checks policy,
 unified balance, previous operation binding, and approval eligibility, then
 executes and waits up to its bounded timeout. Do not preflight
 `get_payment_balance` or create a separate session first.
-Preserve the seller request contract exactly: GET has no body; POST carries the
-exact JSON body string supplied for that resource. Do not change method,
-reorder or reconstruct a signed body, add fields, or turn a direct URL into
-discovery.
+Preserve the seller request contract exactly, including the distinction between
+an absent, empty, and non-empty body. Do not change method, reorder or
+reconstruct a signed body, add fields, or turn a direct URL into discovery.
 
 For an unknown target, call `search_provider_methods`. Choose only a relevant
 entry, read its official documentation when available, and execute using an
@@ -195,10 +221,11 @@ available agent capability. MagicSearch returns guidance and URLs but creates
 no run, choice, selection, checkout, execution capability, or payment
 authority.
 
-For an x402 method, build the exact current resource URL, HTTP method, and body
-from current provider documentation and the user's request. Obtain the maximum
-debit from current user authority or MagicPay policy, never from registry prose
-or an example. Then call `run_x402_payment` with one stable `clientRequestId`.
+For an x402 method, build the exact current URL, HTTP method, permitted headers,
+and body from current provider documentation and the user's request. Obtain the
+maximum debit from current user authority or MagicPay policy, never from
+registry prose or an example. Then call `run_x402_payment` with one stable
+`clientRequestId`.
 If the exact request or debit ceiling cannot be established, stop without
 paying.
 
@@ -215,7 +242,11 @@ missing provider contract. Never probe the route with `run_x402_payment`.
 Retain the same `clientRequestId`, `runId`, `nextProgressCursor`, operation ID,
 stable operation-owned `approval.requestId`, and routable UUID
 `approval.runtimeRequestId`. For transport ambiguity, replay the unchanged
-`run_x402_payment` input only for the same exact direct resource. When the
+`run_x402_payment` input only for the same exact HTTP request. MagicPay binds
+the request before the first merchant probe. A replay with the same key and
+unchanged request resumes that binding; it does not automatically probe the
+merchant again. A changed request conflicts, and an incomplete or ambiguous
+binding must remain on the same run for wait or reconciliation. When the
 composed run returns `waiting_for_user`, report its exact
 `request_url`, then immediately call `wait_payment` with the same `runId` and
 cursor. That first call polls the same run every three seconds for up to 270
