@@ -71,8 +71,10 @@ preference changed.
   normalization and omnichannel loop in the choice reference.
 - Payment status or ambiguity: use `get_payment_operation`, or
   `reconcile_payment_operation` only for that same operation when directed.
-- Invoice status or a later receipt attachment: read the exact operation or use
-  `attach_payment_invoice`; follow the invoice reference without reopening payment.
+- Invoice status or a receipt attachment: read the exact operation or use
+  `attach_payment_invoice` for its PDF original or supported merchant receipt link. Prioritize
+  the original saved to that session; AI details are optional. Follow the invoice
+  reference without reopening payment.
 - Memory management: use the direct CRUD action matching the user's intent;
   CRUD remains value-free. To use Memory in a task, establish the exact session,
   call `get_memory_footprint`, select exact item revisions and field IDs, then
